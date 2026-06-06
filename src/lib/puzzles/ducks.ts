@@ -3,7 +3,7 @@
 
 export const COLORS = ["yellow", "pink", "green", "blue", "orange", "purple", "white"] as const;
 export const ACCESSORIES = ["tie", "scarf", "glasses", "hat", "headphones", "badge", "monocle"] as const;
-export const ROLES = ["intern", "manager", "designer", "engineer", "analyst", "exec", "recruiter"] as const;
+export const ROLES = ["wizard", "pirate", "chef", "ninja", "astronaut", "dragon", "clown"] as const;
 
 export type Color = (typeof COLORS)[number];
 export type Accessory = (typeof ACCESSORIES)[number];
