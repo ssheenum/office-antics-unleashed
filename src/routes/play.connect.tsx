@@ -97,6 +97,8 @@ function Connect() {
       rightSlot={<Timer seconds={DURATION} running={!done} onExpire={timeUp} onTick={setSecondsLeft} />}
     >
       {!done && (
+        <>
+        <GameBanner image={connectHero} theme="connect" tagline="Connect the dots — four hidden groups of four. Trust the pattern, dodge the decoys." />
         <div className="paper-card rounded-lg p-5">
           <div className="mb-4 flex items-center justify-between">
             <div className="text-sm text-muted-foreground">Find 4 groups of 4. {MAX_MISTAKES - mistakes} mistakes left.</div>
