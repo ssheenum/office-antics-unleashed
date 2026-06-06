@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
 import { randomBoard, tilesFromBoard, findGroup, DIFFICULTY_COLOR, type Board, type Group } from "@/lib/puzzles/connect";
 import { recordRound, loadState } from "@/lib/storage";
 import { timeBonus, xpFromScore } from "@/lib/scoring";
+import connectHero from "@/assets/connect-hero.png";
 
 export const Route = createFileRoute("/play/connect")({
   head: () => ({
@@ -95,6 +97,8 @@ function Connect() {
       rightSlot={<Timer seconds={DURATION} running={!done} onExpire={timeUp} onTick={setSecondsLeft} />}
     >
       {!done && (
+        <>
+        <GameBanner image={connectHero} theme="connect" tagline="Connect the dots — four hidden groups of four. Trust the pattern, dodge the decoys." />
         <div className="paper-card rounded-lg p-5">
           <div className="mb-4 flex items-center justify-between">
             <div className="text-sm text-muted-foreground">Find 4 groups of 4. {MAX_MISTAKES - mistakes} mistakes left.</div>
@@ -153,6 +157,7 @@ function Connect() {
             </button>
           </div>
         </div>
+        </>
       )}
 
       {done && (

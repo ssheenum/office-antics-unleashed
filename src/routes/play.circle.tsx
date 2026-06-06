@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { ResultCard } from "@/components/game/ResultCard";
 import { generateRound, getSymbol, type Round } from "@/lib/puzzles/circle";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
+import circleHero from "@/assets/circle-hero.png";
 
 export const Route = createFileRoute("/play/circle")({
   head: () => ({
@@ -92,6 +94,7 @@ function Circle() {
       skill="Memory"
       rightSlot={<div className="font-display tabular-nums">Score {score}</div>}
     >
+      <GameBanner image={circleHero} theme="circle" tagline="Circle back — watch the sticky notes, then replay the sequence. Sometimes backwards." />
       <div className="paper-card rounded-lg p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>

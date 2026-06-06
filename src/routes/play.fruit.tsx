@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
 import { generate, check, reachCost, describeTarget, type Puzzle, type Fruit } from "@/lib/puzzles/fruit";
 import { recordRound, loadState } from "@/lib/storage";
 import { timeBonus, xpFromScore } from "@/lib/scoring";
+import fruitHero from "@/assets/fruit-hero.png";
 
 export const Route = createFileRoute("/play/fruit")({
   head: () => ({
@@ -94,6 +96,7 @@ function FruitGame() {
         </div>
       }
     >
+      <GameBanner image={fruitHero} theme="fruit" tagline="Low-hanging fruit pays best — hit the target with the least reach." />
       {!done && (
         <div className="paper-card rounded-lg p-5">
           <div className="mb-4 flex items-center justify-between">

@@ -4,6 +4,11 @@ import { FolderTile } from "@/components/hub/FolderTile";
 import { SkillRing } from "@/components/hub/SkillRing";
 import { StreakStamp } from "@/components/hub/StreakStamp";
 import { loadState, todayKey, type GameState } from "@/lib/storage";
+import hubHero from "@/assets/hub-hero.png";
+import ducksHero from "@/assets/ducks-hero.png";
+import connectHero from "@/assets/connect-hero.png";
+import circleHero from "@/assets/circle-hero.png";
+import fruitHero from "@/assets/fruit-hero.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,15 +35,22 @@ function Hub() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-border">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
-          <div>
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-6">
+          <div className="flex-1">
             <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Cubicle Quest</div>
-            <h1 className="font-display text-4xl leading-none">The Daily Standup</h1>
-            <p className="mt-2 max-w-lg text-sm text-foreground/80">
+            <h1 className="font-display text-4xl leading-none md:text-5xl">The Daily Standup</h1>
+            <p className="mt-3 max-w-lg text-sm text-foreground/80">
               Four brain puzzles wrapped in office-speak. Mechanics are real cognitive work — the jargon's just decoration.
             </p>
+            <div className="mt-4">
+              <StreakStamp count={state.streak.count} />
+            </div>
           </div>
-          <StreakStamp count={state.streak.count} />
+          <img
+            src={hubHero}
+            alt="Cubicle Quest mascot — a smiling manila folder character"
+            className="wiggle hidden h-48 w-48 object-contain md:block"
+          />
         </div>
       </header>
 
@@ -55,33 +67,41 @@ function Hub() {
               to="/play/ducks"
               title="Ducks in a Row"
               skill="Logic / deduction"
-              blurb="Arrange a row of ducks to satisfy a tangle of clues. Einstein-puzzle style."
+              blurb="Arrange a row of ducks to satisfy a tangle of clues."
               best={state.bestScores.ducks}
               done={isDone("ducks")}
+              image={ducksHero}
+              theme="ducks"
             />
             <FolderTile
               to="/play/connect"
               title="Connect the Dots"
               skill="Pattern recognition"
-              blurb="Sixteen tiles, four hidden groups of four. Decoys are deliberately mean."
+              blurb="Sixteen tiles, four hidden groups of four. Decoys are mean."
               best={state.bestScores.connect}
               done={isDone("connect")}
+              image={connectHero}
+              theme="connect"
             />
             <FolderTile
               to="/play/circle"
               title="Circle Back"
               skill="Memory / sequence"
-              blurb="Memorize the sticky-note sequence. Replay it forward, backward, or with a swap."
+              blurb="Memorize the sticky-note sequence. Forward, backward, or swapped."
               best={state.bestScores.circle}
               done={isDone("circle")}
+              image={circleHero}
+              theme="circle"
             />
             <FolderTile
               to="/play/fruit"
               title="Low-Hanging Fruit"
               skill="Spatial-math / optimization"
-              blurb="Pick the lowest-reachable fruits that satisfy the target. Reach costs points."
+              blurb="Pick low-reach fruits to hit the target. Reach costs points."
               best={state.bestScores.fruit}
               done={isDone("fruit")}
+              image={fruitHero}
+              theme="fruit"
             />
           </div>
         </section>

@@ -134,4 +134,30 @@
     color: var(--ink);
     box-shadow: 2px 4px 8px -2px oklch(0 0 0 / 0.2);
   }
+  /* Per-game tinted banner backgrounds */
+  .game-banner {
+    border-radius: 0.75rem;
+    border: 2px solid var(--ink);
+    box-shadow: 4px 5px 0 0 var(--ink);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .theme-ducks { background: linear-gradient(135deg, oklch(0.95 0.08 220) 0%, oklch(0.92 0.13 200) 100%); }
+  .theme-connect { background: linear-gradient(135deg, oklch(0.94 0.09 90) 0%, oklch(0.9 0.12 60) 100%); }
+  .theme-circle { background: linear-gradient(135deg, oklch(0.93 0.11 340) 0%, oklch(0.93 0.13 50) 100%); }
+  .theme-fruit { background: linear-gradient(135deg, oklch(0.93 0.1 140) 0%, oklch(0.92 0.13 80) 100%); }
+  .wiggle { animation: wiggle 4s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+  }
+  .float-bob { animation: bob 5s ease-in-out infinite; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
 }
