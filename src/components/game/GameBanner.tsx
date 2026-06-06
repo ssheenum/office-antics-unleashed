@@ -1,21 +1,18 @@
 export function GameBanner({
   image,
-  theme,
+  accent,
   tagline,
 }: {
   image: string;
-  theme: "ducks" | "connect" | "circle" | "fruit";
+  accent: "ducks" | "connect" | "circle" | "fruit";
   tagline: string;
 }) {
   return (
-    <div className={`game-banner theme-${theme} mb-5`}>
-      <img
-        src={image}
-        alt=""
-        className="float-bob h-28 w-auto md:h-36"
-        loading="lazy"
-      />
-      <p className="font-display text-sm uppercase tracking-wider text-ink md:text-base" style={{ color: "var(--ink)" }}>
+    <div className={`accent-${accent} mb-6 flex items-center gap-4 rounded-2xl p-4`} style={{ background: "var(--accent-bg)" }}>
+      <div className="grid h-16 w-16 flex-shrink-0 place-items-center rounded-2xl bg-white/60">
+        <img src={image} alt="" loading="lazy" className="float-bob h-14 w-14 object-contain" />
+      </div>
+      <p className="text-sm font-semibold leading-snug" style={{ color: "var(--accent-ink)" }}>
         {tagline}
       </p>
     </div>

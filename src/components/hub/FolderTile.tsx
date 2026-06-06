@@ -8,7 +8,7 @@ export function FolderTile({
   best,
   done,
   image,
-  theme,
+  accent = "ducks",
 }: {
   to: string;
   title: string;
@@ -17,46 +17,42 @@ export function FolderTile({
   best: number;
   done: boolean;
   image?: string;
-  theme?: "ducks" | "connect" | "circle" | "fruit";
+  accent?: "ducks" | "connect" | "circle" | "fruit";
 }) {
   return (
     <Link
       to={to}
-      className={`group relative block overflow-hidden rounded-lg p-5 transition-transform hover:-translate-y-1 ${theme ? `theme-${theme}` : "bg-secondary"}`}
-      style={{
-        boxShadow: "3px 4px 0 var(--ink)",
-        border: "2px solid var(--ink)",
-      }}
+      className={`tile-card accent-${accent} group relative block overflow-hidden p-5`}
     >
-      {done && (
-        <div className="absolute right-3 top-3 z-10">
-          <span className="stamp text-xs">Done</span>
+      <div className="flex items-start gap-4">
+        <div
+          className="grid h-20 w-20 flex-shrink-0 place-items-center rounded-2xl transition-transform group-hover:-rotate-3"
+          style={{ background: "var(--accent-bg)" }}
+        >
+          {image && (
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              className="h-16 w-16 object-contain"
+            />
+          )}
         </div>
-      )}
-      {image && (
-        <img
-          src={image}
-          alt=""
-          loading="lazy"
-          className="pointer-events-none absolute -right-4 -bottom-4 h-32 w-32 object-contain opacity-90 transition-transform group-hover:scale-110 group-hover:-rotate-3"
-        />
-      )}
-      <div className="relative z-[1] max-w-[60%]">
-        <div className="text-[10px] uppercase tracking-widest" style={{ color: "var(--ink)", opacity: 0.7 }}>{skill}</div>
-        <h3 className="mt-1 font-display text-2xl leading-tight" style={{ color: "var(--ink)" }}>{title}</h3>
-        <p className="mt-2 text-sm" style={{ color: "var(--ink)", opacity: 0.85 }}>{blurb}</p>
-        <div className="mt-4 flex items-end gap-3">
-          <div>
-            <div className="text-[10px] uppercase tracking-widest" style={{ color: "var(--ink)", opacity: 0.7 }}>Best</div>
-            <div className="font-display text-xl tabular-nums" style={{ color: "var(--ink)" }}>{best}</div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="chip">{skill}</span>
+            {done && <span className="stamp">Done today</span>}
           </div>
-          <div
-            className="rounded-full px-3 py-1 font-display text-xs uppercase tracking-wider"
-            style={{ background: "var(--ink)", color: "var(--paper)" }}
-          >
-            Play →
-          </div>
+          <h3 className="mt-1.5 font-display text-xl leading-tight">{title}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">{blurb}</p>
         </div>
+      </div>
+      <div className="mt-4 flex items-end justify-between">
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Best</div>
+          <div className="font-display text-lg tabular-nums">{best}</div>
+        </div>
+        <span className="duo-btn text-xs">Play</span>
       </div>
     </Link>
   );
