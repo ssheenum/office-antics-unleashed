@@ -32,153 +32,237 @@
   --color-gold: var(--gold);
   --color-cream: var(--cream);
   --color-ink: var(--ink);
+  --color-sky: var(--sky);
+  --color-leaf: var(--leaf);
+  --color-coral: var(--coral);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
-  --font-display: "Fraunces", "Times New Roman", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.875rem;
-  /* Editorial Glass — dark cream-and-gold */
-  --ink: oklch(0.18 0.012 260);          /* near-black #0f1115 */
-  --ink-2: oklch(0.235 0.014 260);       /* surface #1b1f27 */
-  --cream: oklch(0.93 0.018 80);         /* #e6e1d6 */
-  --cream-muted: oklch(0.74 0.018 80);
-  --gold: oklch(0.78 0.12 86);           /* #c9a84c */
-  --gold-soft: oklch(0.86 0.09 86);
-  --ok: oklch(0.78 0.10 165);
-  --warn: oklch(0.70 0.16 30);
+  --radius: 1.25rem;
+  /* Sunny Paper — pond & garden */
+  --paper: #fdf6e3;       /* warm cream page */
+  --paper-2: #f7eecf;     /* a touch deeper cream */
+  --ink: #1f2933;         /* deep navy ink — primary text */
+  --ink-soft: #4a5764;
+  --ink-mute: #8a96a3;
 
-  --background: var(--ink);
-  --foreground: var(--cream);
-  --card: var(--ink-2);
-  --card-foreground: var(--cream);
-  --popover: var(--ink-2);
-  --popover-foreground: var(--cream);
-  --primary: var(--gold);
-  --primary-foreground: oklch(0.16 0.01 260);
-  --secondary: oklch(0.28 0.012 260);
-  --secondary-foreground: var(--cream);
-  --muted: oklch(0.26 0.01 260);
-  --muted-foreground: var(--cream-muted);
-  --accent: oklch(0.30 0.014 260);
-  --accent-foreground: var(--cream);
-  --destructive: var(--warn);
-  --destructive-foreground: var(--cream);
-  --border: oklch(0.32 0.012 260);
-  --input: oklch(0.32 0.012 260);
-  --ring: var(--gold);
+  --sky: #06aed5;         /* sky blue accent */
+  --sky-soft: #7fd6ec;
+  --sky-deep: #0a8aaa;
+
+  --gold: #ffd166;        /* marigold accent (kept under "gold" name) */
+  --gold-soft: #ffe39a;
+  --gold-deep: #e9b13d;
+
+  --leaf: #2dd4a8;        /* pond green — success */
+  --leaf-soft: #aaf0d8;
+  --coral: #ff7a59;       /* warm warn */
+  --coral-soft: #ffb59f;
+
+  --cream: var(--ink);    /* legacy alias: "cream" was foreground text */
+
+  --ok: var(--leaf);
+  --warn: var(--coral);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--sky);
+  --primary-foreground: #ffffff;
+  --secondary: var(--paper-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: var(--coral);
+  --destructive-foreground: #ffffff;
+  --border: color-mix(in oklab, var(--ink) 12%, transparent);
+  --input: color-mix(in oklab, var(--ink) 12%, transparent);
+  --ring: var(--sky);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html, body { font-family: var(--font-sans); }
+  html, body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--paper);
+    color: var(--ink);
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in oklab, var(--gold) 14%, transparent), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, color-mix(in oklab, var(--gold) 8%, transparent), transparent 60%);
+      radial-gradient(ellipse 70% 50% at 15% 0%, color-mix(in oklab, var(--sky) 18%, transparent), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 90% 12%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 65%),
+      radial-gradient(ellipse 90% 40% at 50% 100%, color-mix(in oklab, var(--leaf) 14%, transparent), transparent 60%);
     background-attachment: fixed;
+    background-repeat: no-repeat;
   }
-  h1, h2, h3, .font-display {
+  h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.015em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
   }
   button { font-family: inherit; }
+  ::selection { background: color-mix(in oklab, var(--sky) 35%, transparent); color: var(--ink); }
 }
 
+/* === Soft paper cards (replaces "glass") === */
 @utility glass {
-  background: color-mix(in oklab, white 4%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  background: #ffffff;
+  border: 1.5px solid color-mix(in oklab, var(--ink) 10%, transparent);
   box-shadow:
-    inset 0 1px 0 color-mix(in oklab, white 7%, transparent),
-    0 20px 50px -25px rgba(0,0,0,0.6);
+    0 1px 0 color-mix(in oklab, var(--ink) 6%, transparent),
+    0 14px 32px -22px color-mix(in oklab, var(--ink) 50%, transparent);
+  border-radius: 1.5rem;
 }
 
 @utility glass-strong {
-  background: color-mix(in oklab, white 6%, transparent);
-  backdrop-filter: blur(24px) saturate(150%);
-  border: 1px solid color-mix(in oklab, white 10%, transparent);
+  background: #ffffff;
+  border: 2px solid color-mix(in oklab, var(--ink) 14%, transparent);
   box-shadow:
-    inset 0 1px 0 color-mix(in oklab, white 10%, transparent),
-    0 30px 80px -30px rgba(0,0,0,0.7);
+    0 2px 0 color-mix(in oklab, var(--ink) 10%, transparent),
+    0 22px 50px -25px color-mix(in oklab, var(--ink) 55%, transparent);
+  border-radius: 1.75rem;
+}
+
+@utility card-tinted {
+  background: var(--paper-2);
+  border: 1.5px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  border-radius: 1.5rem;
 }
 
 @utility hairline {
-  border-top: 1px solid color-mix(in oklab, var(--gold) 50%, transparent);
+  border-top: 1.5px dashed color-mix(in oklab, var(--ink) 18%, transparent);
 }
 
 @utility gold-rule {
-  height: 1px;
-  background: linear-gradient(to right, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent);
+  height: 3px;
+  border-radius: 999px;
+  background-image: radial-gradient(circle, color-mix(in oklab, var(--ink) 25%, transparent) 1.5px, transparent 1.5px);
+  background-size: 10px 3px;
+  background-repeat: repeat-x;
+  background-position: center;
 }
 
+/* === Buttons — chunky, bouncy, Duolingo-ish === */
 @utility pill-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: 999px;
-  padding: 0.55rem 1.1rem;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.875rem;
-  letter-spacing: 0.01em;
-  color: var(--cream);
-  background: color-mix(in oklab, white 5%, transparent);
-  border: 1px solid color-mix(in oklab, var(--gold) 35%, transparent);
-  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+  padding: 0.65rem 1.2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  background: #ffffff;
+  border: 2px solid color-mix(in oklab, var(--ink) 14%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklab, var(--ink) 14%, transparent);
+  transition: transform 110ms ease, box-shadow 110ms ease, background 160ms ease, border-color 160ms ease;
+  cursor: pointer;
 }
-@utility pill-btn-hover {
-  background: color-mix(in oklab, var(--gold) 14%, transparent);
-  border-color: color-mix(in oklab, var(--gold) 70%, transparent);
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 10%, transparent);
-}
-.pill-btn:hover { @apply pill-btn-hover; }
-.pill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pill-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 0 color-mix(in oklab, var(--ink) 18%, transparent); }
+.pill-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 color-mix(in oklab, var(--ink) 14%, transparent); }
+.pill-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: 0 3px 0 color-mix(in oklab, var(--ink) 10%, transparent); }
 
 @utility pill-btn-gold {
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gold) 90%, white 5%), color-mix(in oklab, var(--gold) 80%, black 5%));
-  color: oklch(0.18 0.01 260);
-  border-color: color-mix(in oklab, var(--gold) 80%, black 10%);
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold-deep);
+  box-shadow: 0 4px 0 var(--gold-deep);
 }
-.pill-btn-gold:hover { box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 25%, transparent); }
+.pill-btn-gold:hover { box-shadow: 0 5px 0 var(--gold-deep); }
+.pill-btn-gold:active { box-shadow: 0 1px 0 var(--gold-deep); }
 
+@utility pill-btn-sky {
+  background: var(--sky);
+  color: #ffffff;
+  border-color: var(--sky-deep);
+  box-shadow: 0 4px 0 var(--sky-deep);
+}
+.pill-btn-sky:hover { box-shadow: 0 5px 0 var(--sky-deep); }
+.pill-btn-sky:active { box-shadow: 0 1px 0 var(--sky-deep); }
+
+@utility pill-btn-leaf {
+  background: var(--leaf);
+  color: var(--ink);
+  border-color: color-mix(in oklab, var(--leaf) 80%, var(--ink));
+  box-shadow: 0 4px 0 color-mix(in oklab, var(--leaf) 70%, var(--ink));
+}
+
+/* === Chips === */
 @utility chip-gold {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  padding: 0.22rem 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.28rem 0.7rem;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--gold) 12%, transparent);
-  color: var(--gold-soft);
-  border: 1px solid color-mix(in oklab, var(--gold) 30%, transparent);
+  background: var(--gold);
+  color: var(--ink);
+  border: 1.5px solid var(--gold-deep);
+}
+
+@utility chip-sky {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--sky) 18%, white);
+  color: var(--sky-deep);
+  border: 1.5px solid color-mix(in oklab, var(--sky) 50%, transparent);
 }
 
 @utility chip-muted {
   display: inline-flex;
   align-items: center;
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  padding: 0.22rem 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.28rem 0.7rem;
   border-radius: 999px;
-  background: color-mix(in oklab, white 5%, transparent);
-  color: var(--cream-muted);
-  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  border: 1.5px solid color-mix(in oklab, var(--ink) 12%, transparent);
 }
 
+@utility chip-leaf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: var(--leaf-soft);
+  color: color-mix(in oklab, var(--leaf) 60%, var(--ink));
+  border: 1.5px solid color-mix(in oklab, var(--leaf) 55%, transparent);
+}
+
+/* === Paper grain (kept subtle on light) === */
 @utility grain {
   position: relative;
 }
@@ -187,20 +271,52 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.88  0 0 0 0 0.84  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
-  opacity: 0.045;
-  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  opacity: 0.05;
+  mix-blend-mode: multiply;
   border-radius: inherit;
 }
 
-@utility float-bob { animation: bob 6s ease-in-out infinite; }
+/* === Pond ripples background === */
+@utility pond-bg {
+  background:
+    radial-gradient(ellipse at 20% 30%, color-mix(in oklab, var(--sky) 35%, white), transparent 55%),
+    radial-gradient(ellipse at 75% 70%, color-mix(in oklab, var(--sky) 28%, white), transparent 60%),
+    color-mix(in oklab, var(--sky) 18%, white);
+}
+
+/* === Animations === */
+@utility float-bob { animation: bob 4.5s ease-in-out infinite; }
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  50% { transform: translateY(-6px); }
 }
 
 @utility sway-slow { animation: sway 5.5s ease-in-out infinite; transform-origin: top center; }
 @keyframes sway {
   0%, 100% { transform: rotate(-2deg); }
   50% { transform: rotate(2deg); }
+}
+
+@utility wiggle { animation: wiggle 0.45s ease-in-out; }
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+
+@utility ripple-once {
+  animation: ripple 0.6s ease-out forwards;
+}
+@keyframes ripple {
+  0% { transform: scale(0.4); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@utility fall-in {
+  animation: fall-in 380ms cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes fall-in {
+  0% { transform: translateY(-12px) scale(0.9); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }

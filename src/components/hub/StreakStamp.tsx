@@ -1,10 +1,16 @@
 export function StreakStamp({ count }: { count: number }) {
   return (
-    <div className="glass inline-flex items-center gap-3 rounded-full px-4 py-2">
-      <span className="chip-gold">Streak</span>
+    <div
+      className="inline-flex items-center gap-3 rounded-full border-[2px] bg-white px-4 py-2"
+      style={{
+        borderColor: "var(--gold-deep)",
+        boxShadow: "0 3px 0 var(--gold-deep)",
+      }}
+    >
+      <span className="chip-gold">🔥 Streak</span>
       <div className="flex items-baseline gap-1.5">
-        <span className="font-display text-2xl leading-none tabular-nums" style={{ color: "var(--cream)" }}>{count}</span>
-        <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">day{count === 1 ? "" : "s"}</span>
+        <span className="font-display text-2xl leading-none tabular-nums">{count}</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">day{count === 1 ? "" : "s"}</span>
       </div>
     </div>
   );
