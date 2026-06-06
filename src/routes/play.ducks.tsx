@@ -13,7 +13,7 @@ export const Route = createFileRoute("/play/ducks")({
   head: () => ({
     meta: [
       { title: "Ducks in a Row — Cubicle Quest" },
-      { name: "description", content: "Live Einstein-style deduction. Keep every clue green for three seconds — and survive the interrupts." },
+      { name: "description", content: "Line up the rubber ducks. Keep every clue green for three seconds — and survive the shuffles." },
     ],
   }),
   component: Ducks,
@@ -170,7 +170,7 @@ function Ducks() {
           <GameBanner
             Mark={DuckMark}
             eyebrow="Live deduction"
-            tagline="Get every duck in line. Each row you clear pulls in more ducks and tighter interrupts."
+            tagline="Line up the ducks so every clue lights green. Each row you clear adds more ducks and quicker shuffles."
           />
 
           <div className="glass grain mb-5 rounded-2xl p-5">
@@ -181,7 +181,7 @@ function Ducks() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="chip-muted">{metCount}/{puzzle.constraints.length} clues green</span>
-                <span className="chip-muted">{interrupts} interrupt{interrupts === 1 ? "" : "s"}</span>
+                <span className="chip-muted">{interrupts} shuffle{interrupts === 1 ? "" : "s"}</span>
               </div>
             </div>
             <ul className="grid gap-1.5 text-sm md:grid-cols-2">
@@ -237,7 +237,7 @@ function Ducks() {
           score={finalScore}
           xp={xpFromScore(finalScore)}
           best={loadState().bestScores.ducks}
-          details={`Cleared ${done.cleared} level${done.cleared === 1 ? "" : "s"} · survived ${totalInterrupts} interrupt${totalInterrupts === 1 ? "" : "s"}.`}
+          details={`Cleared ${done.cleared} level${done.cleared === 1 ? "" : "s"} · survived ${totalInterrupts} shuffle${totalInterrupts === 1 ? "" : "s"}.`}
           onPlayAgain={reset}
         />
       )}

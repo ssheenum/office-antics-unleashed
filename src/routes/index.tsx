@@ -67,7 +67,7 @@ function Hub() {
               to="/play/ducks"
               title="Ducks in a Row"
               skill="Logic"
-              blurb="Arrange the ducks so every clue lights green — and survive the meeting interrupts."
+              blurb="Arrange the rubber ducks so every clue lights green — and survive the surprise shuffles."
               best={state.bestScores.ducks}
               done={isDone("ducks")}
               Mark={DuckMark}
@@ -76,7 +76,7 @@ function Hub() {
               to="/play/deepdive"
               title="Deep Dive"
               skill="Memory · Reaction"
-              blurb="Strata of a report scroll upward. Catch the one that matches the brief before it surfaces."
+              blurb="Sea creatures rise from the deep. Tap the one matching the hunt before it slips past the surf."
               best={state.bestScores.deepdive}
               done={isDone("deepdive")}
               Mark={DiverMark}
