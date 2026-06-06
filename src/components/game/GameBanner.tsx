@@ -10,13 +10,21 @@ export function GameBanner({
   eyebrow?: string;
 }) {
   return (
-    <div className="glass grain mb-8 flex items-center gap-5 rounded-2xl p-5">
-      <div className="grid h-16 w-16 flex-shrink-0 place-items-center rounded-xl" style={{ background: "color-mix(in oklab, var(--gold) 10%, transparent)", border: "1px solid color-mix(in oklab, var(--gold) 25%, transparent)", color: "var(--gold)" }}>
-        <Mark width={42} height={36} />
+    <div className="glass grain mb-6 flex items-center gap-5 p-5">
+      <div
+        className="grid h-20 w-20 flex-shrink-0 place-items-center rounded-2xl border-[2px]"
+        style={{
+          background: "color-mix(in oklab, #ffd166 30%, white)",
+          borderColor: "#e9b13d",
+        }}
+      >
+        <Mark width={64} height={56} />
       </div>
       <div className="min-w-0">
-        {eyebrow && <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--gold-soft)" }}>{eyebrow}</div>}
-        <p className="font-display text-lg leading-snug" style={{ color: "var(--cream)" }}>{tagline}</p>
+        {eyebrow && (
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: "var(--sky-deep)" }}>{eyebrow}</div>
+        )}
+        <p className="font-display text-lg leading-snug">{tagline}</p>
       </div>
     </div>
   );
