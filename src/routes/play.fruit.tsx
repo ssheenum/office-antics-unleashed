@@ -126,7 +126,10 @@ function FruitGame() {
         <div className="glass grain rounded-2xl p-6">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Round {rounds + 1}</div>
+              <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <span>Round {rounds + 1}</span>
+                <span className="chip-gold !py-0.5">L{level} · pick {puzzle.target.size}</span>
+              </div>
               <div className="font-display text-2xl tracking-tight">{describeTarget(puzzle.target)}</div>
             </div>
             <div className="flex gap-3 text-right text-xs">
