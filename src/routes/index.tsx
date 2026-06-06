@@ -3,20 +3,16 @@ import { useEffect, useState } from "react";
 import { FolderTile } from "@/components/hub/FolderTile";
 import { SkillRing } from "@/components/hub/SkillRing";
 import { StreakStamp } from "@/components/hub/StreakStamp";
-import { loadState, todayKey, type GameState } from "@/lib/storage";
-import hubHero from "@/assets/m-hub.png";
-import ducksHero from "@/assets/m-ducks.png";
-import connectHero from "@/assets/m-connect.png";
-import circleHero from "@/assets/m-circle.png";
-import fruitHero from "@/assets/m-fruit.png";
+import { loadState, todayKey, GAME_KEYS, type GameState, type GameKey } from "@/lib/storage";
+import { Monogram, DuckMark, DiverMark, BranchMark } from "@/components/art/Marks";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Cubicle Quest — Brain games with office flavor" },
-      { name: "description", content: "Four brain puzzles dressed up in corporate jargon. 2-3 minutes, real cognitive work, zero PowerPoint." },
+      { name: "description", content: "Three interactive brain puzzles wrapped in office jargon. Two-minute rounds, real cognitive work, zero PowerPoint." },
       { property: "og:title", content: "Cubicle Quest" },
-      { property: "og:description", content: "Logic, pattern, memory, spatial-math. Quirky office wrapper, real brain workout." },
+      { property: "og:description", content: "Logic, memory, spatial-math. Quirky office wrapper, real brain workout." },
     ],
   }),
   component: Hub,
@@ -30,126 +26,98 @@ function Hub() {
 
   const today = todayKey();
   const todaysGames = state.dailyDone.day === today ? state.dailyDone.games : [];
-  const isDone = (k: "ducks" | "connect" | "circle" | "fruit") => todaysGames.includes(k);
+  const isDone = (k: GameKey) => todaysGames.includes(k);
 
   return (
     <div className="min-h-screen">
-      <header>
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 pt-10 pb-6">
+      <header className="mx-auto max-w-5xl px-4 pt-12 pb-10">
+        <div className="flex items-start justify-between gap-8">
           <div className="flex-1">
-            <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Cubicle Quest</div>
-            <h1 className="mt-1 font-display text-4xl leading-tight md:text-5xl">The Daily Standup</h1>
-            <p className="mt-3 max-w-lg text-base text-muted-foreground">
-              Four bite-sized brain puzzles. Two minutes each. Real cognitive work, dressed up in office-speak.
+            <div className="flex items-center gap-2">
+              <span className="chip-gold">Cubicle Quest</span>
+              <span className="chip-muted">Daily Standup</span>
+            </div>
+            <h1 className="mt-5 font-display text-5xl leading-[1.05] tracking-tight md:text-6xl" style={{ color: "var(--cream)" }}>
+              A quiet, sharp<br/>
+              <em className="not-italic" style={{ color: "var(--gold)" }}>brain warm-up.</em>
+            </h1>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
+              Three live puzzles, dressed in office-speak. <em>Ducks in a Row, Deep Dive, Low-Hanging Fruit</em> —
+              each one a real cognitive workout in under three minutes.
             </p>
-            <div className="mt-4">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <StreakStamp count={state.streak.count} />
+              <Link to="/stats" className="pill-btn text-xs">View stats</Link>
             </div>
           </div>
-          <img
-            src={hubHero}
-            alt="Cubicle Quest mascot"
-            className="float-bob hidden h-40 w-40 object-contain md:block"
-          />
+          <div className="hidden md:block" style={{ color: "var(--gold)" }}>
+            <Monogram width={128} height={128} className="float-bob" />
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 pb-12">
+      <main className="mx-auto max-w-5xl px-4 pb-16">
         <section>
-          <div className="mb-4 flex items-baseline justify-between">
-            <h2 className="font-display text-lg">Today's puzzles</h2>
-            <Link to="/stats" className="text-sm text-toner hover:underline" style={{ color: "var(--toner)" }}>
-              Full stats →
-            </Link>
+          <div className="mb-5 flex items-end justify-between">
+            <h2 className="font-display text-2xl tracking-tight">Today's puzzles</h2>
+            <span className="chip-muted">{todaysGames.length}/{GAME_KEYS.length} done</span>
           </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <FolderTile
               to="/play/ducks"
               title="Ducks in a Row"
-              skill="Logic / deduction"
-              blurb="Arrange a row of ducks to satisfy a tangle of clues."
+              skill="Logic"
+              blurb="Arrange the ducks so every clue lights green — and survive the meeting interrupts."
               best={state.bestScores.ducks}
               done={isDone("ducks")}
-              image={ducksHero}
-              accent="ducks"
+              Mark={DuckMark}
             />
             <FolderTile
-              to="/play/connect"
-              title="Connect the Dots"
-              skill="Pattern recognition"
-              blurb="Sixteen tiles, four hidden groups of four. Decoys are mean."
-              best={state.bestScores.connect}
-              done={isDone("connect")}
-              image={connectHero}
-              accent="connect"
-            />
-            <FolderTile
-              to="/play/circle"
-              title="Circle Back"
-              skill="Memory / sequence"
-              blurb="Memorize the sticky-note sequence. Forward, backward, or swapped."
-              best={state.bestScores.circle}
-              done={isDone("circle")}
-              image={circleHero}
-              accent="circle"
+              to="/play/deepdive"
+              title="Deep Dive"
+              skill="Memory · Reaction"
+              blurb="Strata of a report scroll upward. Catch the one that matches the brief before it surfaces."
+              best={state.bestScores.deepdive}
+              done={isDone("deepdive")}
+              Mark={DiverMark}
             />
             <FolderTile
               to="/play/fruit"
               title="Low-Hanging Fruit"
-              skill="Spatial-math / optimization"
-              blurb="Pick low-reach fruits to hit the target. Reach costs points."
+              skill="Spatial-Math"
+              blurb="Pick fruits that hit the target. Reach costs points — and yes, fruit sometimes drops."
               best={state.bestScores.fruit}
               done={isDone("fruit")}
-              image={fruitHero}
-              accent="fruit"
+              Mark={BranchMark}
             />
           </div>
         </section>
 
-        <section className="mt-10">
-          <h2 className="mb-3 font-display text-xl uppercase tracking-wider">Skill rings</h2>
-          <div className="paper-card flex flex-wrap items-center justify-around gap-4 rounded-lg p-6">
+        <section className="mt-14">
+          <div className="mb-5 flex items-end justify-between">
+            <h2 className="font-display text-2xl tracking-tight">Skill rings</h2>
+            <span className="chip-muted">100 xp per level</span>
+          </div>
+          <div className="glass grain flex flex-wrap items-center justify-around gap-6 rounded-2xl p-8">
             <SkillRing label="Logic" xp={state.skillXp.logic} />
-            <SkillRing label="Pattern" xp={state.skillXp.pattern} />
             <SkillRing label="Memory" xp={state.skillXp.memory} />
             <SkillRing label="Spatial-Math" xp={state.skillXp.spatial} />
           </div>
         </section>
 
-        <section className="mt-10">
-          <div className="paper-card rounded-lg p-5">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h3 className="font-display text-lg uppercase tracking-wider">Daily Standup</h3>
-                <p className="text-sm text-muted-foreground">
-                  Finish all four games today to grow your streak. {todaysGames.length}/4 done.
-                </p>
-              </div>
-              <div className="flex gap-1">
-                {(["ducks", "connect", "circle", "fruit"] as const).map((k) => (
-                  <div
-                    key={k}
-                    className="h-3 w-8 rounded-sm"
-                    style={{ background: isDone(k) ? "var(--toner)" : "var(--muted)" }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         {state.achievements.length > 0 && (
-          <section className="mt-10">
-            <h2 className="mb-3 font-display text-xl uppercase tracking-wider">Achievements</h2>
+          <section className="mt-14">
+            <h2 className="mb-4 font-display text-2xl tracking-tight">Achievements</h2>
             <div className="flex flex-wrap gap-2">
               {state.achievements.map((a) => (
-                <span key={a} className="stamp text-xs">{a}</span>
+                <span key={a} className="chip-gold">{a}</span>
               ))}
             </div>
           </section>
         )}
 
-        <footer className="mt-12 border-t border-border pt-6 text-center text-xs text-muted-foreground">
+        <footer className="mt-16 pt-6 text-center text-xs text-muted-foreground">
+          <div className="gold-rule mb-6" />
           <Link to="/about" className="hover:text-foreground">About</Link>
           <span className="mx-2">·</span>
           <Link to="/stats" className="hover:text-foreground">Stats</Link>

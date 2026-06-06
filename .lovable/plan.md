@@ -1,61 +1,67 @@
-## Cubicle Quest — brain games wrapped in office-jargon flavor
+## Cubicle Quest v2 — Editorial Glass, 3 interactive games
 
-The mechanics are real cognitive puzzles. The office sayings are just the *names, art, and copy* — never the subject of the puzzle itself.
+Trim to three games, each with a corporate-jargon name that *is* the mechanic. Replace the flat cartoon look with a refined dark editorial aesthetic (Editorial Glass), slightly playful (vibe 4/5).
 
-### Visual direction
-- Paper-cream background, ink-black type, highlighter-yellow accent, toner-cyan secondary, stamp-red for streaks.
-- Display font: Archivo Black. Body: Hanken Grotesk. All tokens as `oklch` in `src/styles.css`.
-- Micro-interactions: sticky-note flips, rubber-stamp thuds. Restrained.
+### 1. The three games — jargon as mechanic
 
-### The four games (2–3 min rounds)
+**Ducks in a Row** — *Logic, live arrangement*
+A row of 5–8 ducks. Drag to swap; constraints (chips above the row) light **green when satisfied, red when violated** in real time. Twist: every ~8s, a "meeting interrupt" nudges one duck out of order — you have to keep recovering. Rounds end when all constraints stay green for 3s straight, or timer expires. Score = constraints solved + time bonus − interrupts suffered.
 
-1. **Ducks in a Row** — *Logic / deduction*
-   A row of 5–7 rubber ducks must satisfy written constraints ("the striped duck is not adjacent to the one wearing a tie", "the manager sits left of the intern"). Einstein-puzzle style. Drag ducks; live constraint checker; solve before the timer runs out. Difficulty scales by duck count and constraint density.
+**Deep Dive** — *Reaction + working memory*
+A vertical "stack of strata" scrolls slowly upward (think drilling through layers of a report). A clue panel at top updates every ~2s ("the layer tagged Q3", "the one with a chart icon", "the third blue one from the top"). Click the matching stratum before it scrolls off. Combo multiplier grows with depth; misclicks rocket you back to the surface. Live, continuous, not turn-based.
 
-2. **Connect the Dots** — *Pattern recognition*
-   16-tile grid of words/icons. Find 4 hidden groups of 4, Connections-style. Decoys deliberately overlap categories. 4 mistakes = round ends. Solve all four groups for a perfect.
+**Low-Hanging Fruit** — *Spatial-math optimization, live*
+A tree with numbered fruits at varying heights. Target shown ("sum to 23", "three primes", "product divisible by 12"). Each fruit has a **reach cost** = height. Tap to pick/unpick — running sum + total reach + a "you'd score X" preview update live. Fruits gently sway; every ~6s a random fruit drops (free pick, height cost = 0 for 2s). Hit "Lock in" to submit, or auto-submit on timeout.
 
-3. **Circle Back** — *Memory / sequence*
-   A 3×3 grid of sticky notes lights up in sequence with symbols. Round 1: replay forward. Round 2: replay reversed. Round 3: replay with one item swapped. Length grows each round, Simon-style with twists.
+Each round: 90–150s. Result card shows score, time, XP awarded to its skill ring (Logic / Memory / Spatial-Math). Remove Pattern from skill rings.
 
-4. **Low-Hanging Fruit** — *Spatial-math / optimization*
-   A tree fills with numbered fruits at different heights. Target shown ("sum to 17", "product divisible by 6", "three primes"). Pick the *lowest-reachable* valid subset before the timer ends. Higher fruits cost more "reach points" — optimization, not just math.
+### 2. Aesthetic — Editorial Glass
 
-Each game: 2–3 minute round, results screen with score breakdown + XP awarded to its skill ring.
+- **Palette** (oklch tokens in `src/styles.css`):
+  - `--bg` near-black `#0f1115`, `--surface` `#1b1f27`, `--text` cream `#e6e1d6`, `--muted` warm gray, `--accent` gold `#c9a84c`, `--danger` muted coral, `--ok` muted teal.
+- **Type**: Display = **Fraunces** (or Instrument Serif) for headings and numerals; Body = **Inter** for UI. Loaded via `<link>` in `__root.tsx`, declared in `@theme` (no CSS `@import` of URLs — see Tailwind v4 gotchas).
+- **Surfaces**: glass cards — `bg-white/5 backdrop-blur-xl border-white/10`, soft inner highlight, subtle SVG grain overlay at ~4% opacity. Gold hairline dividers. Generous whitespace.
+- **Motion**: restrained — ducks ease into slots, strata scroll with parallax, fruit sway via CSS keyframes. No bouncy cartoon wiggles.
+- **Illustration**: replace the 5 PNG cartoons with **gold line-art SVGs** drawn inline (single duck silhouette, diver helmet, branch with fruit, plus a small monogram mascot for the hub). Vector, themable, sharp at any size.
+- **Components**: chunky "duo-btn" → refined pill button with gold border + soft glow on hover. Tiles become glass panels with serif title + thin gold rule.
 
-### Hub & meta-layer
-- Landing page: 4 manila-folder tiles on a desk, each shows best score + skill it trains.
-- Skill rings: Logic, Pattern, Memory, Spatial-Math.
-- **Daily Standup**: one curated round of each → streak +1 (sticky-note stamp).
-- Quirky achievement names ("Synergy Slayer", "Inbox Zero", "Touched Grass") — flavor only, no office-content puzzles.
+### 3. Scope of file changes
 
-### Routes (TanStack Start)
-```
-src/routes/
-  __root.tsx
-  index.tsx              # hub
-  play.ducks.tsx
-  play.connect.tsx
-  play.circle.tsx
-  play.fruit.tsx
-  stats.tsx
-  about.tsx
-```
-Each route has its own `head()` meta.
+Frontend / presentation only.
 
-### Modules
-- `src/lib/puzzles/ducks.ts` — constraint generator + verifier
-- `src/lib/puzzles/connect.ts` — curated 16-tile boards with 4 groups (generic categories: animals, weather, music, sports, etc. — not office)
-- `src/lib/puzzles/circle.ts` — sequence generator + transform rules
-- `src/lib/puzzles/fruit.ts` — tree generator + target/feasibility checker
-- `src/lib/storage.ts` — typed localStorage (`cubicle-quest:v1`) for bestScores, skillXp, streak, achievements
-- `src/lib/scoring.ts` — shared scoring + XP
+**Edit**
+- `src/styles.css` — new palette, fonts, glass + grain utilities; drop pastel `.accent-*` and `.duo-btn` styling; rewrite `.tile-card` for glass.
+- `src/routes/__root.tsx` — Fraunces + Inter `<link>` tags.
+- `src/routes/index.tsx` — 3 tiles (drop Circle Back), refined hero, glass treatment.
+- `src/components/hub/FolderTile.tsx` — glass variant, inline SVG slot instead of `<img>`.
+- `src/components/hub/SkillRing.tsx` — drop Pattern; restyle.
+- `src/components/game/GameBanner.tsx` — glass header with serif tagline + inline SVG.
+- `src/components/game/GameShell.tsx`, `Timer.tsx`, `ResultCard.tsx` — restyle to new tokens.
+- `src/routes/play.ducks.tsx` — add live constraint chips + "interrupt" timer + continuous-solve win condition.
+- `src/routes/play.fruit.tsx` — add live running totals, sway, occasional free-drop event.
+- `src/routes/stats.tsx`, `about.tsx` — restyle, remove Circle Back / Pattern references.
+- `src/lib/storage.ts` — remove `circle` from bestScores/dailyDone, remove `pattern` xp (or keep field hidden for back-compat — TBD; simplest: migrate on load).
 
-### Components
-`GameShell`, `Timer`, `ScoreBadge`, `ResultCard`, `FolderTile`, `StreakStamp`, `SkillRing` + shadcn primitives.
+**Create**
+- `src/routes/play.deepdive.tsx` — new Deep Dive game.
+- `src/lib/puzzles/deepdive.ts` — strata + clue generator.
+- `src/components/art/` — inline SVG components: `DuckMark`, `DiverMark`, `BranchMark`, `Monogram`, `Grain`.
 
-### Out of scope (v1)
-Accounts, cloud sync, leaderboards, multiplayer, audio, PWA. All layerable later.
+**Delete**
+- `src/routes/play.circle.tsx`, `src/routes/play.connect.tsx`
+- `src/lib/puzzles/circle.ts`, `src/lib/puzzles/connect.ts`
+- `src/assets/m-*.png` (all 5 cartoon mascots), `src/assets/*-hero.png` if still present.
 
-### Success check
-All 4 games playable end-to-end with results + XP. Hub reflects real localStorage. Puzzle *content* is neutral — only names/art/copy reference office life.
+### 4. Technical notes
+
+- Tailwind v4: tokens in `@theme` inside `src/styles.css`; load Google Fonts via `<link>` in `__root.tsx`, never `@import` a URL.
+- Keep all state in `localStorage` via existing `src/lib/storage.ts` (with a small migration to drop `circle`/`connect` and `pattern`).
+- No backend, no new deps — Fraunces/Inter from Google Fonts CDN.
+
+### 5. Out of scope
+
+New games beyond the three above; sound; accounts; multiplayer; rewriting routing.
+
+### 6. Success check
+
+Hub shows 3 glass tiles + monogram, gold-on-dark editorial feel, serif headings. Each game is continuously interactive (live feedback, not a single submit). Old Circle Back / Connect routes and PNG mascots are gone. Build is clean.
