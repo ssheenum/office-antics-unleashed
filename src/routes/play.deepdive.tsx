@@ -13,7 +13,7 @@ export const Route = createFileRoute("/play/deepdive")({
   head: () => ({
     meta: [
       { title: "Deep Dive — Cubicle Quest" },
-      { name: "description", content: "Strata of a report scroll upward. Catch the one that matches the brief before it surfaces." },
+      { name: "description", content: "Sea creatures drift up from the deep. Tap the one matching the hunt before it slips past the surf." },
     ],
   }),
   component: DeepDive,
@@ -159,7 +159,7 @@ function DeepDive() {
       <GameBanner
         Mark={DiverMark}
         eyebrow="Live reaction"
-        tagline="Strata of the report surface from below. Catch the one matching the brief before it floats off the top."
+        tagline="Creatures drift up from the dark. Tap the one matching the hunt before it slips past the surf."
       />
 
       {!done && (
@@ -175,7 +175,7 @@ function DeepDive() {
               background: "linear-gradient(to bottom, color-mix(in oklab, var(--ink) 90%, transparent), transparent)",
             }} />
             <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center pt-2">
-              <span className="chip-muted">surface</span>
+              <span className="chip-muted">surf</span>
             </div>
 
             {strata.map((s) => (
@@ -183,7 +183,7 @@ function DeepDive() {
             ))}
 
             {/* Depth gauge on right */}
-            <div className="pointer-events-none absolute bottom-2 right-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">depth ↓</div>
+            <div className="pointer-events-none absolute bottom-2 right-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">deeper ↓</div>
           </div>
         </>
       )}
@@ -263,7 +263,7 @@ function Strat({ stratum, y, onClick, highlight }: { stratum: Stratum; y: number
         <span className="font-display text-xl tracking-tight" style={{ color: "var(--cream)" }}>{stratum.tag}</span>
       </div>
       <span className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "color-mix(in oklab, var(--cream) 70%, transparent)" }}>
-        layer #{stratum.id}
+        #{stratum.id}
       </span>
     </button>
   );
