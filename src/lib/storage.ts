@@ -63,8 +63,8 @@ export const GAME_LABEL: Record<GameKey, string> = {
 
 export const SKILL_LABEL: Record<SkillKey, string> = {
   logic: "Logic",
-  memory: "Memory",
-  spatial: "Spatial-Math",
+  memory: "Reaction",
+  spatial: "Reflex",
 };
 
 export const GAME_KEYS: GameKey[] = ["ducks", "deepdive", "fruit"];
@@ -88,9 +88,9 @@ export function recordRound(game: GameKey, score: number, xpGain: number): GameS
   }
 
   const earn = (id: string) => { if (!s.achievements.includes(id)) s.achievements.push(id); };
-  if (s.bestScores.ducks >= 800) earn("Synergy Slayer");
-  if (s.bestScores.deepdive >= 600) earn("Deep End");
-  if (s.bestScores.fruit >= 500) earn("Inbox Zero");
+  if (s.bestScores.ducks >= 800) earn("All Aligned");
+  if (s.bestScores.deepdive >= 600) earn("Koi Whisperer");
+  if (s.bestScores.fruit >= 500) earn("Basket Wizard");
   if (s.streak.count >= 3) earn("Touched Grass");
 
   saveState(s);
