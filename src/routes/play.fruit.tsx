@@ -24,7 +24,8 @@ const DROP_INTERVAL = 7000;
 const DROP_DURATION = 2200;
 
 function FruitGame() {
-  const [puzzle, setPuzzle] = useState<Puzzle>(() => generate());
+  const [level, setLevel] = useState(1);
+  const [puzzle, setPuzzle] = useState<Puzzle>(() => generate(1));
   const [picked, setPicked] = useState<number[]>([]);
   const [score, setScore] = useState(0);
   const [rounds, setRounds] = useState(0);
@@ -41,22 +42,23 @@ function FruitGame() {
   );
   const sum = pickedFruits.reduce((s, f) => s + f.value, 0);
   const ok = check(puzzle.target, pickedFruits);
-  const previewScore = ok ? Math.max(20, 80 - (reach - puzzle.target.size) * 6) : 0;
+  const previewScore = ok ? Math.max(20, 80 + level * 10 - (reach - puzzle.target.size) * 6) : 0;
 
-  // Free-drop event
+  // Free-drop event — gets rarer as level rises
   useEffect(() => {
     if (done) return;
+    const interval = Math.max(4500, DROP_INTERVAL + (level - 1) * 600);
     const t = setInterval(() => {
       const f = puzzle.fruits[Math.floor(Math.random() * puzzle.fruits.length)];
       setDroppedId(f.id);
       if (dropTimer.current) clearTimeout(dropTimer.current);
       dropTimer.current = setTimeout(() => setDroppedId(null), DROP_DURATION);
-    }, DROP_INTERVAL);
+    }, interval);
     return () => {
       clearInterval(t);
       if (dropTimer.current) clearTimeout(dropTimer.current);
     };
-  }, [puzzle, done]);
+  }, [puzzle, done, level]);
 
   function toggle(f: Fruit) {
     if (done) return;
@@ -71,7 +73,9 @@ function FruitGame() {
       setRounds((r) => r + 1);
       setFlash("good");
       setTimeout(() => setFlash(null), 350);
-      setPuzzle(generate());
+      const next = level + 1;
+      setLevel(next);
+      setPuzzle(generate(next));
       setPicked([]);
       setDroppedId(null);
     } else {
@@ -90,7 +94,8 @@ function FruitGame() {
   }
 
   function reset() {
-    setPuzzle(generate());
+    setLevel(1);
+    setPuzzle(generate(1));
     setPicked([]);
     setScore(0);
     setRounds(0);
