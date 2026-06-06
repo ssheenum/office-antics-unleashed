@@ -157,6 +157,7 @@ function Connect() {
             </button>
           </div>
         </div>
+        </>
       )}
 
       {done && (
