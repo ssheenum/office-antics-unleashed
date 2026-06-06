@@ -52,35 +52,38 @@ export function reachCost(fruits: Fruit[]): number {
   return fruits.reduce((s, f) => s + (f.row + 1), 0);
 }
 
-export function generate(): Puzzle {
-  // 4 rows x 4 cols grid
+export function generate(level: number = 1): Puzzle {
+  // Difficulty: size 3 → 5, value range widens, kinds unlock with level
+  const size = Math.min(5, 3 + Math.floor((level - 1) / 2));
+  const maxVal = 9 + Math.min(15, level * 2);
   const fruits: Fruit[] = [];
   let id = 0;
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
-      const v = 1 + Math.floor(Math.random() * 19);
+      const v = 1 + Math.floor(Math.random() * maxVal);
       fruits.push({ id: id++, value: v, row, col });
     }
   }
-  // pick target type
-  const kinds: Target["kind"][] = ["sum", "product-div", "all-prime", "all-even"];
+  const kinds: Target["kind"][] =
+    level <= 1 ? ["sum", "all-even"] :
+    level <= 3 ? ["sum", "all-even", "all-prime"] :
+    ["sum", "product-div", "all-prime", "all-even"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
   let target: Target;
-  const size = 3;
   if (kind === "sum") {
-    // pick 3 random low-row fruits to be a guaranteed solution
-    const low = fruits.filter((f) => f.row <= 1).sort(() => Math.random() - 0.5).slice(0, 3);
+    const maxRow = Math.min(3, 1 + Math.floor(level / 3));
+    const low = fruits.filter((f) => f.row <= maxRow).sort(() => Math.random() - 0.5).slice(0, size);
     const n = low.reduce((s, f) => s + f.value, 0);
     target = { kind: "sum", n, size };
   } else if (kind === "product-div") {
-    target = { kind: "product-div", div: [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)], size };
+    const divs = level >= 5 ? [2, 3, 4, 5, 6, 7, 8, 9] : [2, 3, 4, 5, 6];
+    target = { kind: "product-div", div: divs[Math.floor(Math.random() * divs.length)], size };
   } else if (kind === "all-prime") {
-    // ensure at least 3 primes exist in lower rows; if not, plant some
     const primeVals = [2, 3, 5, 7, 11, 13];
     let count = fruits.filter((f) => f.row <= 2 && isPrime(f.value)).length;
-    if (count < 3) {
+    if (count < size) {
       const lows = fruits.filter((f) => f.row <= 1);
-      for (let i = 0; count < 3 && i < lows.length; i++) {
+      for (let i = 0; count < size && i < lows.length; i++) {
         lows[i].value = primeVals[Math.floor(Math.random() * primeVals.length)];
         count++;
       }
@@ -88,9 +91,9 @@ export function generate(): Puzzle {
     target = { kind: "all-prime", size };
   } else {
     let count = fruits.filter((f) => f.row <= 2 && f.value % 2 === 0).length;
-    if (count < 3) {
+    if (count < size) {
       const lows = fruits.filter((f) => f.row <= 1);
-      for (let i = 0; count < 3 && i < lows.length; i++) {
+      for (let i = 0; count < size && i < lows.length; i++) {
         lows[i].value = 2 + 2 * Math.floor(Math.random() * 9);
         count++;
       }

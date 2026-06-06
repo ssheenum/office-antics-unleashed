@@ -23,73 +23,84 @@ const DURATION = 90;
 const POOL_HEIGHT = 460;
 const STRATUM_HEIGHT = 64;
 const STRATUM_GAP = 12;
-const SCROLL_SPEED = 60; // px/sec
-const SPAWN_EVERY = 1300; // ms
-const BRIEF_TIMEOUT = 6000; // ms — brief refreshes if no match
+
+// Difficulty ramps with elapsed seconds (0 → DURATION)
+function rampSpeed(elapsed: number) { return 55 + Math.min(95, elapsed * 1.8); } // px/sec
+function rampSpawn(elapsed: number) { return Math.max(550, 1400 - elapsed * 12); } // ms
+function rampBriefTimeout(elapsed: number) { return Math.max(2800, 6500 - elapsed * 45); } // ms
+
+interface LiveStratum extends Stratum { y: number; }
 
 function DeepDive() {
   const [done, setDone] = useState<null | { secondsLeft: number }>(null);
   const [secondsLeft, setSecondsLeft] = useState(DURATION);
-  const [strata, setStrata] = useState<Stratum[]>([]);
+  const [strata, setStrata] = useState<LiveStratum[]>([]);
   const [brief, setBrief] = useState<Brief>(() => newBrief());
-  const [briefSetAt, setBriefSetAt] = useState(() => performance.now());
+  const briefSetAtRef = useRef<number>(performance.now());
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
   const [flash, setFlash] = useState<"good" | "bad" | null>(null);
-  const [now, setNow] = useState(() => performance.now());
 
-  // RAF tick for "now" (drives scroll positions)
+  const elapsed = DURATION - secondsLeft;
+  const speed = rampSpeed(elapsed);
+
+  // RAF: integrate stratum positions, cull off-screen, auto-miss matches, refresh stale brief
+  const lastTimeRef = useRef<number>(performance.now());
   useEffect(() => {
     if (done) return;
     let raf = 0;
-    const loop = () => {
-      setNow(performance.now());
+    const loop = (t: number) => {
+      const dt = (t - lastTimeRef.current) / 1000;
+      lastTimeRef.current = t;
+      const curSpeed = rampSpeed(DURATION - secondsLeft);
+      setStrata((list) => {
+        let autoMiss = 0;
+        const next: LiveStratum[] = [];
+        for (const s of list) {
+          const ny = s.y - curSpeed * dt;
+          if (ny + STRATUM_HEIGHT < 0) {
+            if (matches(s, brief)) autoMiss++;
+          } else {
+            next.push({ ...s, y: ny });
+          }
+        }
+        if (autoMiss > 0) {
+          setCombo(0);
+          setScore((sc) => Math.max(0, sc - 8 * autoMiss));
+          setMisses((m) => m + autoMiss);
+        }
+        return next;
+      });
+      // brief stale check
+      const briefTimeout = rampBriefTimeout(DURATION - secondsLeft);
+      if (t - briefSetAtRef.current > briefTimeout) {
+        setBrief(newBrief());
+        briefSetAtRef.current = t;
+      }
       raf = requestAnimationFrame(loop);
     };
+    lastTimeRef.current = performance.now();
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [done]);
+  }, [done, brief, secondsLeft]);
 
-  // Spawn strata
+  // Spawn strata — interval scales with elapsed; re-arm whenever cadence changes meaningfully
+  const spawnBucket = Math.floor(elapsed / 5); // re-arm every 5s of elapsed time
   useEffect(() => {
     if (done) return;
-    const spawn = () => setStrata((s) => [...s, spawnStratum(performance.now())]);
+    const interval = rampSpawn(DURATION - secondsLeft);
+    const spawn = () => {
+      const s = spawnStratum(performance.now());
+      setStrata((list) => [...list, { ...s, y: POOL_HEIGHT }]);
+    };
     spawn();
-    const t = setInterval(spawn, SPAWN_EVERY);
+    const t = setInterval(spawn, interval);
     return () => clearInterval(t);
-  }, [done]);
-
-  // Cull off-screen + auto-miss if a matching stratum scrolls off without click
-  useEffect(() => {
-    setStrata((list) => {
-      const alive: Stratum[] = [];
-      let autoMiss = 0;
-      for (const s of list) {
-        const y = POOL_HEIGHT - ((now - s.spawnAt) / 1000) * SCROLL_SPEED;
-        if (y + STRATUM_HEIGHT < 0) {
-          if (matches(s, brief)) autoMiss++;
-        } else {
-          alive.push(s);
-        }
-      }
-      if (autoMiss > 0) {
-        setCombo(0);
-        setScore((sc) => Math.max(0, sc - 8 * autoMiss));
-        setMisses((m) => m + autoMiss);
-        // brief stays — next matching stratum can still satisfy
-      }
-      return alive;
-    });
-    // refresh brief if stale
-    if (now - briefSetAt > BRIEF_TIMEOUT) {
-      setBrief(newBrief());
-      setBriefSetAt(now);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [now]);
+  }, [done, spawnBucket]);
 
   function clickStratum(s: Stratum) {
     if (done) return;
@@ -104,7 +115,7 @@ function DeepDive() {
       setFlash("good");
       setTimeout(() => setFlash(null), 200);
       setBrief(newBrief());
-      setBriefSetAt(performance.now());
+      briefSetAtRef.current = performance.now();
     } else {
       setScore((sc) => Math.max(0, sc - 12));
       setCombo(0);
@@ -125,7 +136,7 @@ function DeepDive() {
     setSecondsLeft(DURATION);
     setStrata([]);
     setBrief(newBrief());
-    setBriefSetAt(performance.now());
+    briefSetAtRef.current = performance.now();
     setScore(0);
     setCombo(0);
     setMaxCombo(0);
@@ -139,6 +150,7 @@ function DeepDive() {
       skill="Memory · Reaction"
       rightSlot={
         <div className="flex items-center gap-4">
+          <span className="chip-gold">{Math.round(speed)} px/s</span>
           <div className="font-display tabular-nums" style={{ color: "var(--gold)" }}>Score {score}</div>
           <Timer seconds={DURATION} running={!done} onExpire={finish} onTick={setSecondsLeft} />
         </div>
@@ -166,12 +178,9 @@ function DeepDive() {
               <span className="chip-muted">surface</span>
             </div>
 
-            {strata.map((s) => {
-              const y = POOL_HEIGHT - ((now - s.spawnAt) / 1000) * SCROLL_SPEED;
-              return (
-                <Strat key={s.id} stratum={s} y={y} onClick={() => clickStratum(s)} highlight={matches(s, brief)} />
-              );
-            })}
+            {strata.map((s) => (
+              <Strat key={s.id} stratum={s} y={s.y} onClick={() => clickStratum(s)} highlight={matches(s, brief)} />
+            ))}
 
             {/* Depth gauge on right */}
             <div className="pointer-events-none absolute bottom-2 right-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">depth ↓</div>
