@@ -4,11 +4,11 @@ import { FolderTile } from "@/components/hub/FolderTile";
 import { SkillRing } from "@/components/hub/SkillRing";
 import { StreakStamp } from "@/components/hub/StreakStamp";
 import { loadState, todayKey, type GameState } from "@/lib/storage";
-import hubHero from "@/assets/hub-hero.png";
-import ducksHero from "@/assets/ducks-hero.png";
-import connectHero from "@/assets/connect-hero.png";
-import circleHero from "@/assets/circle-hero.png";
-import fruitHero from "@/assets/fruit-hero.png";
+import hubHero from "@/assets/m-hub.png";
+import ducksHero from "@/assets/m-ducks.png";
+import connectHero from "@/assets/m-connect.png";
+import circleHero from "@/assets/m-circle.png";
+import fruitHero from "@/assets/m-fruit.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -71,7 +71,7 @@ function Hub() {
               best={state.bestScores.ducks}
               done={isDone("ducks")}
               image={ducksHero}
-              theme="ducks"
+              accent="ducks"
             />
             <FolderTile
               to="/play/connect"
@@ -81,7 +81,7 @@ function Hub() {
               best={state.bestScores.connect}
               done={isDone("connect")}
               image={connectHero}
-              theme="connect"
+              accent="connect"
             />
             <FolderTile
               to="/play/circle"
@@ -91,7 +91,7 @@ function Hub() {
               best={state.bestScores.circle}
               done={isDone("circle")}
               image={circleHero}
-              theme="circle"
+              accent="circle"
             />
             <FolderTile
               to="/play/fruit"
@@ -101,7 +101,7 @@ function Hub() {
               best={state.bestScores.fruit}
               done={isDone("fruit")}
               image={fruitHero}
-              theme="fruit"
+              accent="fruit"
             />
           </div>
         </section>

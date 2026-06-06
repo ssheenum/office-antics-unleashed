@@ -6,7 +6,7 @@ import { ResultCard } from "@/components/game/ResultCard";
 import { generateRound, getSymbol, type Round } from "@/lib/puzzles/circle";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
-import circleHero from "@/assets/circle-hero.png";
+import circleHero from "@/assets/m-circle.png";
 
 export const Route = createFileRoute("/play/circle")({
   head: () => ({
@@ -94,7 +94,7 @@ function Circle() {
       skill="Memory"
       rightSlot={<div className="font-display tabular-nums">Score {score}</div>}
     >
-      <GameBanner image={circleHero} theme="circle" tagline="Circle back — watch the sticky notes, then replay the sequence. Sometimes backwards." />
+      <GameBanner image={circleHero} accent="circle" tagline="Circle back — watch the sticky notes, then replay the sequence. Sometimes backwards." />
       <div className="paper-card rounded-lg p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
