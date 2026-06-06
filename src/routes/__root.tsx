@@ -22,7 +22,7 @@ function NotFoundComponent() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
-          <Link to="/" className="pill-btn pill-btn-gold">Back to the hub</Link>
+          <Link to="/" className="pill-btn pill-btn-sky">Back to the pond</Link>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="font-display text-2xl">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">Try refreshing, or head back home.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="pill-btn pill-btn-gold">Try again</button>
+          <button onClick={() => { router.invalidate(); reset(); }} className="pill-btn pill-btn-sky">Try again</button>
           <a href="/" className="pill-btn">Hub</a>
         </div>
       </div>
@@ -55,8 +55,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cubicle Quest — Brain games with office flavor" },
-      { name: "description", content: "Three interactive brain games dressed in office jargon. Real cognitive work, two-minute rounds." },
+      { title: "Cubicle Quest — A sunny little pond of brain games" },
+      { name: "description", content: "Three quick, fun brain games: line up rubber ducks, catch koi in a pond, and grab fruit with a basket. Two-minute rounds, gentle daily streak." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -64,7 +64,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
