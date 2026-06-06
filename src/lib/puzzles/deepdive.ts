@@ -1,5 +1,5 @@
-// Deep Dive — strata scroll upward; click the one matching the live brief.
-export type StratumTag = "Q1" | "Q2" | "Q3" | "Q4" | "FY";
+// Deep Dive — sea creatures rise from the depths; tap the one matching the current hunt.
+export type StratumTag = "FISH" | "CRAB" | "EEL" | "RAY" | "ORCA";
 export type StratumIcon = "chart" | "doc" | "bug" | "star" | "flag";
 export type StratumTone = "indigo" | "teal" | "amber" | "rose" | "violet";
 
@@ -16,16 +16,16 @@ export type Brief =
   | { kind: "icon"; icon: StratumIcon; label: string }
   | { kind: "tone"; tone: StratumTone; label: string };
 
-const TAGS: StratumTag[] = ["Q1", "Q2", "Q3", "Q4", "FY"];
+const TAGS: StratumTag[] = ["FISH", "CRAB", "EEL", "RAY", "ORCA"];
 const ICONS: StratumIcon[] = ["chart", "doc", "bug", "star", "flag"];
 const TONES: StratumTone[] = ["indigo", "teal", "amber", "rose", "violet"];
 
 const ICON_LABEL: Record<StratumIcon, string> = {
-  chart: "chart", doc: "doc", bug: "bug", star: "star", flag: "flag",
+  chart: "wave", doc: "shell", bug: "kraken", star: "starfish", flag: "anchor",
 };
 
 const TONE_LABEL: Record<StratumTone, string> = {
-  indigo: "indigo", teal: "teal", amber: "amber", rose: "rose", violet: "violet",
+  indigo: "deep-sea", teal: "lagoon", amber: "sunlit", rose: "coral", violet: "twilight",
 };
 
 export const TONE_HEX: Record<StratumTone, string> = {
@@ -54,14 +54,14 @@ export function newBrief(): Brief {
   const kind = Math.floor(Math.random() * 3);
   if (kind === 0) {
     const tag = pick(TAGS);
-    return { kind: "tag", tag, label: `tagged ${tag}` };
+    return { kind: "tag", tag, label: `a ${tag}` };
   }
   if (kind === 1) {
     const icon = pick(ICONS);
-    return { kind: "icon", icon, label: `${ICON_LABEL[icon]} layer` };
+    return { kind: "icon", icon, label: `${ICON_LABEL[icon]} marker` };
   }
   const tone = pick(TONES);
-  return { kind: "tone", tone, label: `${TONE_LABEL[tone]} stratum` };
+  return { kind: "tone", tone, label: `${TONE_LABEL[tone]} glow` };
 }
 
 export function matches(s: Stratum, b: Brief): boolean {
