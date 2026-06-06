@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlayFruitRouteImport } from './routes/play.fruit'
 import { Route as PlayDucksRouteImport } from './routes/play.ducks'
+import { Route as PlayDeepdiveRouteImport } from './routes/play.deepdive'
 
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
@@ -40,11 +41,17 @@ const PlayDucksRoute = PlayDucksRouteImport.update({
   path: '/play/ducks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayDeepdiveRoute = PlayDeepdiveRouteImport.update({
+  id: '/play/deepdive',
+  path: '/play/deepdive',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
+  '/play/deepdive': typeof PlayDeepdiveRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
+  '/play/deepdive': typeof PlayDeepdiveRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
@@ -60,21 +68,42 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
+  '/play/deepdive': typeof PlayDeepdiveRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/stats'
+    | '/play/deepdive'
+    | '/play/ducks'
+    | '/play/fruit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
-  id: '__root__' | '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
+  to:
+    | '/'
+    | '/about'
+    | '/stats'
+    | '/play/deepdive'
+    | '/play/ducks'
+    | '/play/fruit'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/stats'
+    | '/play/deepdive'
+    | '/play/ducks'
+    | '/play/fruit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   StatsRoute: typeof StatsRoute
+  PlayDeepdiveRoute: typeof PlayDeepdiveRoute
   PlayDucksRoute: typeof PlayDucksRoute
   PlayFruitRoute: typeof PlayFruitRoute
 }
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayDucksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/deepdive': {
+      id: '/play/deepdive'
+      path: '/play/deepdive'
+      fullPath: '/play/deepdive'
+      preLoaderRoute: typeof PlayDeepdiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -123,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   StatsRoute: StatsRoute,
+  PlayDeepdiveRoute: PlayDeepdiveRoute,
   PlayDucksRoute: PlayDucksRoute,
   PlayFruitRoute: PlayFruitRoute,
 }
