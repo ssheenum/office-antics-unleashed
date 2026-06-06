@@ -22,7 +22,8 @@ export function Timer({
     }
     const t = setTimeout(() => setLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [left, running, onExpire, onTick]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [left, running]);
   const pct = Math.max(0, Math.min(100, (left / seconds) * 100));
   const color = left < 15 ? "var(--stamp)" : "var(--toner)";
   return (
