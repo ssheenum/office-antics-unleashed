@@ -19,19 +19,31 @@ export const Route = createFileRoute("/play/ducks")({
   component: Ducks,
 });
 
-const DURATION = 150;
+const DURATION = 180;
 const HOLD_TO_WIN_MS = 3000;
-const INTERRUPT_EVERY = 9000;
+
+function difficulty(level: number) {
+  // Scale: ducks 4→7, interrupts speed up
+  const n = Math.min(7, 4 + Math.floor((level - 1) / 2));
+  const interruptEvery = Math.max(4500, 11000 - (level - 1) * 1200);
+  return { n, interruptEvery };
+}
 
 function Ducks() {
-  const [puzzle, setPuzzle] = useState<Puzzle>(() => generate(6));
+  const [level, setLevel] = useState(1);
+  const [puzzle, setPuzzle] = useState<Puzzle>(() => generate(difficulty(1).n));
   const [order, setOrder] = useState<(Duck | null)[]>(() => puzzle.ducks.slice());
   const [picked, setPicked] = useState<Duck | null>(null);
-  const [done, setDone] = useState<null | { won: boolean; secondsLeft: number }>(null);
+  const [done, setDone] = useState<null | { secondsLeft: number; cleared: number }>(null);
   const [secondsLeft, setSecondsLeft] = useState(DURATION);
   const [interrupts, setInterrupts] = useState(0);
+  const [totalInterrupts, setTotalInterrupts] = useState(0);
   const [holdMs, setHoldMs] = useState(0);
   const [flash, setFlash] = useState<number | null>(null);
+  const [runScore, setRunScore] = useState(0);
+  const [cleared, setCleared] = useState(0);
+
+  const { interruptEvery } = difficulty(level);
 
   const constraintsMet = useMemo(
     () => puzzle.constraints.map((c) => checkConstraint(order, c)),
@@ -56,10 +68,10 @@ function Ducks() {
     return () => cancelAnimationFrame(raf);
   }, [allMet, done]);
 
-  // Win when held long enough
+  // Advance level when held long enough
   useEffect(() => {
     if (done) return;
-    if (holdMs >= HOLD_TO_WIN_MS) finish(true);
+    if (holdMs >= HOLD_TO_WIN_MS) advance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [holdMs, done]);
 
@@ -78,11 +90,12 @@ function Ducks() {
         return n;
       });
       setInterrupts((n) => n + 1);
+      setTotalInterrupts((n) => n + 1);
       setFlash(Date.now());
       setTimeout(() => setFlash(null), 600);
-    }, INTERRUPT_EVERY);
+    }, interruptEvery);
     return () => clearInterval(t);
-  }, [done]);
+  }, [done, interruptEvery]);
 
   function place(slot: number) {
     if (done) return;
@@ -100,31 +113,45 @@ function Ducks() {
   }
 
   function reset() {
-    const p = generate(6);
+    setLevel(1);
+    const p = generate(difficulty(1).n);
     setPuzzle(p);
     setOrder(p.ducks.slice());
     setPicked(null);
     setDone(null);
     setSecondsLeft(DURATION);
     setInterrupts(0);
+    setTotalInterrupts(0);
     setHoldMs(0);
+    setRunScore(0);
+    setCleared(0);
   }
 
-  function finish(won: boolean) {
+  function advance() {
+    const gain = 400 + puzzle.constraints.length * 35 + level * 50 - interrupts * 8;
+    setRunScore((s) => s + Math.max(50, gain));
+    setCleared((c) => c + 1);
+    const next = level + 1;
+    setLevel(next);
+    const p = generate(difficulty(next).n);
+    setPuzzle(p);
+    setOrder(p.ducks.slice());
+    setPicked(null);
+    setHoldMs(0);
+    setInterrupts(0);
+  }
+
+  function finish(_won: boolean) {
     if (done) return;
-    const bonus = won ? timeBonus(secondsLeft, 4) : 0;
-    const base = won ? 500 + puzzle.constraints.length * 40 : metCount * 30;
-    const score = Math.max(0, base + bonus - interrupts * 10);
-    recordRound("ducks", score, xpFromScore(score));
-    setDone({ won, secondsLeft });
+    const partial = metCount * 25;
+    const final = Math.max(0, runScore + partial + timeBonus(secondsLeft, 2));
+    recordRound("ducks", final, xpFromScore(final));
+    setDone({ secondsLeft, cleared });
   }
 
-  const score = done
-    ? Math.max(
-        0,
-        (done.won ? 500 + puzzle.constraints.length * 40 + timeBonus(done.secondsLeft, 4) : metCount * 30) -
-          interrupts * 10,
-      )
+  const liveScore = runScore + (allMet ? 0 : metCount * 25);
+  const finalScore = done
+    ? Math.max(0, runScore + metCount * 25 + timeBonus(done.secondsLeft, 2))
     : 0;
 
   return (
