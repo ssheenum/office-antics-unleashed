@@ -34,13 +34,13 @@ function Hub() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-6">
+      <header>
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 pt-10 pb-6">
           <div className="flex-1">
-            <div className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Cubicle Quest</div>
-            <h1 className="font-display text-4xl leading-none md:text-5xl">The Daily Standup</h1>
-            <p className="mt-3 max-w-lg text-sm text-foreground/80">
-              Four brain puzzles wrapped in office-speak. Mechanics are real cognitive work — the jargon's just decoration.
+            <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Cubicle Quest</div>
+            <h1 className="mt-1 font-display text-4xl leading-tight md:text-5xl">The Daily Standup</h1>
+            <p className="mt-3 max-w-lg text-base text-muted-foreground">
+              Four bite-sized brain puzzles. Two minutes each. Real cognitive work, dressed up in office-speak.
             </p>
             <div className="mt-4">
               <StreakStamp count={state.streak.count} />
@@ -48,16 +48,16 @@ function Hub() {
           </div>
           <img
             src={hubHero}
-            alt="Cubicle Quest mascot — a smiling manila folder character"
-            className="wiggle hidden h-48 w-48 object-contain md:block"
+            alt="Cubicle Quest mascot"
+            className="float-bob hidden h-40 w-40 object-contain md:block"
           />
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 pb-12">
         <section>
-          <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="font-display text-xl uppercase tracking-wider">Pick a folder</h2>
+          <div className="mb-4 flex items-baseline justify-between">
+            <h2 className="font-display text-lg">Today's puzzles</h2>
             <Link to="/stats" className="text-sm text-toner hover:underline" style={{ color: "var(--toner)" }}>
               Full stats →
             </Link>
