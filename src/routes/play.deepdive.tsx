@@ -23,9 +23,11 @@ const DURATION = 90;
 const POOL_HEIGHT = 460;
 const STRATUM_HEIGHT = 64;
 const STRATUM_GAP = 12;
-const SCROLL_SPEED = 60; // px/sec
-const SPAWN_EVERY = 1300; // ms
-const BRIEF_TIMEOUT = 6000; // ms — brief refreshes if no match
+
+// Difficulty ramps with elapsed seconds (0 → DURATION)
+function rampSpeed(elapsed: number) { return 55 + Math.min(95, elapsed * 1.8); } // px/sec
+function rampSpawn(elapsed: number) { return Math.max(550, 1400 - elapsed * 12); } // ms
+function rampBriefTimeout(elapsed: number) { return Math.max(2800, 6500 - elapsed * 45); } // ms
 
 function DeepDive() {
   const [done, setDone] = useState<null | { secondsLeft: number }>(null);
