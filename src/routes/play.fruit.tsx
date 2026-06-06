@@ -96,6 +96,7 @@ function FruitGame() {
         </div>
       }
     >
+      <GameBanner image={fruitHero} theme="fruit" tagline="Low-hanging fruit pays best — hit the target with the least reach." />
       {!done && (
         <div className="paper-card rounded-lg p-5">
           <div className="mb-4 flex items-center justify-between">

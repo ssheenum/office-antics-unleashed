@@ -94,6 +94,7 @@ function Circle() {
       skill="Memory"
       rightSlot={<div className="font-display tabular-nums">Score {score}</div>}
     >
+      <GameBanner image={circleHero} theme="circle" tagline="Circle back — watch the sticky notes, then replay the sequence. Sometimes backwards." />
       <div className="paper-card rounded-lg p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
