@@ -25,7 +25,7 @@ function FruitGame() {
   const [score, setScore] = useState(0);
   const [rounds, setRounds] = useState(0);
   const [done, setDone] = useState<null | { secondsLeft: number }>(null);
-  const [secondsLeft] = useState(DURATION);
+  const [secondsLeft, setSecondsLeft] = useState(DURATION);
   const [flash, setFlash] = useState<"good" | "bad" | null>(null);
 
   const pickedFruits = useMemo(() => puzzle.fruits.filter((f) => picked.includes(f.id)), [puzzle, picked]);
@@ -90,7 +90,7 @@ function FruitGame() {
       rightSlot={
         <div className="flex items-center gap-4">
           <div className="font-display tabular-nums">Score {score}</div>
-          <Timer seconds={DURATION} running={!done} onExpire={timeUp} />
+          <Timer seconds={DURATION} running={!done} onExpire={timeUp} onTick={setSecondsLeft} />
         </div>
       }
     >

@@ -27,7 +27,7 @@ function Connect() {
   const [solved, setSolved] = useState<Group[]>([]);
   const [mistakes, setMistakes] = useState(0);
   const [done, setDone] = useState<null | { won: boolean; secondsLeft: number }>(null);
-  const [secondsLeft] = useState(DURATION);
+  const [secondsLeft, setSecondsLeft] = useState(DURATION);
   const [shake, setShake] = useState(false);
 
   const remaining = useMemo(() => tiles.filter((t) => !solved.some((g) => g.words.includes(t))), [tiles, solved]);
@@ -92,7 +92,7 @@ function Connect() {
     <GameShell
       title="Connect the Dots"
       skill="Pattern"
-      rightSlot={<Timer seconds={DURATION} running={!done} onExpire={timeUp} />}
+      rightSlot={<Timer seconds={DURATION} running={!done} onExpire={timeUp} onTick={setSecondsLeft} />}
     >
       {!done && (
         <div className="paper-card rounded-lg p-5">
