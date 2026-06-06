@@ -106,6 +106,7 @@ function Ducks() {
           seconds={DURATION}
           running={!done}
           onExpire={timeUp}
+          onTick={setSecondsLeft}
         />
       }
     >
