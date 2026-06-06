@@ -159,7 +159,10 @@ function Ducks() {
       title="Ducks in a Row"
       skill="Logic"
       rightSlot={
-        <Timer seconds={DURATION} running={!done} onExpire={() => finish(false)} onTick={setSecondsLeft} />
+        <div className="flex items-center gap-4">
+          <div className="font-display tabular-nums" style={{ color: "var(--gold)" }}>Score {liveScore}</div>
+          <Timer seconds={DURATION} running={!done} onExpire={() => finish(false)} onTick={setSecondsLeft} />
+        </div>
       }
     >
       {!done && (
@@ -167,13 +170,19 @@ function Ducks() {
           <GameBanner
             Mark={DuckMark}
             eyebrow="Live deduction"
-            tagline="Get every duck in line. Keep every clue green for three seconds straight."
+            tagline="Get every duck in line. Each row you clear pulls in more ducks and tighter interrupts."
           />
 
           <div className="glass grain mb-5 rounded-2xl p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="chip-muted">{metCount}/{puzzle.constraints.length} clues green</span>
-              <span className="chip-muted">{interrupts} interrupt{interrupts === 1 ? "" : "s"}</span>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="chip-gold">Level {level} · {puzzle.n} ducks</span>
+                <span className="chip-muted">{cleared} cleared</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="chip-muted">{metCount}/{puzzle.constraints.length} clues green</span>
+                <span className="chip-muted">{interrupts} interrupt{interrupts === 1 ? "" : "s"}</span>
+              </div>
             </div>
             <ul className="grid gap-1.5 text-sm md:grid-cols-2">
               {puzzle.constraints.map((c, i) => (
@@ -215,7 +224,7 @@ function Ducks() {
             </div>
 
             <div className="mt-4 flex items-center justify-between">
-              <button onClick={reset} className="pill-btn text-xs">New puzzle</button>
+              <button onClick={reset} className="pill-btn text-xs">Restart run</button>
               <p className="text-xs text-muted-foreground">Tap a duck, then tap where it should sit.</p>
             </div>
           </div>
@@ -224,15 +233,11 @@ function Ducks() {
 
       {done && (
         <ResultCard
-          won={done.won}
-          score={score}
-          xp={xpFromScore(score)}
+          won={done.cleared > 0}
+          score={finalScore}
+          xp={xpFromScore(finalScore)}
           best={loadState().bestScores.ducks}
-          details={
-            done.won
-              ? `Held the line with ${done.secondsLeft}s left. ${interrupts} interrupt${interrupts === 1 ? "" : "s"} survived.`
-              : `Got ${metCount}/${puzzle.constraints.length} clues green when time ran out.`
-          }
+          details={`Cleared ${done.cleared} level${done.cleared === 1 ? "" : "s"} · survived ${totalInterrupts} interrupt${totalInterrupts === 1 ? "" : "s"}.`}
           onPlayAgain={reset}
         />
       )}
