@@ -115,7 +115,7 @@ function DeepDive() {
       setFlash("good");
       setTimeout(() => setFlash(null), 200);
       setBrief(newBrief());
-      setBriefSetAt(performance.now());
+      briefSetAtRef.current = performance.now();
     } else {
       setScore((sc) => Math.max(0, sc - 12));
       setCombo(0);
@@ -136,7 +136,7 @@ function DeepDive() {
     setSecondsLeft(DURATION);
     setStrata([]);
     setBrief(newBrief());
-    setBriefSetAt(performance.now());
+    briefSetAtRef.current = performance.now();
     setScore(0);
     setCombo(0);
     setMaxCombo(0);
@@ -150,6 +150,7 @@ function DeepDive() {
       skill="Memory · Reaction"
       rightSlot={
         <div className="flex items-center gap-4">
+          <span className="chip-gold">{Math.round(speed)} px/s</span>
           <div className="font-display tabular-nums" style={{ color: "var(--gold)" }}>Score {score}</div>
           <Timer seconds={DURATION} running={!done} onExpire={finish} onTick={setSecondsLeft} />
         </div>
@@ -177,12 +178,9 @@ function DeepDive() {
               <span className="chip-muted">surface</span>
             </div>
 
-            {strata.map((s) => {
-              const y = POOL_HEIGHT - ((now - s.spawnAt) / 1000) * SCROLL_SPEED;
-              return (
-                <Strat key={s.id} stratum={s} y={y} onClick={() => clickStratum(s)} highlight={matches(s, brief)} />
-              );
-            })}
+            {strata.map((s) => (
+              <Strat key={s.id} stratum={s} y={s.y} onClick={() => clickStratum(s)} highlight={matches(s, brief)} />
+            ))}
 
             {/* Depth gauge on right */}
             <div className="pointer-events-none absolute bottom-2 right-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">depth ↓</div>
