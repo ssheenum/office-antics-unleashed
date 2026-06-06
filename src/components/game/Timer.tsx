@@ -4,14 +4,17 @@ export function Timer({
   seconds,
   running,
   onExpire,
+  onTick,
 }: {
   seconds: number;
   running: boolean;
   onExpire?: () => void;
+  onTick?: (left: number) => void;
 }) {
   const [left, setLeft] = useState(seconds);
   useEffect(() => setLeft(seconds), [seconds]);
   useEffect(() => {
+    onTick?.(left);
     if (!running) return;
     if (left <= 0) {
       onExpire?.();
@@ -19,7 +22,7 @@ export function Timer({
     }
     const t = setTimeout(() => setLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [left, running, onExpire]);
+  }, [left, running, onExpire, onTick]);
   const pct = Math.max(0, Math.min(100, (left / seconds) * 100));
   const color = left < 15 ? "var(--stamp)" : "var(--toner)";
   return (
@@ -32,15 +35,4 @@ export function Timer({
       </div>
     </div>
   );
-}
-
-export function useCountdown(seconds: number, running: boolean) {
-  const [left, setLeft] = useState(seconds);
-  useEffect(() => setLeft(seconds), [seconds]);
-  useEffect(() => {
-    if (!running || left <= 0) return;
-    const t = setTimeout(() => setLeft((s) => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [left, running]);
-  return left;
 }
