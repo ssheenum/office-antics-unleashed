@@ -7,7 +7,7 @@ import { ResultCard } from "@/components/game/ResultCard";
 import { randomBoard, tilesFromBoard, findGroup, DIFFICULTY_COLOR, type Board, type Group } from "@/lib/puzzles/connect";
 import { recordRound, loadState } from "@/lib/storage";
 import { timeBonus, xpFromScore } from "@/lib/scoring";
-import connectHero from "@/assets/connect-hero.png";
+import connectHero from "@/assets/m-connect.png";
 
 export const Route = createFileRoute("/play/connect")({
   head: () => ({
@@ -98,7 +98,7 @@ function Connect() {
     >
       {!done && (
         <>
-        <GameBanner image={connectHero} theme="connect" tagline="Connect the dots — four hidden groups of four. Trust the pattern, dodge the decoys." />
+        <GameBanner image={connectHero} accent="connect" tagline="Connect the dots — four hidden groups of four. Trust the pattern, dodge the decoys." />
         <div className="paper-card rounded-lg p-5">
           <div className="mb-4 flex items-center justify-between">
             <div className="text-sm text-muted-foreground">Find 4 groups of 4. {MAX_MISTAKES - mistakes} mistakes left.</div>

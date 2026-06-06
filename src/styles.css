@@ -36,61 +36,69 @@
   --color-manila: var(--manila);
   --color-ink: var(--ink);
   --color-paper: var(--paper);
-  --font-display: "Archivo Black", system-ui, sans-serif;
-  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --color-mint: var(--mint);
+  --color-coral: var(--coral);
+  --color-sky: var(--sky);
+  --color-butter: var(--butter);
+  --font-display: "Nunito", system-ui, sans-serif;
+  --font-sans: "Nunito", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Paper-cream, ink-black, highlighter-yellow, toner-cyan, stamp-red, manila */
-  --paper: oklch(0.97 0.018 90);
-  --ink: oklch(0.18 0.02 60);
-  --highlighter: oklch(0.92 0.19 100);
-  --toner: oklch(0.72 0.14 220);
-  --stamp: oklch(0.55 0.22 25);
-  --manila: oklch(0.86 0.08 80);
+  --radius: 1rem;
+  /* Soft, Duolingo-inspired palette */
+  --paper: oklch(0.99 0.005 90);
+  --ink: oklch(0.27 0.02 250);
+  --mint: oklch(0.78 0.13 165);
+  --coral: oklch(0.78 0.13 30);
+  --sky: oklch(0.85 0.08 230);
+  --butter: oklch(0.93 0.11 95);
+  --highlighter: var(--butter);
+  --toner: var(--mint);
+  --stamp: var(--coral);
+  --manila: oklch(0.94 0.04 85);
 
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: oklch(0.99 0.012 90);
+  --card: oklch(1 0 0);
   --card-foreground: var(--ink);
-  --popover: oklch(0.99 0.012 90);
+  --popover: oklch(1 0 0);
   --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: var(--paper);
-  --secondary: var(--manila);
+  --primary: var(--mint);
+  --primary-foreground: oklch(0.2 0.02 200);
+  --secondary: oklch(0.97 0.01 90);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.93 0.015 85);
-  --muted-foreground: oklch(0.45 0.02 70);
-  --accent: var(--highlighter);
+  --muted: oklch(0.96 0.005 90);
+  --muted-foreground: oklch(0.5 0.015 250);
+  --accent: var(--butter);
   --accent-foreground: var(--ink);
-  --destructive: var(--stamp);
-  --destructive-foreground: var(--paper);
-  --border: oklch(0.85 0.02 80);
-  --input: oklch(0.88 0.02 80);
-  --ring: var(--toner);
+  --destructive: var(--coral);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.008 250);
+  --input: oklch(0.92 0.008 250);
+  --ring: var(--mint);
 }
 
 .dark {
-  --background: oklch(0.18 0.02 60);
+  --background: oklch(0.2 0.02 250);
   --foreground: var(--paper);
-  --card: oklch(0.22 0.02 60);
+  --card: oklch(0.25 0.02 250);
   --card-foreground: var(--paper);
-  --popover: oklch(0.22 0.02 60);
+  --popover: oklch(0.25 0.02 250);
   --popover-foreground: var(--paper);
-  --primary: var(--highlighter);
-  --primary-foreground: var(--ink);
-  --secondary: oklch(0.3 0.03 70);
+  --primary: var(--mint);
+  --primary-foreground: oklch(0.2 0.02 200);
+  --secondary: oklch(0.3 0.02 250);
   --secondary-foreground: var(--paper);
-  --muted: oklch(0.28 0.02 60);
-  --muted-foreground: oklch(0.75 0.02 70);
-  --accent: var(--highlighter);
+  --muted: oklch(0.28 0.02 250);
+  --muted-foreground: oklch(0.7 0.02 250);
+  --accent: var(--butter);
   --accent-foreground: var(--ink);
-  --destructive: var(--stamp);
-  --destructive-foreground: var(--paper);
-  --border: oklch(0.32 0.02 60);
-  --input: oklch(0.32 0.02 60);
-  --ring: var(--toner);
+  --destructive: var(--coral);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.32 0.02 250);
+  --input: oklch(0.32 0.02 250);
+  --ring: var(--mint);
 }
 
 @layer base {
@@ -103,61 +111,92 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    background-image:
-      radial-gradient(oklch(0.85 0.02 80 / 0.4) 1px, transparent 1px);
-    background-size: 24px 24px;
   }
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.01em;
   }
+  button { font-family: inherit; }
 }
 
 @layer utilities {
+  /* Clean rounded card */
   .paper-card {
     background-color: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: 2px 3px 0 0 var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+  }
+  /* Duolingo-style chunky button with bottom shadow */
+  .duo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.875rem;
+    padding: 0.65rem 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: 2px solid color-mix(in oklab, var(--primary) 70%, black 15%);
+    box-shadow: 0 4px 0 0 color-mix(in oklab, var(--primary) 65%, black 22%);
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+  .duo-btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 0 color-mix(in oklab, var(--primary) 65%, black 22%);
+  }
+  .duo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .duo-btn-ghost {
+    background: var(--card);
+    color: var(--foreground);
+    border-color: var(--border);
+    box-shadow: 0 4px 0 0 var(--border);
+  }
+  /* Soft tile card with offset bottom */
+  .tile-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 1.25rem;
+    box-shadow: 0 5px 0 0 var(--border);
+    transition: transform 100ms ease, box-shadow 100ms ease;
+  }
+  .tile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 0 var(--border);
   }
   .stamp {
     display: inline-block;
-    border: 3px solid var(--stamp);
-    color: var(--stamp);
-    padding: 0.15rem 0.6rem;
-    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.7rem;
+    color: var(--mint);
+    background: color-mix(in oklab, var(--mint) 20%, white);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
     text-transform: uppercase;
-    transform: rotate(-6deg);
     letter-spacing: 0.08em;
   }
-  .sticky-note {
-    background: var(--highlighter);
-    color: var(--ink);
-    box-shadow: 2px 4px 8px -2px oklch(0 0 0 / 0.2);
-  }
-  /* Per-game tinted banner backgrounds */
-  .game-banner {
-    border-radius: 0.75rem;
-    border: 2px solid var(--ink);
-    box-shadow: 4px 5px 0 0 var(--ink);
-    padding: 0.5rem 1rem;
-    display: flex;
+  .chip {
+    display: inline-flex;
     align-items: center;
-    gap: 1rem;
-    overflow: hidden;
-    position: relative;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: var(--muted);
+    color: var(--muted-foreground);
   }
-  .theme-ducks { background: linear-gradient(135deg, oklch(0.95 0.08 220) 0%, oklch(0.92 0.13 200) 100%); }
-  .theme-connect { background: linear-gradient(135deg, oklch(0.94 0.09 90) 0%, oklch(0.9 0.12 60) 100%); }
-  .theme-circle { background: linear-gradient(135deg, oklch(0.93 0.11 340) 0%, oklch(0.93 0.13 50) 100%); }
-  .theme-fruit { background: linear-gradient(135deg, oklch(0.93 0.1 140) 0%, oklch(0.92 0.13 80) 100%); }
-  .wiggle { animation: wiggle 4s ease-in-out infinite; transform-origin: center bottom; }
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(-1.5deg); }
-    50% { transform: rotate(1.5deg); }
-  }
+  /* Pastel accent backgrounds for game tiles */
+  .accent-ducks   { --accent-bg: oklch(0.95 0.08 95); --accent-ink: oklch(0.4 0.12 60); }
+  .accent-connect { --accent-bg: oklch(0.93 0.06 200); --accent-ink: oklch(0.4 0.1 220); }
+  .accent-circle  { --accent-bg: oklch(0.94 0.06 350); --accent-ink: oklch(0.4 0.12 350); }
+  .accent-fruit   { --accent-bg: oklch(0.94 0.07 145); --accent-ink: oklch(0.38 0.12 150); }
   .float-bob { animation: bob 5s ease-in-out infinite; }
   @keyframes bob {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+    50% { transform: translateY(-5px); }
   }
 }
