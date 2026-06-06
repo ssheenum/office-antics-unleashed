@@ -25,14 +25,14 @@ export function Timer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [left, running]);
   const pct = Math.max(0, Math.min(100, (left / seconds) * 100));
-  const color = left < 15 ? "var(--stamp)" : "var(--toner)";
+  const isLow = left < 15;
   return (
-    <div className="flex items-center gap-2">
-      <span className="font-display text-lg tabular-nums" style={{ color }}>
+    <div className="flex items-center gap-2.5">
+      <span className="font-display text-lg tabular-nums" style={{ color: isLow ? "var(--warn)" : "var(--cream)" }}>
         {String(Math.floor(left / 60)).padStart(2, "0")}:{String(left % 60).padStart(2, "0")}
       </span>
-      <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
-        <div className="h-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
+      <div className="h-1.5 w-28 overflow-hidden rounded-full" style={{ background: "color-mix(in oklab, white 8%, transparent)" }}>
+        <div className="h-full transition-all" style={{ width: `${pct}%`, background: isLow ? "var(--warn)" : "var(--gold)" }} />
       </div>
     </div>
   );

@@ -1,32 +1,28 @@
 export function SkillRing({ label, xp }: { label: string; xp: number }) {
-  // 100 xp per level, ring fills based on progress within current level
   const level = Math.floor(xp / 100);
   const within = xp % 100;
-  const circ = 2 * Math.PI * 28;
+  const r = 30;
+  const circ = 2 * Math.PI * r;
   const offset = circ - (within / 100) * circ;
   return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width="72" height="72" viewBox="0 0 72 72">
-        <circle cx="36" cy="36" r="28" stroke="var(--border)" strokeWidth="6" fill="none" />
+    <div className="flex flex-col items-center gap-1.5">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r={r} stroke="color-mix(in oklab, white 10%, transparent)" strokeWidth="4" fill="none" />
         <circle
-          cx="36"
-          cy="36"
-          r="28"
-          stroke="var(--toner)"
-          strokeWidth="6"
+          cx="40" cy="40" r={r}
+          stroke="var(--gold)"
+          strokeWidth="4"
           fill="none"
           strokeDasharray={circ}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          transform="rotate(-90 36 36)"
-          style={{ transition: "stroke-dashoffset 600ms" }}
+          transform="rotate(-90 40 40)"
+          style={{ transition: "stroke-dashoffset 600ms", filter: "drop-shadow(0 0 6px color-mix(in oklab, var(--gold) 40%, transparent))" }}
         />
-        <text x="36" y="40" textAnchor="middle" fontFamily="Archivo Black" fontSize="16" fill="var(--foreground)">
-          {level}
-        </text>
+        <text x="40" y="46" textAnchor="middle" fontFamily="Fraunces, serif" fontSize="22" fill="var(--cream)">{level}</text>
       </svg>
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className="font-display text-xs tabular-nums">{xp} xp</div>
+      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+      <div className="font-display text-xs tabular-nums" style={{ color: "var(--gold-soft)" }}>{xp} xp</div>
     </div>
   );
 }

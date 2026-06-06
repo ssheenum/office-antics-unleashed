@@ -14,8 +14,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlayFruitRouteImport } from './routes/play.fruit'
 import { Route as PlayDucksRouteImport } from './routes/play.ducks'
-import { Route as PlayConnectRouteImport } from './routes/play.connect'
-import { Route as PlayCircleRouteImport } from './routes/play.circle'
 
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
@@ -42,23 +40,11 @@ const PlayDucksRoute = PlayDucksRouteImport.update({
   path: '/play/ducks',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlayConnectRoute = PlayConnectRouteImport.update({
-  id: '/play/connect',
-  path: '/play/connect',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlayCircleRoute = PlayCircleRouteImport.update({
-  id: '/play/circle',
-  path: '/play/circle',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
-  '/play/circle': typeof PlayCircleRoute
-  '/play/connect': typeof PlayConnectRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
@@ -66,8 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
-  '/play/circle': typeof PlayCircleRoute
-  '/play/connect': typeof PlayConnectRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
@@ -76,47 +60,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/stats': typeof StatsRoute
-  '/play/circle': typeof PlayCircleRoute
-  '/play/connect': typeof PlayConnectRoute
   '/play/ducks': typeof PlayDucksRoute
   '/play/fruit': typeof PlayFruitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/stats'
-    | '/play/circle'
-    | '/play/connect'
-    | '/play/ducks'
-    | '/play/fruit'
+  fullPaths: '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/stats'
-    | '/play/circle'
-    | '/play/connect'
-    | '/play/ducks'
-    | '/play/fruit'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/stats'
-    | '/play/circle'
-    | '/play/connect'
-    | '/play/ducks'
-    | '/play/fruit'
+  to: '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
+  id: '__root__' | '/' | '/about' | '/stats' | '/play/ducks' | '/play/fruit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   StatsRoute: typeof StatsRoute
-  PlayCircleRoute: typeof PlayCircleRoute
-  PlayConnectRoute: typeof PlayConnectRoute
   PlayDucksRoute: typeof PlayDucksRoute
   PlayFruitRoute: typeof PlayFruitRoute
 }
@@ -158,20 +116,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayDucksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/connect': {
-      id: '/play/connect'
-      path: '/play/connect'
-      fullPath: '/play/connect'
-      preLoaderRoute: typeof PlayConnectRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/circle': {
-      id: '/play/circle'
-      path: '/play/circle'
-      fullPath: '/play/circle'
-      preLoaderRoute: typeof PlayCircleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -179,11 +123,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   StatsRoute: StatsRoute,
-  PlayCircleRoute: PlayCircleRoute,
-  PlayConnectRoute: PlayConnectRoute,
   PlayDucksRoute: PlayDucksRoute,
   PlayFruitRoute: PlayFruitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
