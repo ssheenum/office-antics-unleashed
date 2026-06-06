@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
 import { generate, checkConstraint, describe, DUCK_COLOR_HEX, type Duck, type Puzzle } from "@/lib/puzzles/ducks";
 import { recordRound } from "@/lib/storage";
 import { timeBonus, xpFromScore } from "@/lib/scoring";
+import ducksHero from "@/assets/ducks-hero.png";
 
 export const Route = createFileRoute("/play/ducks")({
   head: () => ({
@@ -112,6 +114,7 @@ function Ducks() {
     >
       {!done && (
         <>
+          <GameBanner image={ducksHero} theme="ducks" tagline="Get all your ducks in a row — one slot, one duck, every clue happy." />
           <div className="paper-card mb-5 rounded-lg p-4">
             <div className="mb-2 text-[10px] uppercase tracking-widest text-muted-foreground">Clues</div>
             <ul className="grid gap-1.5 text-sm md:grid-cols-2">

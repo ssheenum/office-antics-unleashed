@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
 import { randomBoard, tilesFromBoard, findGroup, DIFFICULTY_COLOR, type Board, type Group } from "@/lib/puzzles/connect";
 import { recordRound, loadState } from "@/lib/storage";
 import { timeBonus, xpFromScore } from "@/lib/scoring";
+import connectHero from "@/assets/connect-hero.png";
 
 export const Route = createFileRoute("/play/connect")({
   head: () => ({

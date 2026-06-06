@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
+import { GameBanner } from "@/components/game/GameBanner";
 import { ResultCard } from "@/components/game/ResultCard";
 import { generateRound, getSymbol, type Round } from "@/lib/puzzles/circle";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
+import circleHero from "@/assets/circle-hero.png";
 
 export const Route = createFileRoute("/play/circle")({
   head: () => ({
