@@ -31,16 +31,12 @@ interface RoundState {
   startedAt: number;
   revealedTile: { x: number; y: number } | null;
   wrongTiles: { x: number; y: number }[];
-  hintBubbles: { x: number; y: number; until: number }[];
+  markedTiles: { x: number; y: number }[];
+  splashAt: { x: number; y: number } | null;
 }
 
 function freshRound(level: number): RoundState {
   const puzzle = generateDeepDive(level);
-  // For higher levels, reveal a partial hint bubble that briefly flashes the treasure row
-  const hints: RoundState["hintBubbles"] = [];
-  if (level >= 4) {
-    hints.push({ x: -1, y: puzzle.treasure.y, until: performance.now() + 1800 });
-  }
   return {
     puzzle,
     guesses: 0,
@@ -48,7 +44,8 @@ function freshRound(level: number): RoundState {
     startedAt: performance.now(),
     revealedTile: null,
     wrongTiles: [],
-    hintBubbles: hints,
+    markedTiles: [],
+    splashAt: null,
   };
 }
 
