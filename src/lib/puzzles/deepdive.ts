@@ -176,46 +176,43 @@ function uniqueWith(grid: Tile[], cand: {x:number;y:number}, clues: ClueKind[]):
 }
 
 function buildPuzzle(level: number): Puzzle {
-  // difficulty curve
+  // friendlier difficulty curve — clue budget never exceeds 3
   const diff = Math.min(5, level);
   let clueBudget: number;
   let allowedKinds: ClueKind["type"][];
   let propCounts: { kind: PropKind; count: number }[];
 
-  if (diff <= 2) {
-    clueBudget = 1 + diff; // 2..3
-    allowedKinds = ["above","below","leftOf","rightOf","nextTo"];
+  if (diff <= 1) {
+    clueBudget = 1;
+    allowedKinds = ["above", "below", "leftOf", "rightOf", "nextTo"];
+    propCounts = [
+      { kind: "redCoral", count: 1 },
+      { kind: "turtle", count: 1 },
+      { kind: "shell", count: 1 },
+      { kind: "bubble", count: 1 },
+    ];
+  } else if (diff <= 3) {
+    clueBudget = 2;
+    allowedKinds = ["above", "below", "leftOf", "rightOf", "nextTo", "within1"];
     propCounts = [
       { kind: "redCoral", count: 1 },
       { kind: "blueCoral", count: 1 },
       { kind: "turtle", count: 1 },
       { kind: "shell", count: 1 },
       { kind: "bubble", count: 2 },
-    ];
-  } else if (diff <= 4) {
-    clueBudget = 3;
-    allowedKinds = ["above","below","leftOf","rightOf","nextTo","notNextTo","within1"];
-    propCounts = [
-      { kind: "redCoral", count: 1 },
-      { kind: "blueCoral", count: 1 },
-      { kind: "jellyfish", count: 1 },
-      { kind: "turtle", count: 1 },
-      { kind: "anchor", count: 1 },
-      { kind: "bubble", count: 3 },
       { kind: "seaweed", count: 1 },
     ];
   } else {
-    clueBudget = 4;
-    allowedKinds = ["above","below","leftOf","rightOf","nextTo","notNextTo","between","within1","exactly2","nearBubbles","notTouchingSeaweed"];
+    clueBudget = 3;
+    allowedKinds = ["above", "below", "leftOf", "rightOf", "nextTo", "notNextTo", "within1", "notTouchingSeaweed"];
     propCounts = [
       { kind: "redCoral", count: 1 },
       { kind: "blueCoral", count: 1 },
       { kind: "jellyfish", count: 1 },
       { kind: "turtle", count: 1 },
       { kind: "anchor", count: 1 },
-      { kind: "shell", count: 1 },
-      { kind: "bubble", count: 3 },
-      { kind: "seaweed", count: 2 },
+      { kind: "bubble", count: 2 },
+      { kind: "seaweed", count: 1 },
     ];
   }
 
