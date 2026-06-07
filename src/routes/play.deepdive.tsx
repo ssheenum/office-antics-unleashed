@@ -57,19 +57,24 @@ function DeepDive() {
   const [done, setDone] = useState(false);
   const [diver, setDiver] = useState<{ x: number; y: number } | null>(null);
   const [feedback, setFeedback] = useState<null | { ok: boolean; text: string }>(null);
-  const [, forceTick] = useState(0);
 
-  // hint expiry tick
-  useEffect(() => {
-    if (round.hintBubbles.length === 0) return;
-    const id = setInterval(() => forceTick((n) => n + 1), 250);
-    return () => clearInterval(id);
-  }, [round.hintBubbles]);
-
-  function tapTile(x: number, y: number) {
+  function tapTile(x: number, y: number, e?: React.MouseEvent) {
     if (done || round.solved) return;
     const tile = round.puzzle.grid[y * SIZE + x];
-    if (tile.prop !== null) return; // can't pick a tile with a prop
+    if (tile.prop !== null) return;
+    // shift / right-click → toggle a "no" mark, don't guess
+    if (e && (e.shiftKey || e.metaKey)) {
+      setRound((r) => {
+        const exists = r.markedTiles.some((m) => m.x === x && m.y === y);
+        return {
+          ...r,
+          markedTiles: exists
+            ? r.markedTiles.filter((m) => !(m.x === x && m.y === y))
+            : [...r.markedTiles, { x, y }],
+        };
+      });
+      return;
+    }
     setDiver({ x, y });
     const isWin = x === round.puzzle.treasure.x && y === round.puzzle.treasure.y;
     if (isWin) {
@@ -79,14 +84,14 @@ function DeepDive() {
       const base = 120 + round.puzzle.difficulty * 40;
       const gain = base + speedBonus + (firstTry ? 80 : 0);
       setScore((s) => s + gain);
-      setRound((r) => ({ ...r, solved: true, revealedTile: { x, y } }));
+      setRound((r) => ({ ...r, solved: true, revealedTile: { x, y }, splashAt: { x, y } }));
       setFeedback({ ok: true, text: `Treasure! +${gain}${firstTry ? " (first try)" : ""}` });
-      setTimeout(nextRound, 1500);
+      setTimeout(nextRound, 1700);
     } else {
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setRound((r) => ({ ...r, guesses: r.guesses + 1, wrongTiles: [...r.wrongTiles, { x, y }] }));
-      setFeedback({ ok: false, text: `Empty sand. -1 air bubble.` });
+      setFeedback({ ok: false, text: `Nothing here. -1 air bubble.` });
       setTimeout(() => setFeedback(null), 1200);
       if (newStrikes >= MAX_STRIKES) {
         setTimeout(finish, 900);
@@ -98,7 +103,8 @@ function DeepDive() {
     const next = roundIdx + 1;
     if (next >= TOTAL_ROUNDS) { finish(); return; }
     setRoundIdx(next);
-    setRound(freshRound(Math.min(5, Math.floor(next / 1) + 1)));
+    // gentler level ramp: 1,1,2,2,3
+    setRound(freshRound(Math.min(3, Math.ceil((next + 1) / 2))));
     setDiver(null);
     setFeedback(null);
   }
@@ -118,9 +124,6 @@ function DeepDive() {
     setDiver(null);
     setFeedback(null);
   }
-
-  const now = performance.now();
-  const liveHints = round.hintBubbles.filter((h) => h.until > now);
 
   const details = useMemo(() => {
     return `Cleared ${roundIdx + (round.solved ? 1 : 0)}/${TOTAL_ROUNDS} rounds · ${strikes} wrong tap${strikes === 1 ? "" : "s"}.`;
@@ -143,7 +146,7 @@ function DeepDive() {
           <GameBanner
             Mark={DiverMark}
             eyebrow="Treasure detective"
-            tagline="Use the clues to find the buried treasure. Tap the one empty tile that matches every clue."
+            tagline="Read the clues, then tap the empty tile that matches them all. Shift-click to mark a tile as 'no'."
           />
 
           {/* Clue log */}
@@ -161,12 +164,6 @@ function DeepDive() {
                 </li>
               ))}
             </ul>
-            {liveHints.length > 0 && (
-              <div className="mt-3 rounded-xl border-[1.5px] border-dashed bg-white/40 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em]"
-                   style={{ borderColor: "#e9b13d", color: "var(--gold-deep)" }}>
-                ✦ A hint bubble is flashing the treasure's row — remember it before it pops.
-              </div>
-            )}
           </div>
 
           {/* Grid */}
@@ -175,42 +172,57 @@ function DeepDive() {
             style={{
               maxWidth: 520,
               background:
-                "linear-gradient(180deg, color-mix(in oklab, #06aed5 28%, white) 0%, color-mix(in oklab, #06aed5 55%, #1f2933) 100%)",
+                "linear-gradient(180deg, color-mix(in oklab, #06aed5 35%, white) 0%, color-mix(in oklab, #06aed5 70%, #0a3a5a) 100%)",
               borderColor: "color-mix(in oklab, #06aed5 55%, transparent)",
               boxShadow: "inset 0 2px 0 rgba(255,255,255,0.55)",
             }}
           >
-            <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${SIZE}, 1fr)` }}>
+            {/* drifting bubbles bg */}
+            <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-50" preserveAspectRatio="none">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <circle key={i} cx={`${(i * 13 + 7) % 100}%`} cy={`${(i * 23 + 11) % 100}%`} r={2 + (i % 3)}
+                  fill="rgba(255,255,255,0.5)" />
+              ))}
+            </svg>
+            <div className="relative grid gap-1.5" style={{ gridTemplateColumns: `repeat(${SIZE}, 1fr)` }}>
               {round.puzzle.grid.map((tile) => {
                 const isTreasure = round.revealedTile?.x === tile.x && round.revealedTile?.y === tile.y;
                 const isWrong = round.wrongTiles.some((w) => w.x === tile.x && w.y === tile.y);
-                const isHintRow = liveHints.some((h) => h.y === tile.y);
+                const isMarked = round.markedTiles.some((m) => m.x === tile.x && m.y === tile.y);
                 const hasProp = tile.prop !== null;
                 const isDiver = diver?.x === tile.x && diver?.y === tile.y;
+                const isSplash = round.splashAt?.x === tile.x && round.splashAt?.y === tile.y;
                 return (
                   <button
                     key={`${tile.x}-${tile.y}`}
-                    onClick={() => tapTile(tile.x, tile.y)}
+                    onClick={(e) => tapTile(tile.x, tile.y, e)}
+                    onContextMenu={(e) => { e.preventDefault(); tapTile(tile.x, tile.y, { ...e, shiftKey: true } as React.MouseEvent); }}
                     disabled={hasProp || done || round.solved}
-                    className="relative aspect-square grid place-items-center rounded-xl border-[2px] transition-transform"
+                    className="relative aspect-square grid place-items-center rounded-xl border-[2px] transition-transform hover:scale-[1.04]"
                     style={{
                       background: hasProp
-                        ? "color-mix(in oklab, #fdf6e3 60%, transparent)"
-                        : isHintRow
-                        ? "color-mix(in oklab, #ffd166 35%, white)"
+                        ? "color-mix(in oklab, #fdf6e3 70%, transparent)"
+                        : isMarked
+                        ? "color-mix(in oklab, #ff7a59 25%, white)"
                         : "color-mix(in oklab, #fdf6e3 30%, transparent)",
-                      borderColor: hasProp ? "#1f2933" : "rgba(255,255,255,0.7)",
+                      borderColor: hasProp ? "#1f2933" : isMarked ? "#c2492f" : "rgba(255,255,255,0.7)",
                       cursor: hasProp ? "default" : "pointer",
                     }}
                   >
                     {tile.prop && <PropSprite kind={tile.prop} size={44} />}
                     {isTreasure && (
-                      <span className="absolute inset-0 grid place-items-center fall-in">
+                      <span className="absolute inset-0 grid place-items-center pop-in">
                         <TreasureSprite size={48} />
                       </span>
                     )}
+                    {isSplash && (
+                      <span className="pointer-events-none absolute inset-0 rounded-xl splash" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.9), transparent 70%)" }} />
+                    )}
                     {isWrong && !isTreasure && (
-                      <span className="absolute inset-0 grid place-items-center text-2xl" style={{ color: "#c2492f" }}>✕</span>
+                      <span className="absolute inset-0 grid place-items-center text-2xl shake-x" style={{ color: "#c2492f" }}>✕</span>
+                    )}
+                    {isMarked && !isWrong && !isTreasure && (
+                      <span className="absolute inset-0 grid place-items-center text-xl opacity-60">🚫</span>
                     )}
                     {isDiver && !isTreasure && !isWrong && (
                       <span className="absolute inset-0 grid place-items-center"><DiverMark width={36} height={40} /></span>
@@ -222,7 +234,7 @@ function DeepDive() {
           </div>
 
           {feedback && (
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex justify-center pop-in">
               <span
                 className="rounded-full border-[2px] px-4 py-1.5 font-display text-sm"
                 style={{
@@ -237,7 +249,7 @@ function DeepDive() {
 
           <div className="mt-5 flex items-center justify-between">
             <button onClick={reset} className="pill-btn text-xs">Restart</button>
-            <span className="chip-muted">Empty tiles only — props can't hide the treasure.</span>
+            <span className="chip-muted">Shift-click to mark a 'no' · right-click also works</span>
           </div>
         </>
       )}
