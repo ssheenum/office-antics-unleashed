@@ -3,18 +3,12 @@ const USERS_KEY = "touch-grass:users";
 
 export const QUIRKY_USERNAMES = [
   "SynergySlayer",
-  "DeckPolisher",
   "OOO_Forever",
   "MidMeetingMute",
   "SlackLurker",
-  "QuarterlyGremlin",
   "PivotTablePirate",
-  "StandUpSnoozer",
   "InboxZeroHero",
-  "ParkingLotIdea",
   "CircleBackChad",
-  "LowBandwidthLarry",
-  "BlueSkyBaroness",
   "EOD_Goblin",
   "ScopeCreepKing",
   "OffsiteOracle",
