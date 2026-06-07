@@ -6,7 +6,7 @@ import { SkillRing } from "@/components/hub/SkillRing";
 export const Route = createFileRoute("/stats")({
   head: () => ({
     meta: [
-      { title: "Stats — Cubicle Quest" },
+      { title: "Stats — Touch Grass" },
       { name: "description", content: "Your best scores, skill XP, streak, and unlocked achievements." },
     ],
   }),

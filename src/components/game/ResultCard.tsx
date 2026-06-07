@@ -32,7 +32,7 @@ export function ResultCard({
       </div>
       <div className="mt-7 flex justify-center gap-2">
         <button onClick={onPlayAgain} className="pill-btn pill-btn-gold">Play again</button>
-        <Link to="/" className="pill-btn">Pond</Link>
+        <Link to="/" className="pill-btn">Meadow</Link>
       </div>
     </div>
   );

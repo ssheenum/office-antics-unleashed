@@ -10,7 +10,14 @@ export interface GameState {
   dailyDone: { day: string; games: GameKey[] };
 }
 
-const KEY = "cubicle-quest:v2";
+import { getCurrentUser } from "./session";
+
+const BASE_KEY = "touch-grass:state";
+
+function storageKey(): string {
+  const user = getCurrentUser();
+  return user ? `${BASE_KEY}:${user}` : `${BASE_KEY}:guest`;
+}
 
 const DEFAULT_STATE: GameState = {
   bestScores: { ducks: 0, deepdive: 0, fruit: 0 },
@@ -24,7 +31,7 @@ const DEFAULT_STATE: GameState = {
 export function loadState(): GameState {
   if (typeof window === "undefined") return DEFAULT_STATE;
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(storageKey());
     if (!raw) return DEFAULT_STATE;
     const parsed = JSON.parse(raw);
     return {
@@ -42,7 +49,7 @@ export function loadState(): GameState {
 
 export function saveState(state: GameState) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(KEY, JSON.stringify(state));
+  localStorage.setItem(storageKey(), JSON.stringify(state));
 }
 
 export function todayKey() {
