@@ -1,67 +1,87 @@
-## Cubicle Quest v2 — Editorial Glass, 3 interactive games
 
-Trim to three games, each with a corporate-jargon name that *is* the mechanic. Replace the flat cartoon look with a refined dark editorial aesthetic (Editorial Glass), slightly playful (vibe 4/5).
+## Scope
 
-### 1. The three games — jargon as mechanic
+Keep Low-Hanging Fruit untouched. Replace the gameplay in `src/routes/play.ducks.tsx` and `src/routes/play.deepdive.tsx` (and their puzzle modules in `src/lib/puzzles/`) with two new mechanics. Reuse the existing Sunny Paper / Pond & Garden visual system (GameShell, GameBanner, ResultCard, glass/pill-btn, koi/duck SVGs already in `Marks.tsx`).
 
-**Ducks in a Row** — *Logic, live arrangement*
-A row of 5–8 ducks. Drag to swap; constraints (chips above the row) light **green when satisfied, red when violated** in real time. Twist: every ~8s, a "meeting interrupt" nudges one duck out of order — you have to keep recovering. Rounds end when all constraints stay green for 3s straight, or timer expires. Score = constraints solved + time bonus − interrupts suffered.
+---
 
-**Deep Dive** — *Reaction + working memory*
-A vertical "stack of strata" scrolls slowly upward (think drilling through layers of a report). A clue panel at top updates every ~2s ("the layer tagged Q3", "the one with a chart icon", "the third blue one from the top"). Click the matching stratum before it scrolls off. Combo multiplier grows with depth; misclicks rocket you back to the surface. Live, continuous, not turn-based.
+## Game 1 — Ducks in a Row (Memory Row)
 
-**Low-Hanging Fruit** — *Spatial-math optimization, live*
-A tree with numbered fruits at varying heights. Target shown ("sum to 23", "three primes", "product divisible by 12"). Each fruit has a **reach cost** = height. Tap to pick/unpick — running sum + total reach + a "you'd score X" preview update live. Fruits gently sway; every ~6s a random fruit drops (free pick, height cost = 0 for 2s). Hit "Lock in" to submit, or auto-submit on timeout.
+**Brain exercise:** memory + sequencing + pattern recognition.
 
-Each round: 90–150s. Result card shows score, time, XP awarded to its skill ring (Logic / Memory / Spatial-Math). Remove Pattern from skill rings.
+**Flow per round:**
+1. **Show phase** — a row of N ducks slides onto lily pads at the top of the pond. Each duck has unique traits (color, size, hat, mood, direction, held object). Visible for a short window (e.g. 2.5s for N=3, scaling up).
+2. **Scatter phase** — ducks fly to random positions around the pond (absolutely positioned, gently bobbing).
+3. **Recall phase** — N empty lily pads at top. Player drags ducks back into the original order. A "Submit" pill button checks the row. Wrong slots shake; correct ones lock with a gold ring.
 
-### 2. Aesthetic — Editorial Glass
+**Round progression (gradually harder):**
+- R1 *Simple memory* — 3 ducks, only color differs.
+- R2 *Trait memory* — 4 ducks, mix of hat/mood/object.
+- R3 *Pattern completion* — 5 ducks form a visible pattern (small/big/small/big/?), one slot is blank; player picks the duck that continues the pattern from the scattered pool. Patterns: size alternation, color cycle (Y→B→P→Y→B→?), hat-on/off alternation, direction flip.
+- R4 *Hidden rule* — Game shows one example row sorted by a hidden rule (e.g. beak size asc, hat height desc, mood spectrum sleepy→angry). Player must arrange a fresh set of ducks by the same rule. After submit, the rule is revealed.
 
-- **Palette** (oklch tokens in `src/styles.css`):
-  - `--bg` near-black `#0f1115`, `--surface` `#1b1f27`, `--text` cream `#e6e1d6`, `--muted` warm gray, `--accent` gold `#c9a84c`, `--danger` muted coral, `--ok` muted teal.
-- **Type**: Display = **Fraunces** (or Instrument Serif) for headings and numerals; Body = **Inter** for UI. Loaded via `<link>` in `__root.tsx`, declared in `@theme` (no CSS `@import` of URLs — see Tailwind v4 gotchas).
-- **Surfaces**: glass cards — `bg-white/5 backdrop-blur-xl border-white/10`, soft inner highlight, subtle SVG grain overlay at ~4% opacity. Gold hairline dividers. Generous whitespace.
-- **Motion**: restrained — ducks ease into slots, strata scroll with parallax, fruit sway via CSS keyframes. No bouncy cartoon wiggles.
-- **Illustration**: replace the 5 PNG cartoons with **gold line-art SVGs** drawn inline (single duck silhouette, diver helmet, branch with fruit, plus a small monogram mascot for the hub). Vector, themable, sharp at any size.
-- **Components**: chunky "duo-btn" → refined pill button with gold border + soft glow on hover. Tiles become glass panels with serif title + thin gold rule.
+5–6 rounds total, difficulty curve R1→R4→R4-harder. Score: time bonus + accuracy bonus, combo for back-to-back perfect rounds. Lives: 3 strikes ends the run early. Reuse existing `recordRound("ducks", …)` and `xpFromScore`.
 
-### 3. Scope of file changes
+**Traits & art:**
+- Color: 6 hex set from the existing duck palette.
+- Size: small (0.75×) / large (1.15×).
+- Hat: none / beret / party / straw.
+- Mood: happy / sleepy / angry / surprised (eye + brow tweaks).
+- Direction: facing left / right (mirror).
+- Object held: none / flower / fish / umbrella.
 
-Frontend / presentation only.
+All drawn inline as SVG variants of a single `<Duckie traits={…} size={…}/>` component (no new image files; reuse line-art style from `Marks.tsx`). Drag uses HTML5 DnD already established in the previous ducks file.
 
-**Edit**
-- `src/styles.css` — new palette, fonts, glass + grain utilities; drop pastel `.accent-*` and `.duo-btn` styling; rewrite `.tile-card` for glass.
-- `src/routes/__root.tsx` — Fraunces + Inter `<link>` tags.
-- `src/routes/index.tsx` — 3 tiles (drop Circle Back), refined hero, glass treatment.
-- `src/components/hub/FolderTile.tsx` — glass variant, inline SVG slot instead of `<img>`.
-- `src/components/hub/SkillRing.tsx` — drop Pattern; restyle.
-- `src/components/game/GameBanner.tsx` — glass header with serif tagline + inline SVG.
-- `src/components/game/GameShell.tsx`, `Timer.tsx`, `ResultCard.tsx` — restyle to new tokens.
-- `src/routes/play.ducks.tsx` — add live constraint chips + "interrupt" timer + continuous-solve win condition.
-- `src/routes/play.fruit.tsx` — add live running totals, sway, occasional free-drop event.
-- `src/routes/stats.tsx`, `about.tsx` — restyle, remove Circle Back / Pattern references.
-- `src/lib/storage.ts` — remove `circle` from bestScores/dailyDone, remove `pattern` xp (or keep field hidden for back-compat — TBD; simplest: migrate on load).
+---
 
-**Create**
-- `src/routes/play.deepdive.tsx` — new Deep Dive game.
-- `src/lib/puzzles/deepdive.ts` — strata + clue generator.
-- `src/components/art/` — inline SVG components: `DuckMark`, `DiverMark`, `BranchMark`, `Monogram`, `Grain`.
+## Game 2 — Deep Dive (Treasure Detective)
 
-**Delete**
-- `src/routes/play.circle.tsx`, `src/routes/play.connect.tsx`
-- `src/lib/puzzles/circle.ts`, `src/lib/puzzles/connect.ts`
-- `src/assets/m-*.png` (all 5 cartoon mascots), `src/assets/*-hero.png` if still present.
+**Brain exercise:** deduction + spatial reasoning + visual search.
 
-### 4. Technical notes
+**Flow per round:**
+1. A 5×5 underwater grid renders with scattered props: red coral, blue coral, jellyfish, turtle, anchor, seaweed, bubbles, shell. One hidden tile holds the pearl/chest.
+2. A small "Clue Log" lists 2–5 clues. Player taps the tile they believe holds the treasure. Correct → splash + reveal; wrong → strike + a brief shake, and the clue most-violated highlights.
+3. Diver mascot (existing `DiverMark`) glides toward the tapped tile.
 
-- Tailwind v4: tokens in `@theme` inside `src/styles.css`; load Google Fonts via `<link>` in `__root.tsx`, never `@import` a URL.
-- Keep all state in `localStorage` via existing `src/lib/storage.ts` (with a small migration to drop `circle`/`connect` and `pattern`).
-- No backend, no new deps — Fraunces/Inter from Google Fonts CDN.
+**Clue types (composable):**
+- Positional: above / below / left of / right of <prop>.
+- Adjacency: next to / not next to <prop>; between A and B (orthogonal line).
+- Distance: within 1 tile of <prop>; exactly 2 tiles from <prop>.
+- Quantity: near exactly N bubbles (4-neighborhood).
+- Negative: not touching seaweed.
 
-### 5. Out of scope
+**Round progression:**
+- R1–R2 *Visual* — 1–2 clues, mostly direct ("below the red coral"); larger props, fewer distractors.
+- R3–R4 *Mixed* — 3 clues combining position + adjacency.
+- R5+ *Logic* — 4–5 clues, includes between/distance/negative; props arranged so only one tile satisfies all clues (generator verifies uniqueness by brute force over 25 tiles).
 
-New games beyond the three above; sound; accounts; multiplayer; rewriting routing.
+**Bonus mechanic — vanishing bubbles:** 1–2 "hint bubbles" appear for ~1.8s at start of harder rounds showing a partial clue (e.g. flashes the row or column). After they pop, the player must recall.
 
-### 6. Success check
+**Scoring:** base per round + speed bonus + (clues_unused) bonus if solved on first tap. Strikes: 3 wrong taps total ends the run.
 
-Hub shows 3 glass tiles + monogram, gold-on-dark editorial feel, serif headings. Each game is continuously interactive (live feedback, not a single submit). Old Circle Back / Connect routes and PNG mascots are gone. Build is clean.
+**Puzzle generator (`src/lib/puzzles/deepdive.ts` rewrite):**
+- Place props randomly on a 5×5; pick a candidate treasure tile; derive true clues about it; filter to a clue set that uniquely identifies the tile (re-roll until satisfied or fall back to adding a positional clue). Difficulty controls clue count and allowed clue kinds.
+
+**Art:** all inline SVG tiles in Sunny Paper palette (sand background, sky/lagoon gradient overlay, gold outlines), consistent with current koi style. No new image assets.
+
+---
+
+## Files
+
+- Rewrite `src/lib/puzzles/ducks.ts` — new trait model + round generators (simple, trait, pattern, hidden-rule).
+- Rewrite `src/lib/puzzles/deepdive.ts` — grid + clue generator with uniqueness check.
+- Rewrite `src/routes/play.ducks.tsx` — show/scatter/recall phases, drag-to-pad, round runner, lives, scoring.
+- Rewrite `src/routes/play.deepdive.tsx` — grid, clue log, vanishing-bubble hints, tap-to-guess, diver animation.
+- New `src/components/art/Duckie.tsx` — parameterized duck SVG (traits → variants).
+- New `src/components/art/PondProps.tsx` — coral/jellyfish/turtle/anchor/seaweed/bubble/shell tiles.
+- Touch `src/routes/index.tsx` blurbs for the two games to match new mechanics.
+- Touch `src/lib/storage.ts` only if achievement copy needs to match (e.g. "Memory Maestro", "Pearl Hunter").
+
+No changes to Low-Hanging Fruit, GameShell, ResultCard, Timer, styles.css, or the hub layout beyond blurb text.
+
+## Out of scope
+
+- New backend, persistence beyond existing localStorage scores.
+- New fonts/colors.
+- Sound.
+
