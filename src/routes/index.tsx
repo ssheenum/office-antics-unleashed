@@ -30,12 +30,30 @@ function Hub() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* sky gradient wash */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[520px]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 80% 0%, #fff4c2 0%, transparent 55%), linear-gradient(180deg, #d6f1ff 0%, transparent 70%)",
+        }}
+      />
+      {/* sun */}
+      <svg className="pointer-events-none absolute right-[6%] top-10" width="110" height="110" viewBox="0 0 110 110">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={i} x1="55" y1="55" x2="55" y2="8" stroke="#f4a93a" strokeWidth="3" strokeLinecap="round" transform={`rotate(${i * 36} 55 55)`} opacity="0.8" />
+        ))}
+        <circle cx="55" cy="55" r="26" fill="#ffd166" stroke="#1f2933" strokeWidth="2.5" />
+        <circle cx="48" cy="50" r="9" fill="#fff4b8" opacity="0.7" />
+      </svg>
       {/* decorative clouds + cattails */}
-      <CloudPuff className="pointer-events-none absolute left-[6%] top-24 w-32 opacity-70 float-bob" />
-      <CloudPuff className="pointer-events-none absolute right-[10%] top-44 w-24 opacity-60 float-bob" style={{ animationDelay: "1.2s" }} />
-      <CattailMark className="pointer-events-none absolute bottom-0 left-4 h-32 opacity-80" />
-      <CattailMark className="pointer-events-none absolute bottom-0 left-16 h-24 opacity-70" />
-      <CattailMark className="pointer-events-none absolute bottom-0 right-6 h-28 opacity-80" />
+      <CloudPuff className="pointer-events-none absolute left-[6%] top-24 w-36 opacity-80 float-bob" />
+      <CloudPuff className="pointer-events-none absolute right-[28%] top-16 w-24 opacity-70 float-bob" style={{ animationDelay: "1.2s" }} />
+      <CloudPuff className="pointer-events-none absolute left-[42%] top-44 w-20 opacity-60 float-bob" style={{ animationDelay: "2.4s" }} />
+      <CattailMark className="pointer-events-none absolute bottom-0 left-4 h-36 opacity-80" />
+      <CattailMark className="pointer-events-none absolute bottom-0 left-20 h-24 opacity-70" />
+      <CattailMark className="pointer-events-none absolute bottom-0 right-6 h-32 opacity-80" />
+      <CattailMark className="pointer-events-none absolute bottom-0 right-24 h-20 opacity-70" />
 
       <header className="relative mx-auto max-w-5xl px-4 pt-12 pb-10">
         <div className="flex items-start justify-between gap-8">
@@ -44,7 +62,7 @@ function Hub() {
               <span className="chip-gold">Cubicle Quest</span>
               <span className="chip-sky">Daily Pond</span>
             </div>
-            <h1 className="mt-5 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
+            <h1 className="mt-5 font-display text-5xl leading-[1.02] tracking-tight md:text-7xl">
               A sunny<br/>
               <span style={{ color: "var(--sky-deep)" }}>little pond</span>
               <span> of </span>
@@ -59,8 +77,33 @@ function Hub() {
               <Link to="/about" className="pill-btn text-xs">How to play</Link>
             </div>
           </div>
-          <div className="hidden md:block">
-            <Monogram width={150} height={150} className="float-bob" />
+          <div className="relative hidden md:block">
+            {/* Pond scene mini illustration */}
+            <svg width="220" height="200" viewBox="0 0 220 200">
+              <defs>
+                <radialGradient id="pondHero" cx="50%" cy="50%">
+                  <stop offset="0%" stopColor="#7fd6ec"/>
+                  <stop offset="100%" stopColor="#06aed5"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="110" cy="130" rx="100" ry="60" fill="url(#pondHero)" stroke="#1f2933" strokeWidth="2.5" />
+              <ellipse cx="80" cy="120" rx="36" ry="6" fill="white" opacity="0.35" />
+              <ellipse cx="140" cy="148" rx="22" ry="3" fill="white" opacity="0.35" />
+              {/* lily pads */}
+              <ellipse cx="58" cy="142" rx="22" ry="9" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" />
+              <path d="M58 142 L 50 134" stroke="#1f2933" strokeWidth="2" />
+              <ellipse cx="165" cy="158" rx="18" ry="7" fill="#1ba884" stroke="#1f2933" strokeWidth="2" />
+              {/* duck */}
+              <g className="float-bob">
+                <ellipse cx="110" cy="100" rx="34" ry="22" fill="#ffd166" stroke="#1f2933" strokeWidth="2.5" />
+                <circle cx="138" cy="86" r="16" fill="#ffd166" stroke="#1f2933" strokeWidth="2.5" />
+                <path d="M150 86 q 10 -2 12 4 q -10 4 -14 0 z" fill="#ff8c2e" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
+                <circle cx="140" cy="82" r="2.4" fill="#1f2933" />
+                <ellipse cx="100" cy="100" rx="3" ry="2" fill="white" opacity="0.7" />
+                <path d="M88 102 q -10 8 -2 12" stroke="#1f2933" strokeWidth="2" fill="none" />
+              </g>
+            </svg>
+            <Monogram width={70} height={70} className="absolute -bottom-2 -left-4 float-bob" style={{ animationDelay: "0.8s" }} />
           </div>
         </div>
       </header>
