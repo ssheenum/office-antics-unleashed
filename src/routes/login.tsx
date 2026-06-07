@@ -41,7 +41,7 @@ function LoginPage() {
             Touch Grass
           </div>
           <h1 className="mt-6 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
-            Pick a <span style={{ color: "#3a8c2d" }}>grass name</span>.
+            Pick a <span style={{ color: "#3a8c2d" }}>cubicle alias</span>.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
             Your name keeps your scores on this device. Choose a quirky one — or invent your own.
@@ -90,7 +90,7 @@ function LoginPage() {
           <input
             value={custom}
             onChange={(e) => { setCustom(e.target.value); setPicked(null); }}
-            placeholder="e.g. RootBeerRogue"
+            placeholder="e.g. CalendarTetrisChamp"
             maxLength={20}
             className="w-full rounded-2xl border-[2px] bg-white px-4 py-3 font-display text-lg outline-none focus:border-[#5b9e3d]"
             style={{ borderColor: "color-mix(in oklab, #1f2933 14%, transparent)" }}
