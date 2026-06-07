@@ -363,7 +363,7 @@ function DucksGame() {
             })}
 
             {feedback && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+              <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center pop-in">
                 <span
                   className="rounded-full border-[2px] px-4 py-1.5 font-display text-sm shadow"
                   style={{
@@ -374,6 +374,21 @@ function DucksGame() {
                 >
                   {feedback.ok ? "✓ " : "✕ "}{feedback.text}
                 </span>
+              </div>
+            )}
+            {feedback?.ok && (
+              <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                {["✨", "🎉", "⭐", "✨", "🌟", "💫"].map((s, i) => (
+                  <span
+                    key={i}
+                    className="absolute text-3xl sparkle"
+                    style={{
+                      left: `${20 + i * 12}%`,
+                      top: `${30 + (i % 2) * 30}%`,
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  >{s}</span>
+                ))}
               </div>
             )}
           </div>
