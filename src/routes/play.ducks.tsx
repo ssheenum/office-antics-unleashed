@@ -8,7 +8,7 @@ import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import {
-  genSimple, genTrait, genPattern, genRule,
+  genSimple, genTrait, genPattern,
   type BaseRound, type DuckTraits,
 } from "@/lib/puzzles/ducks";
 
@@ -32,21 +32,15 @@ interface Round {
 }
 
 const MAX_LIVES = 3;
-const TOTAL_ROUNDS = 6;
+const TOTAL_ROUNDS = 5;
 
 function buildRound(idx: number): Round {
-  // 0,1: simple → grows from 3 to 4
-  // 2: trait
-  // 3: pattern
-  // 4: trait n=5
-  // 5: hidden rule
-  if (idx === 0) return { base: genSimple(3), showMs: 2400 };
-  if (idx === 1) return { base: genSimple(4), showMs: 2800 };
-  if (idx === 2) return { base: genTrait(4), showMs: 3200 };
+  // Friendlier curve: simple → simple+1 → trait → pattern → trait
+  if (idx === 0) return { base: genSimple(3), showMs: 3200 };
+  if (idx === 1) return { base: genSimple(4), showMs: 3600 };
+  if (idx === 2) return { base: genTrait(4), showMs: 4200 };
   if (idx === 3) return { base: genPattern(5), showMs: 0 };
-  if (idx === 4) return { base: genTrait(5), showMs: 3800 };
-  const r = genRule(4);
-  return { base: r.round, example: r.example, ruleLabel: r.ruleLabel, showMs: 0 };
+  return { base: genTrait(5), showMs: 4800 };
 }
 
 interface Scatter { id: number; x: number; y: number; rot: number; }
@@ -326,7 +320,19 @@ function DucksGame() {
 
             {phase === "show" && (
               <div className="absolute inset-0 grid place-items-center">
-                <div className="chip-gold">Watch the row…</div>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="chip-gold pop-in">👀 Memorise the order…</div>
+                  <div className="h-2 w-48 overflow-hidden rounded-full border-[1.5px] bg-white/70" style={{ borderColor: "#e9b13d" }}>
+                    <div
+                      className="h-full"
+                      style={{
+                        background: "linear-gradient(90deg, #ffd166, #ff7a59)",
+                        animation: `shrinkBar ${round.showMs}ms linear forwards`,
+                      }}
+                    />
+                  </div>
+                </div>
+                <style>{`@keyframes shrinkBar { from { width: 100%; } to { width: 0%; } }`}</style>
               </div>
             )}
 
@@ -357,7 +363,7 @@ function DucksGame() {
             })}
 
             {feedback && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+              <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center pop-in">
                 <span
                   className="rounded-full border-[2px] px-4 py-1.5 font-display text-sm shadow"
                   style={{
@@ -368,6 +374,21 @@ function DucksGame() {
                 >
                   {feedback.ok ? "✓ " : "✕ "}{feedback.text}
                 </span>
+              </div>
+            )}
+            {feedback?.ok && (
+              <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                {["✨", "🎉", "⭐", "✨", "🌟", "💫"].map((s, i) => (
+                  <span
+                    key={i}
+                    className="absolute text-3xl sparkle"
+                    style={{
+                      left: `${20 + i * 12}%`,
+                      top: `${30 + (i % 2) * 30}%`,
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  >{s}</span>
+                ))}
               </div>
             )}
           </div>
