@@ -111,7 +111,7 @@ function Hub() {
             <span className="grid h-9 w-9 place-items-center rounded-xl text-white" style={{ background: "#5b9e3d", boxShadow: "0 2px 0 #3a7026" }}>
               <GrassIcon width={22} height={22} />
             </span>
-            <span className="font-display text-lg tracking-tight">Touch Grass</span>
+            <span className="font-display text-lg tracking-tight">Come Touch Grass</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden items-center gap-1.5 rounded-full border-[1.5px] bg-white px-3 py-1 text-sm font-semibold sm:inline-flex" style={{ borderColor: "color-mix(in oklab, #1f2933 12%, transparent)" }}>
