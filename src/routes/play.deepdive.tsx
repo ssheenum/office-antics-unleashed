@@ -14,7 +14,7 @@ import {
 export const Route = createFileRoute("/play/deepdive")({
   head: () => ({
     meta: [
-      { title: "Deep Dive — Cubicle Quest" },
+      { title: "Deep Dive — Touch Grass" },
       { name: "description", content: "Help a tiny diver find the buried treasure. Read the clues, narrow the grid, and tap the right tile." },
     ],
   }),

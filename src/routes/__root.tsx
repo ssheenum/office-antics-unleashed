@@ -22,7 +22,7 @@ function NotFoundComponent() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
-          <Link to="/" className="pill-btn pill-btn-sky">Back to the pond</Link>
+          <Link to="/" className="pill-btn pill-btn-sky">Back to the meadow</Link>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cubicle Quest — A sunny little pond of brain games" },
+      { title: "Touch Grass — three tiny brain games" },
       { name: "description", content: "Three quick, fun brain games: line up rubber ducks, catch koi in a pond, and grab fruit with a basket. Two-minute rounds, gentle daily streak." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

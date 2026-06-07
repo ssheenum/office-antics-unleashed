@@ -11,7 +11,7 @@ import { xpFromScore } from "@/lib/scoring";
 export const Route = createFileRoute("/play/fruit")({
   head: () => ({
     meta: [
-      { title: "Low-Hanging Fruit — Cubicle Quest" },
+      { title: "Low-Hanging Fruit — Touch Grass" },
       { name: "description", content: "Slide a basket across the garden and catch the fruit that fits the rule. Dodge the rocks. Three hearts." },
     ],
   }),

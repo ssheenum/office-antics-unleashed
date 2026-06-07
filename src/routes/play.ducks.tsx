@@ -15,7 +15,7 @@ import {
 export const Route = createFileRoute("/play/ducks")({
   head: () => ({
     meta: [
-      { title: "Ducks in a Row — Cubicle Quest" },
+      { title: "Ducks in a Row — Touch Grass" },
       { name: "description", content: "Memorise a row of ducks, then drag them back into order. Patterns and hidden rules get sneakier each round." },
     ],
   }),
