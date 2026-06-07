@@ -32,21 +32,15 @@ interface Round {
 }
 
 const MAX_LIVES = 3;
-const TOTAL_ROUNDS = 6;
+const TOTAL_ROUNDS = 5;
 
 function buildRound(idx: number): Round {
-  // 0,1: simple → grows from 3 to 4
-  // 2: trait
-  // 3: pattern
-  // 4: trait n=5
-  // 5: hidden rule
-  if (idx === 0) return { base: genSimple(3), showMs: 2400 };
-  if (idx === 1) return { base: genSimple(4), showMs: 2800 };
-  if (idx === 2) return { base: genTrait(4), showMs: 3200 };
+  // Friendlier curve: simple → simple+1 → trait → pattern → trait
+  if (idx === 0) return { base: genSimple(3), showMs: 3200 };
+  if (idx === 1) return { base: genSimple(4), showMs: 3600 };
+  if (idx === 2) return { base: genTrait(4), showMs: 4200 };
   if (idx === 3) return { base: genPattern(5), showMs: 0 };
-  if (idx === 4) return { base: genTrait(5), showMs: 3800 };
-  const r = genRule(4);
-  return { base: r.round, example: r.example, ruleLabel: r.ruleLabel, showMs: 0 };
+  return { base: genTrait(5), showMs: 4800 };
 }
 
 interface Scatter { id: number; x: number; y: number; rot: number; }
