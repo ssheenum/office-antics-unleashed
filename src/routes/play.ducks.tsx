@@ -2,302 +2,399 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
 import { GameBanner } from "@/components/game/GameBanner";
-import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
-import { generate, checkConstraint, describe, type Duck, type Puzzle } from "@/lib/puzzles/ducks";
-import { recordRound, loadState } from "@/lib/storage";
-import { timeBonus, xpFromScore } from "@/lib/scoring";
 import { DuckMark } from "@/components/art/Marks";
+import { Duckie } from "@/components/art/Duckie";
+import { recordRound, loadState } from "@/lib/storage";
+import { xpFromScore } from "@/lib/scoring";
+import {
+  genSimple, genTrait, genPattern, genRule,
+  type BaseRound, type DuckTraits,
+} from "@/lib/puzzles/ducks";
 
 export const Route = createFileRoute("/play/ducks")({
   head: () => ({
     meta: [
       { title: "Ducks in a Row — Cubicle Quest" },
-      { name: "description", content: "Drag rubber ducks across lily pads. Keep every clue green for three seconds and survive the surprise splashes." },
+      { name: "description", content: "Memorise a row of ducks, then drag them back into order. Patterns and hidden rules get sneakier each round." },
     ],
   }),
-  component: Ducks,
+  component: DucksGame,
 });
 
-const DURATION = 180;
-const HOLD_TO_WIN_MS = 3000;
+type Phase = "ready" | "show" | "scatter" | "done";
 
-function difficulty(level: number) {
-  const n = Math.min(7, 4 + Math.floor((level - 1) / 2));
-  const splashEvery = Math.max(4500, 11000 - (level - 1) * 1200);
-  return { n, splashEvery };
+interface Round {
+  base: BaseRound;
+  example?: DuckTraits[];
+  ruleLabel?: string;
+  showMs: number;
 }
 
-// Friendly bright colors for the ducks themselves
-const DUCK_BODY: Record<string, string> = {
-  yellow: "#ffd166",
-  pink: "#ffadc6",
-  green: "#7ee3b8",
-  blue: "#7fd6ec",
-  orange: "#ff9966",
-  purple: "#c9a8ff",
-  white: "#fff7e0",
-};
+const MAX_LIVES = 3;
+const TOTAL_ROUNDS = 6;
 
-function Ducks() {
-  const [level, setLevel] = useState(1);
-  const [puzzle, setPuzzle] = useState<Puzzle>(() => generate(difficulty(1).n));
-  const [order, setOrder] = useState<(Duck | null)[]>(() => puzzle.ducks.slice());
-  const [picked, setPicked] = useState<Duck | null>(null);
-  const [dragId, setDragId] = useState<number | null>(null);
-  const [done, setDone] = useState<null | { secondsLeft: number; cleared: number }>(null);
-  const [secondsLeft, setSecondsLeft] = useState(DURATION);
-  const [splashes, setSplashes] = useState(0);
-  const [totalSplashes, setTotalSplashes] = useState(0);
-  const [holdMs, setHoldMs] = useState(0);
-  const [flashAt, setFlashAt] = useState<number | null>(null);
-  const [runScore, setRunScore] = useState(0);
-  const [cleared, setCleared] = useState(0);
+function buildRound(idx: number): Round {
+  // 0,1: simple → grows from 3 to 4
+  // 2: trait
+  // 3: pattern
+  // 4: trait n=5
+  // 5: hidden rule
+  if (idx === 0) return { base: genSimple(3), showMs: 2400 };
+  if (idx === 1) return { base: genSimple(4), showMs: 2800 };
+  if (idx === 2) return { base: genTrait(4), showMs: 3200 };
+  if (idx === 3) return { base: genPattern(5), showMs: 0 };
+  if (idx === 4) return { base: genTrait(5), showMs: 3800 };
+  const r = genRule(4);
+  return { base: r.round, example: r.example, ruleLabel: r.ruleLabel, showMs: 0 };
+}
 
-  const { splashEvery } = difficulty(level);
+interface Scatter { id: number; x: number; y: number; rot: number; }
 
-  const constraintsMet = useMemo(
-    () => puzzle.constraints.map((c) => checkConstraint(order, c)),
-    [order, puzzle.constraints],
-  );
-  const metCount = constraintsMet.filter(Boolean).length;
-  const allMet = constraintsMet.length > 0 && constraintsMet.every(Boolean);
+function DucksGame() {
+  const [roundIdx, setRoundIdx] = useState(0);
+  const [round, setRound] = useState<Round>(() => buildRound(0));
+  const [phase, setPhase] = useState<Phase>("ready");
+  const [slots, setSlots] = useState<(DuckTraits | null)[]>(() => round.base.target.map(() => null));
+  const [scatter, setScatter] = useState<Scatter[]>([]);
+  const [available, setAvailable] = useState<DuckTraits[]>([]);
+  const [picked, setPicked] = useState<DuckTraits | null>(null);
+  const [lives, setLives] = useState(MAX_LIVES);
+  const [score, setScore] = useState(0);
+  const [combo, setCombo] = useState(0);
+  const [perfectStreak, setPerfectStreak] = useState(0);
+  const [feedback, setFeedback] = useState<null | { ok: boolean; text: string }>(null);
+  const [shakeSlot, setShakeSlot] = useState<number | null>(null);
+  const startedAtRef = useRef<number>(performance.now());
 
-  // Hold-to-win tracker
-  const lastTickRef = useRef<number>(performance.now());
+  // initialise scatter when entering scatter phase
+  function enterScatter(r: Round) {
+    const pool = r.base.pool;
+    const placed = r.base.target.map((_, i) => (r.base.blanks.includes(i) ? null : r.base.target[i]));
+    setSlots(placed);
+    const ids = pool.map((d) => d.id);
+    const filledIds = new Set(placed.filter(Boolean).map((d) => d!.id));
+    const avail = pool.filter((d) => !filledIds.has(d.id));
+    setAvailable(avail);
+    setScatter(avail.map((d) => ({
+      id: d.id,
+      x: 8 + Math.random() * 78,
+      y: 18 + Math.random() * 68,
+      rot: -14 + Math.random() * 28,
+    })));
+    setPicked(null);
+    setPhase("scatter");
+    startedAtRef.current = performance.now();
+    void ids;
+  }
+
+  // when round changes, run the show → scatter sequence
   useEffect(() => {
-    if (done) return;
-    let raf = 0;
-    const tick = (t: number) => {
-      const dt = t - lastTickRef.current;
-      lastTickRef.current = t;
-      setHoldMs((h) => (allMet ? Math.min(HOLD_TO_WIN_MS, h + dt) : 0));
-      raf = requestAnimationFrame(tick);
-    };
-    lastTickRef.current = performance.now();
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [allMet, done]);
-
-  useEffect(() => {
-    if (done) return;
-    if (holdMs >= HOLD_TO_WIN_MS) advance();
+    setSlots(round.base.target.map(() => null));
+    setPicked(null);
+    setFeedback(null);
+    if (round.base.kind === "pattern" || round.base.kind === "rule") {
+      // skip "show" preview — board explains itself
+      enterScatter(round);
+    } else {
+      setPhase("show");
+      const t = setTimeout(() => enterScatter(round), round.showMs);
+      return () => clearTimeout(t);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [holdMs, done]);
+  }, [round]);
 
-  // Splash event — swap two adjacent ducks
-  useEffect(() => {
-    if (done) return;
-    const t = setInterval(() => {
-      setOrder((o) => {
-        const idx = Math.floor(Math.random() * (o.length - 1));
-        const a = o[idx];
-        const b = o[idx + 1];
-        if (!a || !b) return o;
-        const n = [...o];
-        n[idx] = b;
-        n[idx + 1] = a;
-        return n;
+  function place(slotIdx: number, duck: DuckTraits) {
+    if (!round.base.blanks.includes(slotIdx)) return;
+    setSlots((s) => {
+      const next = [...s];
+      // return current occupant (if any) to the pool
+      const existing = next[slotIdx];
+      next[slotIdx] = duck;
+      setAvailable((av) => {
+        const filtered = av.filter((d) => d.id !== duck.id);
+        return existing ? [...filtered, existing] : filtered;
       });
-      setSplashes((n) => n + 1);
-      setTotalSplashes((n) => n + 1);
-      setFlashAt(Date.now());
-      setTimeout(() => setFlashAt(null), 700);
-    }, splashEvery);
-    return () => clearInterval(t);
-  }, [done, splashEvery]);
+      return next;
+    });
+    setPicked(null);
+  }
 
-  function swapAt(from: number, to: number) {
-    if (from === to) return;
-    setOrder((o) => {
-      const n = [...o];
-      const tmp = n[from];
-      n[from] = n[to];
-      n[to] = tmp;
-      return n;
+  function returnToPool(slotIdx: number) {
+    setSlots((s) => {
+      const next = [...s];
+      const d = next[slotIdx];
+      if (d && round.base.blanks.includes(slotIdx)) {
+        next[slotIdx] = null;
+        setAvailable((av) => [...av, d]);
+      }
+      return next;
     });
   }
 
-  function tapPad(slot: number) {
-    if (done) return;
+  function tapPool(d: DuckTraits) {
+    setPicked((p) => (p?.id === d.id ? null : d));
+  }
+
+  function tapSlot(i: number) {
+    if (phase !== "scatter") return;
+    const occupant = slots[i];
     if (picked) {
-      const fromSlot = order.findIndex((d) => d?.id === picked.id);
-      if (fromSlot >= 0) swapAt(fromSlot, slot);
-      setPicked(null);
-    } else if (order[slot]) {
-      setPicked(order[slot]);
+      place(i, picked);
+    } else if (occupant && round.base.blanks.includes(i)) {
+      returnToPool(i);
     }
   }
 
-  function reset() {
-    setLevel(1);
-    const p = generate(difficulty(1).n);
-    setPuzzle(p);
-    setOrder(p.ducks.slice());
-    setPicked(null);
-    setDone(null);
-    setSecondsLeft(DURATION);
-    setSplashes(0);
-    setTotalSplashes(0);
-    setHoldMs(0);
-    setRunScore(0);
-    setCleared(0);
+  function submit() {
+    if (phase !== "scatter") return;
+    if (slots.some((s, i) => round.base.blanks.includes(i) && !s)) return;
+
+    // accuracy: count correct slots out of blanks
+    let correct = 0;
+    const wrongSlots: number[] = [];
+    for (const i of round.base.blanks) {
+      if (slots[i]?.id === round.base.target[i].id) correct++;
+      else wrongSlots.push(i);
+    }
+    const total = round.base.blanks.length;
+    const elapsedMs = performance.now() - startedAtRef.current;
+    const speedBonus = Math.max(0, 60 - Math.floor(elapsedMs / 500)) * 4;
+
+    if (correct === total) {
+      const newCombo = combo + 1;
+      const gain = 100 + total * 25 + speedBonus + newCombo * 15;
+      setScore((s) => s + gain);
+      setCombo(newCombo);
+      setPerfectStreak((p) => p + 1);
+      const msg = round.ruleLabel
+        ? `Rule was: ${round.ruleLabel}. +${gain}`
+        : `+${gain}${newCombo > 1 ? ` · ×${newCombo} combo` : ""}`;
+      setFeedback({ ok: true, text: msg });
+      setTimeout(nextRound, 1400);
+    } else {
+      setLives((l) => l - 1);
+      setCombo(0);
+      setShakeSlot(wrongSlots[0] ?? null);
+      setTimeout(() => setShakeSlot(null), 600);
+      const partial = correct * 20;
+      setScore((s) => s + partial);
+      setFeedback({
+        ok: false,
+        text: round.ruleLabel
+          ? `Not quite. Rule was: ${round.ruleLabel}.`
+          : `${correct}/${total} in place. -1 life.`,
+      });
+      setTimeout(() => {
+        if (lives - 1 <= 0) {
+          finish();
+        } else {
+          nextRound();
+        }
+      }, 1600);
+    }
   }
 
-  function advance() {
-    const gain = 400 + puzzle.constraints.length * 35 + level * 50 - splashes * 8;
-    setRunScore((s) => s + Math.max(50, gain));
-    setCleared((c) => c + 1);
-    const next = level + 1;
-    setLevel(next);
-    const p = generate(difficulty(next).n);
-    setPuzzle(p);
-    setOrder(p.ducks.slice());
-    setPicked(null);
-    setHoldMs(0);
-    setSplashes(0);
+  function nextRound() {
+    const next = roundIdx + 1;
+    if (next >= TOTAL_ROUNDS) {
+      finish();
+      return;
+    }
+    setRoundIdx(next);
+    setRound(buildRound(next));
   }
 
   function finish() {
-    if (done) return;
-    const partial = metCount * 25;
-    const final = Math.max(0, runScore + partial + timeBonus(secondsLeft, 2));
+    if (phase === "done") return;
+    setPhase("done");
+    const streakBonus = perfectStreak * 30;
+    const final = Math.max(0, score + streakBonus);
     recordRound("ducks", final, xpFromScore(final));
-    setDone({ secondsLeft, cleared });
   }
 
-  const liveScore = runScore + (allMet ? 0 : metCount * 25);
-  const finalScore = done
-    ? Math.max(0, runScore + metCount * 25 + timeBonus(done.secondsLeft, 2))
-    : 0;
+  function reset() {
+    setRoundIdx(0);
+    setRound(buildRound(0));
+    setPhase("ready");
+    setLives(MAX_LIVES);
+    setScore(0);
+    setCombo(0);
+    setPerfectStreak(0);
+    setFeedback(null);
+  }
+
+  const finalDetails = useMemo(() => {
+    return `Cleared ${roundIdx + (phase === "done" && lives > 0 ? 1 : 0)}/${TOTAL_ROUNDS} rounds · best combo ×${combo} · ${perfectStreak} perfect.`;
+  }, [roundIdx, lives, combo, perfectStreak, phase]);
 
   return (
     <GameShell
       title="Ducks in a Row"
-      skill="Logic"
+      skill="Memory"
       rightSlot={
         <div className="flex items-center gap-3">
-          <span className="chip-gold">L{level}</span>
-          <span className="font-display tabular-nums" style={{ color: "var(--gold-deep)" }}>{liveScore}</span>
-          <Timer seconds={DURATION} running={!done} onExpire={finish} onTick={setSecondsLeft} />
+          <span className="chip-gold">R{roundIdx + 1}/{TOTAL_ROUNDS}</span>
+          <span className="font-display tabular-nums" style={{ color: "var(--gold-deep)" }}>{score}</span>
+          <Hearts n={lives} />
         </div>
       }
     >
-      {!done && (
+      {phase !== "done" && (
         <>
           <GameBanner
             Mark={DuckMark}
-            eyebrow="Drag · drop · hold"
-            tagline="Slide ducks across the lily pads until every clue glows green for 3 seconds straight."
+            eyebrow={
+              round.base.kind === "simple" ? "Memory row" :
+              round.base.kind === "trait" ? "Trait memory" :
+              round.base.kind === "pattern" ? "Complete the pattern" :
+              "Hidden rule"
+            }
+            tagline={round.base.hint}
           />
 
-          {/* Clues */}
-          <div className="glass grain mb-5 p-5">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="chip-sky">{puzzle.n} ducks</span>
-                <span className="chip-muted">{cleared} cleared</span>
+          {round.example && (
+            <div className="glass grain mb-5 p-4">
+              <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: "var(--sky-deep)" }}>
+                Example arranged by the secret rule
               </div>
-              <div className="flex items-center gap-2">
-                <span className="chip-leaf">{metCount}/{puzzle.constraints.length} green</span>
-                <span className="chip-muted">{splashes} splash{splashes === 1 ? "" : "es"}</span>
+              <div className="flex flex-wrap gap-2">
+                {round.example.map((d) => (
+                  <span key={d.id} className="rounded-2xl border-[2px] bg-white p-1" style={{ borderColor: "#1f2933" }}>
+                    <Duckie traits={d} scale={0.55} />
+                  </span>
+                ))}
               </div>
             </div>
-            <ul className="grid gap-1.5 text-sm md:grid-cols-2">
-              {puzzle.constraints.map((c, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 rounded-xl border-[1.5px] px-3 py-2 transition-colors"
-                  style={{
-                    background: constraintsMet[i] ? "var(--leaf-soft)" : "var(--paper-2)",
-                    borderColor: constraintsMet[i]
-                      ? "color-mix(in oklab, var(--leaf) 60%, transparent)"
-                      : "color-mix(in oklab, var(--ink) 10%, transparent)",
-                  }}
-                >
-                  <span
-                    className="mt-1 inline-block h-2.5 w-2.5 rounded-full"
-                    style={{ background: constraintsMet[i] ? "var(--leaf-deep, #1ba884)" : "color-mix(in oklab, var(--ink) 25%, transparent)" }}
-                  />
-                  <span className="leading-snug">{describe(c)}</span>
-                </li>
-              ))}
-            </ul>
+          )}
+
+          {/* Target row (lily pads) */}
+          <div className="mb-5 flex flex-wrap items-end justify-center gap-3">
+            {slots.map((d, i) => (
+              <LilyPad
+                key={i}
+                index={i}
+                duck={d}
+                editable={round.base.blanks.includes(i)}
+                shake={shakeSlot === i}
+                phase={phase}
+                showingPreview={phase === "show"}
+                previewDuck={round.base.target[i]}
+                onTap={() => tapSlot(i)}
+                onDropDuck={(id) => {
+                  const inAvail = available.find((x) => x.id === id);
+                  if (inAvail) place(i, inAvail);
+                  else {
+                    // moving between slots: find owning slot
+                    const fromSlot = slots.findIndex((x) => x?.id === id);
+                    if (fromSlot >= 0 && fromSlot !== i && round.base.blanks.includes(fromSlot)) {
+                      const moved = slots[fromSlot]!;
+                      setSlots((s) => {
+                        const n = [...s];
+                        n[fromSlot] = null;
+                        const existing = n[i];
+                        n[i] = moved;
+                        if (existing) setAvailable((av) => [...av, existing]);
+                        return n;
+                      });
+                    }
+                  }
+                }}
+              />
+            ))}
           </div>
 
-          {/* Pond */}
+          {/* Pond with scattered ducks */}
           <div
-            className="relative overflow-hidden rounded-3xl border-[2.5px] p-6"
+            className="relative overflow-hidden rounded-3xl border-[2.5px]"
             style={{
+              height: 360,
               background:
                 "radial-gradient(ellipse at 20% 30%, #b6e6f3, transparent 55%), radial-gradient(ellipse at 75% 70%, #9ddef0, transparent 60%), #cdebf6",
               borderColor: "color-mix(in oklab, #06aed5 50%, transparent)",
               boxShadow: "inset 0 2px 0 rgba(255,255,255,0.6)",
             }}
           >
-            {/* surface ripples */}
             <svg className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="none">
               <defs>
-                <pattern id="ripple" width="60" height="20" patternUnits="userSpaceOnUse">
+                <pattern id="ripple-d" width="60" height="20" patternUnits="userSpaceOnUse">
                   <path d="M0 10 q 15 -6 30 0 t 30 0" stroke="#0a8aaa" strokeOpacity="0.18" fill="none" />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#ripple)" />
+              <rect width="100%" height="100%" fill="url(#ripple-d)" />
             </svg>
 
-            <div className="relative mb-3 flex items-center justify-between">
-              <span className="chip-sky">Lily pads · 1 → {puzzle.n}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Hold all green</span>
-                <div
-                  className="h-2.5 w-32 overflow-hidden rounded-full border-[1.5px]"
-                  style={{ background: "white", borderColor: "color-mix(in oklab, #1f2933 12%, transparent)" }}
-                >
-                  <div className="h-full transition-all" style={{ width: `${(holdMs / HOLD_TO_WIN_MS) * 100}%`, background: "var(--leaf)" }} />
-                </div>
+            {phase === "show" && (
+              <div className="absolute inset-0 grid place-items-center">
+                <div className="chip-gold">Watch the row…</div>
               </div>
-            </div>
+            )}
 
-            <div
-              className="relative flex flex-wrap items-center justify-center gap-4 py-2"
-              style={{ filter: flashAt ? "brightness(1.05)" : undefined }}
-            >
-              {order.map((d, i) => (
-                <LilyPad
-                  key={i}
-                  index={i}
-                  duck={d}
-                  picked={picked?.id === d?.id}
-                  dragging={dragId !== null && d?.id === dragId}
-                  splash={!!flashAt}
-                  onTap={() => tapPad(i)}
-                  onDragStart={() => d && setDragId(d.id)}
-                  onDragEnd={() => setDragId(null)}
-                  onDrop={() => {
-                    if (dragId == null) return;
-                    const from = order.findIndex((x) => x?.id === dragId);
-                    if (from >= 0) swapAt(from, i);
-                    setDragId(null);
+            {phase === "scatter" && scatter.map((s) => {
+              const d = available.find((x) => x.id === s.id);
+              if (!d) return null;
+              const isPicked = picked?.id === d.id;
+              return (
+                <button
+                  key={s.id}
+                  draggable
+                  onDragStart={(e) => e.dataTransfer.setData("text/plain", String(d.id))}
+                  onClick={() => tapPool(d)}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 rounded-2xl p-1 transition-transform active:cursor-grabbing"
+                  style={{
+                    left: `${s.x}%`,
+                    top: `${s.y}%`,
+                    transform: `translate(-50%,-50%) rotate(${s.rot}deg) scale(${isPicked ? 1.15 : 1})`,
+                    background: isPicked ? "color-mix(in oklab, #ffd166 60%, white)" : "rgba(255,255,255,0.7)",
+                    border: `2px solid ${isPicked ? "#e9b13d" : "#1f2933"}`,
+                    cursor: "grab",
+                    boxShadow: isPicked ? "0 0 0 5px color-mix(in oklab, #ffd166 35%, transparent)" : "0 3px 0 rgba(31,41,51,0.15)",
                   }}
-                />
-              ))}
-            </div>
+                >
+                  <Duckie traits={d} scale={0.55} />
+                </button>
+              );
+            })}
 
-            <div className="relative mt-4 flex items-center justify-between">
-              <button onClick={reset} className="pill-btn text-xs">Restart run</button>
-              <p className="text-xs text-muted-foreground">Drag a duck onto another pad — or tap two pads to swap.</p>
+            {feedback && (
+              <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+                <span
+                  className="rounded-full border-[2px] px-4 py-1.5 font-display text-sm shadow"
+                  style={{
+                    background: feedback.ok ? "color-mix(in oklab, #2dd4a8 25%, white)" : "color-mix(in oklab, #ff7a59 25%, white)",
+                    borderColor: feedback.ok ? "#1ba884" : "#c2492f",
+                    color: "#1f2933",
+                  }}
+                >
+                  {feedback.ok ? "✓ " : "✕ "}{feedback.text}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <button onClick={reset} className="pill-btn text-xs">Restart</button>
+            <div className="flex items-center gap-2">
+              <span className="chip-muted">Tap a duck, then a pad — or drag.</span>
+              <button
+                onClick={submit}
+                disabled={phase !== "scatter" || slots.some((s, i) => round.base.blanks.includes(i) && !s)}
+                className="pill-btn pill-btn-gold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Check row
+              </button>
             </div>
           </div>
         </>
       )}
 
-      {done && (
+      {phase === "done" && (
         <ResultCard
-          won={done.cleared > 0}
-          score={finalScore}
-          xp={xpFromScore(finalScore)}
+          won={score >= 400 && lives > 0}
+          score={score}
+          xp={xpFromScore(score)}
           best={loadState().bestScores.ducks}
-          details={`Cleared ${done.cleared} level${done.cleared === 1 ? "" : "s"} · weathered ${totalSplashes} splash${totalSplashes === 1 ? "" : "es"}.`}
+          details={finalDetails}
           onPlayAgain={reset}
         />
       )}
@@ -305,75 +402,51 @@ function Ducks() {
   );
 }
 
-function LilyPad({
-  index,
-  duck,
-  picked,
-  dragging,
-  splash,
-  onTap,
-  onDragStart,
-  onDragEnd,
-  onDrop,
-}: {
-  index: number;
-  duck: Duck | null;
-  picked: boolean;
-  dragging: boolean;
-  splash: boolean;
-  onTap: () => void;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-  onDrop: () => void;
-}) {
-  const body = duck ? DUCK_BODY[duck.color] ?? "#ffd166" : "#ffffff";
+function Hearts({ n }: { n: number }) {
   return (
-    <div
-      onClick={onTap}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => { e.preventDefault(); onDrop(); }}
-      className="relative grid h-44 w-28 cursor-pointer select-none place-items-center rounded-[40%_60%_40%_60%/45%_55%_45%_55%] border-[2px] transition-transform"
-      style={{
-        background: "radial-gradient(ellipse at 30% 30%, #b9e8c8, #6cca97 70%)",
-        borderColor: "#1ba884",
-        transform: picked ? "translateY(-6px) scale(1.02)" : undefined,
-        boxShadow: picked ? "0 0 0 5px color-mix(in oklab, #ffd166 40%, transparent)" : "0 4px 0 #1ba884",
-      }}
-    >
-      <span className="absolute top-2 left-3 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: "color-mix(in oklab, #1ba884 50%, #1f2933)" }}>#{index + 1}</span>
-
-      {duck ? (
-        <div
-          draggable
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          className={`relative flex cursor-grab flex-col items-center gap-1 active:cursor-grabbing ${splash ? "wiggle" : ""}`}
-          style={{ opacity: dragging ? 0.35 : 1 }}
-        >
-          <DuckGlyph color={body} />
-          <div className="mt-1 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-bold capitalize" style={{ color: "#1f2933" }}>
-            {duck.accessory}
-          </div>
-          <div className="rounded-full px-2 py-0.5 text-[10px] font-bold capitalize" style={{ background: "#ffd166", color: "#1f2933" }}>
-            {duck.role}
-          </div>
-        </div>
-      ) : (
-        <span className="text-xs font-semibold text-muted-foreground">empty</span>
-      )}
-    </div>
+    <span className="flex items-center gap-1">
+      {Array.from({ length: MAX_LIVES }).map((_, i) => (
+        <span key={i} style={{ color: i < n ? "#ff7a59" : "rgba(31,41,51,0.18)", fontSize: 18, lineHeight: 1 }}>♥</span>
+      ))}
+    </span>
   );
 }
 
-function DuckGlyph({ color }: { color: string }) {
+function LilyPad({
+  index, duck, editable, shake, phase, showingPreview, previewDuck, onTap, onDropDuck,
+}: {
+  index: number;
+  duck: DuckTraits | null;
+  editable: boolean;
+  shake: boolean;
+  phase: Phase;
+  showingPreview: boolean;
+  previewDuck: DuckTraits;
+  onTap: () => void;
+  onDropDuck: (id: number) => void;
+}) {
+  const displayDuck = showingPreview ? previewDuck : duck;
   return (
-    <svg width="64" height="48" viewBox="0 0 64 48" fill="none">
-      <ellipse cx="26" cy="32" rx="22" ry="11" fill={color} stroke="#1f2933" strokeWidth="2.5" />
-      <circle cx="48" cy="18" r="11" fill={color} stroke="#1f2933" strokeWidth="2.5" />
-      <circle cx="51" cy="16" r="1.6" fill="#1f2933" />
-      <circle cx="51.6" cy="15.5" r="0.45" fill="#fdf6e3" />
-      <path d="M58 19 L66 17 L60 24 Z" fill="#ff7a59" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M16 26 q 8 -6 18 0" stroke="#1f2933" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-    </svg>
+    <div
+      onClick={onTap}
+      onDragOver={(e) => editable && e.preventDefault()}
+      onDrop={(e) => { e.preventDefault(); const id = Number(e.dataTransfer.getData("text/plain")); if (!Number.isNaN(id)) onDropDuck(id); }}
+      className={`relative grid h-32 w-28 cursor-pointer select-none place-items-center rounded-[40%_60%_40%_60%/45%_55%_45%_55%] border-[2px] transition-transform ${shake ? "wiggle" : ""}`}
+      style={{
+        background: editable
+          ? "radial-gradient(ellipse at 30% 30%, #b9e8c8, #6cca97 70%)"
+          : "radial-gradient(ellipse at 30% 30%, #e9d8a8, #c9aa6a 70%)",
+        borderColor: editable ? "#1ba884" : "#8e6a26",
+        boxShadow: "0 4px 0 rgba(31,41,51,0.15)",
+        opacity: phase === "show" ? 0.95 : 1,
+      }}
+    >
+      <span className="absolute top-1 left-2 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: "rgba(31,41,51,0.55)" }}>#{index + 1}</span>
+      {displayDuck ? (
+        <Duckie traits={displayDuck} scale={0.55} />
+      ) : (
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{editable ? "drop here" : "—"}</span>
+      )}
+    </div>
   );
 }

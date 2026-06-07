@@ -75,9 +75,9 @@ function Hub() {
             <FolderTile
               to="/play/ducks"
               title="Ducks in a Row"
-              skill="Logic"
+              skill="Memory"
               tone="gold"
-              blurb="Drag rubber ducks onto lily pads so every clue lights up — before a splash shuffles them."
+              blurb="A row of quirky ducks appears, then scatters across the pond. Rebuild the order from memory, spot patterns, crack hidden rules."
               best={state.bestScores.ducks}
               done={isDone("ducks")}
               Mark={DuckMark}
@@ -85,9 +85,9 @@ function Hub() {
             <FolderTile
               to="/play/deepdive"
               title="Deep Dive"
-              skill="Reaction"
+              skill="Logic"
               tone="sky"
-              blurb="Koi rise in lanes from the deep. Tap the one matching the call — keep your combo alive."
+              blurb="A tiny diver hunts hidden treasure on a 5×5 reef. Read the clues, narrow the tiles, tap the one that fits them all."
               best={state.bestScores.deepdive}
               done={isDone("deepdive")}
               Mark={DiverMark}
@@ -111,8 +111,8 @@ function Hub() {
             <span className="chip-muted">100 xp per level</span>
           </div>
           <div className="glass grain flex flex-wrap items-center justify-around gap-6 p-8">
+            <SkillRing label="Memory" xp={state.skillXp.memory} />
             <SkillRing label="Logic" xp={state.skillXp.logic} />
-            <SkillRing label="Reaction" xp={state.skillXp.memory} />
             <SkillRing label="Reflex" xp={state.skillXp.spatial} />
           </div>
         </section>

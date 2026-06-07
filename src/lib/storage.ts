@@ -50,8 +50,8 @@ export function todayKey() {
 }
 
 export const GAME_TO_SKILL: Record<GameKey, SkillKey> = {
-  ducks: "logic",
-  deepdive: "memory",
+  ducks: "memory",
+  deepdive: "logic",
   fruit: "spatial",
 };
 
@@ -63,7 +63,7 @@ export const GAME_LABEL: Record<GameKey, string> = {
 
 export const SKILL_LABEL: Record<SkillKey, string> = {
   logic: "Logic",
-  memory: "Reaction",
+  memory: "Memory",
   spatial: "Reflex",
 };
 
