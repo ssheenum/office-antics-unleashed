@@ -22,7 +22,7 @@ export const Route = createFileRoute("/play/deepdive")({
 });
 
 const MAX_STRIKES = 3;
-const TOTAL_ROUNDS = 6;
+const TOTAL_ROUNDS = 5;
 
 interface RoundState {
   puzzle: Puzzle;
