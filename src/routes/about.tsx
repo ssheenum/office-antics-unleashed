@@ -4,7 +4,7 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "How to play — Touch Grass" },
-      { name: "description", content: "Three quick, friendly brain games — ducks on lily pads, koi rising in lanes, fruit falling into a basket." },
+      { name: "description", content: "Three quick, friendly brain games — duck lineups, underwater clue hunts, fruit falling into a basket." },
     ],
   }),
   component: About,
@@ -20,7 +20,7 @@ function About() {
       <main className="mx-auto max-w-3xl space-y-6 px-4 pb-12 text-base leading-relaxed">
         <div className="glass grain p-6">
           <p>
-            <strong>Touch Grass</strong> is a tiny pond-and-garden arcade. The names are office sayings —
+            <strong>Touch Grass</strong> is a tiny meadow arcade. The names are office sayings —
             <em> ducks in a row, deep dive, low-hanging fruit</em> — but inside, every game is a small, fun reflex
             or thinking puzzle. Two-minute rounds. Friendly stakes. Nothing about your inbox.
           </p>
