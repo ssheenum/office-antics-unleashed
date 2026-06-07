@@ -320,7 +320,19 @@ function DucksGame() {
 
             {phase === "show" && (
               <div className="absolute inset-0 grid place-items-center">
-                <div className="chip-gold">Watch the row…</div>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="chip-gold pop-in">👀 Memorise the order…</div>
+                  <div className="h-2 w-48 overflow-hidden rounded-full border-[1.5px] bg-white/70" style={{ borderColor: "#e9b13d" }}>
+                    <div
+                      className="h-full"
+                      style={{
+                        background: "linear-gradient(90deg, #ffd166, #ff7a59)",
+                        animation: `shrinkBar ${round.showMs}ms linear forwards`,
+                      }}
+                    />
+                  </div>
+                </div>
+                <style>{`@keyframes shrinkBar { from { width: 100%; } to { width: 0%; } }`}</style>
               </div>
             )}
 
