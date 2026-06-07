@@ -8,7 +8,7 @@ import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import {
-  genSimple, genTrait, genPattern, genRule,
+  genSimple, genTrait, genPattern,
   type BaseRound, type DuckTraits,
 } from "@/lib/puzzles/ducks";
 
