@@ -2,18 +2,22 @@ const CURRENT_KEY = "touch-grass:current-user";
 const USERS_KEY = "touch-grass:users";
 
 export const QUIRKY_USERNAMES = [
-  "BareFootBard",
-  "MeadowGoblin",
-  "SunbeamSloth",
-  "CloverCrusader",
-  "DewDropDiva",
-  "FernFiend",
-  "MossMonarch",
-  "WildflowerNomad",
-  "PicnicPirate",
-  "GrasshopperGuru",
-  "BumblebeeBaron",
-  "DandelionDuke",
+  "SynergySlayer",
+  "DeckPolisher",
+  "OOO_Forever",
+  "MidMeetingMute",
+  "SlackLurker",
+  "QuarterlyGremlin",
+  "PivotTablePirate",
+  "StandUpSnoozer",
+  "InboxZeroHero",
+  "ParkingLotIdea",
+  "CircleBackChad",
+  "LowBandwidthLarry",
+  "BlueSkyBaroness",
+  "EOD_Goblin",
+  "ScopeCreepKing",
+  "OffsiteOracle",
 ];
 
 export function getCurrentUser(): string | null {
