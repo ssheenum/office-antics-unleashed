@@ -1,115 +1,103 @@
-// Minimal flat vector garden sprites — thin black line art, limited palette.
+// Flat vector under-the-sea sprites for the Deep Dive puzzle.
 import type { PropKind } from "@/lib/puzzles/deepdive";
 
 const INK = "#1f2933";
 
-// Note: PropKind names are legacy; visuals & labels are garden-themed now.
-//   redCoral   → red flower (poppy)
-//   blueCoral  → blue flower (bellflower)
-//   jellyfish  → butterfly
-//   turtle     → snail
-//   anchor     → watering can
-//   seaweed    → fern
-//   bubble     → pebble
-//   shell      → mushroom
-
 export function PropSprite({ kind, size = 56 }: { kind: PropKind; size?: number }) {
   switch (kind) {
-    case "redCoral": // red poppy
+    case "redCoral":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M32 56 L32 36" stroke="#2f6d2a" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M28 48 q -6 -3 -6 -9" stroke="#2f6d2a" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <circle cx="32" cy="26" r="12" fill="#e94e3a" stroke={INK} strokeWidth="2" />
-          <circle cx="26" cy="22" r="5" fill="#c63a2a" stroke={INK} strokeWidth="1.5" />
-          <circle cx="38" cy="24" r="4" fill="#c63a2a" stroke={INK} strokeWidth="1.5" />
-          <circle cx="32" cy="26" r="3" fill="#1f2933" />
+          <path d="M32 56 L 32 36 M32 44 q -6 -2 -8 -10 M32 40 q 6 -3 10 -10 M32 36 q -4 -3 -4 -10 M32 38 q 5 -2 8 -8"
+            stroke="#e94e3a" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+          <path d="M32 56 L 32 36 M32 44 q -6 -2 -8 -10 M32 40 q 6 -3 10 -10 M32 36 q -4 -3 -4 -10"
+            stroke={INK} strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.5" />
+          <ellipse cx="32" cy="58" rx="14" ry="3" fill="#e8c07a" stroke={INK} strokeWidth="1.5" />
         </svg>
       );
-    case "blueCoral": // bellflower
+    case "blueCoral":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M32 56 L32 28" stroke="#2f6d2a" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M22 30 L32 18 L42 30 Z" fill="#3a6ec7" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-          <path d="M26 28 Q 32 34 38 28" stroke={INK} strokeWidth="1.6" fill="none" />
-          <circle cx="32" cy="20" r="1.8" fill="#fff4c2" stroke={INK} strokeWidth="1" />
+          <path d="M32 56 L 32 30 M28 44 q -8 -4 -10 -14 M36 44 q 8 -4 10 -14 M32 30 q -3 -4 -2 -12 M32 30 q 4 -3 6 -10"
+            stroke="#3a6ec7" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+          <ellipse cx="32" cy="58" rx="14" ry="3" fill="#e8c07a" stroke={INK} strokeWidth="1.5" />
         </svg>
       );
-    case "jellyfish": // butterfly
+    case "jellyfish":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M32 18 q -14 -10 -20 0 q -4 12 8 18 q 8 4 12 -4 z" fill="#e8a23a" stroke={INK} strokeWidth="2" />
-          <path d="M32 18 q 14 -10 20 0 q 4 12 -8 18 q -8 4 -12 -4 z" fill="#e8a23a" stroke={INK} strokeWidth="2" />
-          <circle cx="20" cy="22" r="2" fill={INK} />
-          <circle cx="44" cy="22" r="2" fill={INK} />
-          <line x1="32" y1="14" x2="32" y2="44" stroke={INK} strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M32 14 q -3 -4 -6 -3 M32 14 q 3 -4 6 -3" stroke={INK} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          <path d="M12 28 Q 14 12 32 12 Q 50 12 52 28 Q 52 34 48 34 L 16 34 Q 12 34 12 28 Z"
+            fill="#f3a6d6" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
+          <path d="M12 32 q 3 4 6 0 q 3 4 6 0 q 3 4 6 0 q 3 4 6 0 q 3 4 6 0 q 3 4 6 0"
+            stroke={INK} strokeWidth="1.6" fill="none" />
+          <path d="M18 34 q -2 12 -6 18 M28 34 q -1 14 -3 22 M36 34 q 1 14 3 22 M46 34 q 2 12 6 18"
+            stroke="#f3a6d6" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <circle cx="24" cy="22" r="2" fill={INK} />
+          <circle cx="40" cy="22" r="2" fill={INK} />
         </svg>
       );
-    case "turtle": // snail
+    case "turtle":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M10 48 L52 48 q 4 0 4 -4 q 0 -6 -8 -6 L14 38" fill="#e8c07a" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-          <circle cx="26" cy="32" r="14" fill="#c47a3a" stroke={INK} strokeWidth="2" />
-          <circle cx="26" cy="32" r="9" fill="none" stroke={INK} strokeWidth="1.8" />
-          <circle cx="26" cy="32" r="4.5" fill="none" stroke={INK} strokeWidth="1.6" />
-          <path d="M50 42 L52 32 M54 42 L57 32" stroke={INK} strokeWidth="2" strokeLinecap="round" />
-          <circle cx="52" cy="30" r="1.6" fill={INK} />
-          <circle cx="57" cy="30" r="1.6" fill={INK} />
+          <ellipse cx="32" cy="36" rx="20" ry="14" fill="#3fb786" stroke={INK} strokeWidth="2" />
+          <path d="M32 24 q -6 4 -6 12 q 0 8 6 12 q 6 -4 6 -12 q 0 -8 -6 -12 z M14 36 q 4 -3 8 0 M42 36 q 4 -3 8 0"
+            stroke={INK} strokeWidth="1.6" fill="none" />
+          <circle cx="50" cy="32" r="5" fill="#3fb786" stroke={INK} strokeWidth="2" />
+          <circle cx="52" cy="31" r="1.4" fill={INK} />
+          <path d="M16 48 q -2 2 -4 0 M48 48 q 2 2 4 0 M22 50 q 0 3 -2 4 M42 50 q 0 3 2 4"
+            stroke={INK} strokeWidth="2" fill="none" strokeLinecap="round" />
         </svg>
       );
-    case "anchor": // watering can
+    case "anchor":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M14 22 L48 22 L46 50 L18 50 Z" fill="#3a6ec7" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-          <path d="M48 26 L58 18 L60 22 L50 32 Z" fill="#3a6ec7" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-          <path d="M20 22 q 12 -10 24 0" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
-          <circle cx="58" cy="16" r="1.6" fill="#a9d2ff" stroke={INK} strokeWidth="1" />
-          <circle cx="56" cy="13" r="1.4" fill="#a9d2ff" stroke={INK} strokeWidth="1" />
+          <circle cx="32" cy="14" r="6" fill="none" stroke="#5a626d" strokeWidth="3" />
+          <path d="M32 20 L 32 52 M20 44 q 12 12 24 0 M16 36 L 48 36"
+            stroke="#5a626d" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+          <path d="M16 36 l -4 -2 M48 36 l 4 -2" stroke="#5a626d" strokeWidth="3" strokeLinecap="round" />
         </svg>
       );
-    case "seaweed": // fern frond
+    case "seaweed":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M32 58 Q 30 36 32 12" stroke="#2f6d2a" strokeWidth="3" fill="none" strokeLinecap="round" />
-          {[
-            [50, -25], [44, -10], [38, 5], [32, 18], [26, 30],
-          ].map(([y, off], i) => (
-            <g key={i}>
-              <path d={`M32 ${y} q -14 ${off} -16 ${off + 6}`} stroke="#3fb786" strokeWidth="2" fill="none" strokeLinecap="round" />
-              <path d={`M32 ${y} q 14 ${off} 16 ${off + 6}`} stroke="#3fb786" strokeWidth="2" fill="none" strokeLinecap="round" />
-            </g>
-          ))}
+          <path d="M22 56 q -4 -10 2 -20 q -6 -10 2 -20 q -4 -8 4 -10"
+            stroke="#2f8a4a" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <path d="M40 56 q 4 -10 -2 -20 q 6 -10 -2 -20 q 4 -8 -4 -10"
+            stroke="#3fb786" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <ellipse cx="32" cy="58" rx="14" ry="3" fill="#e8c07a" stroke={INK} strokeWidth="1.5" />
         </svg>
       );
-    case "bubble": // pebble
+    case "bubble":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M12 40 Q 14 22 32 20 Q 52 22 52 38 Q 50 50 32 50 Q 14 50 12 40 Z" fill="#cbd1d8" stroke={INK} strokeWidth="2" />
-          <path d="M20 32 q 6 -4 14 -2" stroke={INK} strokeWidth="1.4" fill="none" opacity="0.4" />
+          <circle cx="32" cy="32" r="18" fill="#a9e3ff" stroke={INK} strokeWidth="2" opacity="0.85" />
+          <ellipse cx="24" cy="24" rx="5" ry="3.5" fill="white" opacity="0.85" />
+          <circle cx="48" cy="46" r="4" fill="#a9e3ff" stroke={INK} strokeWidth="1.5" opacity="0.85" />
         </svg>
       );
-    case "shell": // mushroom
+    case "shell":
       return (
         <svg width={size} height={size} viewBox="0 0 64 64">
-          <path d="M10 36 Q 12 14 32 14 Q 52 14 54 36 Z" fill="#e94e3a" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-          <circle cx="22" cy="26" r="3" fill="#fbeed8" stroke={INK} strokeWidth="1.4" />
-          <circle cx="36" cy="22" r="2.4" fill="#fbeed8" stroke={INK} strokeWidth="1.4" />
-          <circle cx="44" cy="30" r="2" fill="#fbeed8" stroke={INK} strokeWidth="1.4" />
-          <path d="M22 36 L 22 52 q 0 4 10 4 q 10 0 10 -4 L 42 36 Z" fill="#fbeed8" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
+          <path d="M10 44 Q 12 16 32 12 Q 52 16 54 44 Z" fill="#ffc4b8" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
+          <path d="M32 12 L 32 44 M32 12 q -10 14 -22 32 M32 12 q 10 14 22 32 M32 12 q -5 16 -12 32 M32 12 q 5 16 12 32"
+            stroke={INK} strokeWidth="1.5" fill="none" opacity="0.55" />
+          <ellipse cx="32" cy="44" rx="22" ry="2.5" fill="#e8c07a" stroke={INK} strokeWidth="1.5" />
         </svg>
       );
   }
 }
 
 export function TreasureSprite({ size = 56 }: { size?: number }) {
-  // Watering can with a sparkly drop — celebratory garden version of "treasure"
   return (
     <svg width={size} height={size} viewBox="0 0 64 64">
-      <path d="M14 50 L 50 50 L 44 28 L 20 28 Z" fill="#e8a23a" stroke={INK} strokeWidth="2.2" strokeLinejoin="round" />
-      <ellipse cx="32" cy="28" rx="14" ry="4" fill="#f5cf6d" stroke={INK} strokeWidth="2" />
-      <circle cx="32" cy="18" r="6" fill="#fff4c2" stroke={INK} strokeWidth="2" />
-      <path d="M32 18 L 32 8 M26 12 L 24 6 M38 12 L 40 6" stroke="#e9b13d" strokeWidth="2.2" strokeLinecap="round" />
+      {/* treasure chest */}
+      <path d="M8 28 q 0 -10 8 -10 H 48 q 8 0 8 10 V 30 H 8 Z" fill="#a06a3a" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
+      <rect x="8" y="30" width="48" height="22" rx="2" fill="#c98a52" stroke={INK} strokeWidth="2" />
+      <path d="M8 36 H 56 M8 44 H 56" stroke={INK} strokeWidth="1.2" opacity="0.45" />
+      <rect x="28" y="32" width="8" height="10" rx="1.5" fill="#ffd166" stroke={INK} strokeWidth="2" />
+      <circle cx="32" cy="37" r="1.5" fill={INK} />
+      {/* sparkle */}
+      <path d="M48 14 L 50 18 L 54 20 L 50 22 L 48 26 L 46 22 L 42 20 L 46 18 Z" fill="#ffd166" stroke={INK} strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }
