@@ -7,6 +7,7 @@ import { ResultCard } from "@/components/game/ResultCard";
 import { BranchMark } from "@/components/art/Marks";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
+import { Tutorial } from "@/components/game/Tutorial";
 
 export const Route = createFileRoute("/play/fruit")({
   head: () => ({
@@ -292,6 +293,18 @@ function FruitGame() {
         </div>
       }
     >
+      <Tutorial
+        gameKey="fruit"
+        title="Low-Hanging Fruit"
+        accent="#e85b6b"
+        accentDeep="#9a2e3b"
+        onStart={() => {}}
+        steps={[
+          { icon: "🧺", title: "Move the basket", body: "Slide your mouse, drag on touch, or use ← → arrow keys to glide the basket left and right." },
+          { icon: "🍎", title: "Follow the rule", body: <>The chip up top tells you what to catch — like <b>only apples</b> or <b>only red fruit</b>. Catch the right ones, skip the rest.</> },
+          { icon: "🪨", title: "Dodge rocks, watch hearts", body: "Rocks and wrong fruit cost a heart. Three hearts and the round ends. The rule changes every so often — keep an eye on it!" },
+        ]}
+      />
       <GameBanner
         Mark={BranchMark}
         eyebrow="Slide · catch · dodge"

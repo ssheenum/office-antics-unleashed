@@ -7,6 +7,7 @@ import { DiverMark } from "@/components/art/Marks";
 import { PropSprite, TreasureSprite } from "@/components/art/PondProps";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
+import { Tutorial } from "@/components/game/Tutorial";
 import {
   generateDeepDive, clueDescribe, SIZE, type Puzzle,
 } from "@/lib/puzzles/deepdive";

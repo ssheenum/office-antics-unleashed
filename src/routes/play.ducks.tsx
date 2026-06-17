@@ -7,6 +7,7 @@ import { DuckMark } from "@/components/art/Marks";
 import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
+import { Tutorial } from "@/components/game/Tutorial";
 import {
   genSimple, genTrait, genPattern,
   type BaseRound, type DuckTraits,
@@ -234,6 +235,18 @@ function DucksGame() {
         </div>
       }
     >
+      <Tutorial
+        gameKey="ducks"
+        title="Ducks in a Row"
+        accent="#f5b740"
+        accentDeep="#b07a13"
+        onStart={() => {}}
+        steps={[
+          { icon: "👀", title: "Watch the lineup", body: "A row of ducks flashes for a few seconds. Memorise their order and details." },
+          { icon: "🦆", title: "Rebuild the row", body: "Tap a duck from the pile, then tap an empty pad — or just drag them across. Tap a placed duck to send it back." },
+          { icon: "🎯", title: "Check the row", body: "Hit Check row when you're happy. Get them all right for combo points. Three wrong rounds and you're done." },
+        ]}
+      />
       {phase !== "done" && (
         <>
           <GameBanner
