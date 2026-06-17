@@ -233,7 +233,7 @@ function GameCard({ tile, best, done }: { tile: Tile; best: number; done: boolea
           loading="lazy"
           width={1024}
           height={768}
-          className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105"
+          className="absolute inset-0 h-full w-full scale-125 object-cover transition-transform group-hover:scale-[1.32]"
         />
         {done && (
           <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white" style={{ background: "#5b9e3d" }}>
