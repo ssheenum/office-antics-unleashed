@@ -29,10 +29,13 @@ function LoginPage() {
   const [picked, setPicked] = useState<string | null>(null);
   const [custom, setCustom] = useState("");
   const [returning, setReturning] = useState<string[]>([]);
-  // fresh random sample every visit
-  const [names, setNames] = useState<string[]>(() => sampleUsernames(8));
+  // start empty so SSR + first client render match; shuffle after mount
+  const [names, setNames] = useState<string[]>([]);
 
-  useEffect(() => { setReturning(listUsers()); }, []);
+  useEffect(() => {
+    setReturning(listUsers());
+    setNames(sampleUsernames(8));
+  }, []);
 
   const value = sanitizeUsername(custom || picked || "");
   const canGo = value.length >= 2;
