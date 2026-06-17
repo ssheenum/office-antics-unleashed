@@ -25,7 +25,6 @@ export const Route = createFileRoute("/play/deepdive")({
 });
 
 const MAX_STRIKES = 3;
-const TOTAL_ROUNDS = 5;
 
 interface RoundState {
   puzzle: Puzzle;
@@ -44,7 +43,7 @@ function freshRound(level: number): RoundState {
     puzzle,
     guesses: 0,
     solved: false,
-    startedAt: performance.now(),
+    startedAt: typeof performance !== "undefined" ? performance.now() : 0,
     revealedTile: null,
     wrongTiles: [],
     markedTiles: [],
@@ -54,12 +53,17 @@ function freshRound(level: number): RoundState {
 
 function DeepDive() {
   const [roundIdx, setRoundIdx] = useState(0);
-  const [round, setRound] = useState<RoundState>(() => freshRound(1));
+  const [round, setRound] = useState<RoundState | null>(null);
   const [score, setScore] = useState(0);
   const [strikes, setStrikes] = useState(0);
   const [done, setDone] = useState(false);
   const [diver, setDiver] = useState<{ x: number; y: number } | null>(null);
   const [feedback, setFeedback] = useState<null | { ok: boolean; text: string }>(null);
+
+  // Generate the first puzzle on the client only to avoid SSR/CSR hydration mismatch.
+  useEffect(() => {
+    if (!round) setRound(freshRound(1));
+  }, [round]);
 
   function tapTile(x: number, y: number, e?: React.MouseEvent) {
     if (done || round.solved) return;
