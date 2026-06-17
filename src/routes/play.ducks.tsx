@@ -8,6 +8,8 @@ import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
+import { EyeIcon, DucksIcon, TargetIcon, SparkleIcon } from "@/components/art/MinimalIcons";
+
 import {
   genSimple, genTrait, genPattern,
   type BaseRound, type DuckTraits,

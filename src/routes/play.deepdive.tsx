@@ -8,6 +8,8 @@ import { PropSprite, TreasureSprite } from "@/components/art/PondProps";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
+import { MapIcon, TapIcon, NoIcon } from "@/components/art/MinimalIcons";
+
 import {
   generateDeepDive, clueDescribe, SIZE, type Puzzle,
 } from "@/lib/puzzles/deepdive";
