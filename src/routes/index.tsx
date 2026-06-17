@@ -135,17 +135,18 @@ function Hub() {
             className="block h-80 w-full object-cover md:h-[420px]"
           />
           <div className="pointer-events-none absolute inset-0" style={{
-            background: "linear-gradient(180deg, transparent 35%, color-mix(in oklab, #fdf6e3 88%, transparent) 100%)",
+            background: "linear-gradient(180deg, transparent 25%, rgba(31,41,51,0.55) 70%, rgba(31,41,51,0.85) 100%)",
           }} />
           <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "#3a7026" }}>Hey there,</div>
-            <h1 className="mt-1 font-display text-4xl leading-[1.02] tracking-tight md:text-5xl" style={{ color: "#1f2933" }}>
-              <span style={{ color: "#3a7026" }}>{user}</span>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "#ffd166" }}>Hey there,</div>
+            <h1 className="mt-1 font-display text-4xl leading-[1.02] tracking-tight md:text-5xl" style={{ color: "#ffffff", textShadow: "0 2px 6px rgba(0,0,0,0.45)" }}>
+              <span style={{ color: "#aef0a4" }}>{user}</span>
             </h1>
-            <p className="mt-1.5 max-w-md text-sm leading-relaxed" style={{ color: "color-mix(in oklab, #1f2933 75%, transparent)" }}>
-              Three short games. Five minutes. Then back outside.
+            <p className="mt-1.5 max-w-md text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.92)", textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}>
+              Three short games. Five minutes. Then back to work.
             </p>
           </div>
+
         </section>
 
 
