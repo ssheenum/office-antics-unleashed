@@ -231,9 +231,9 @@ function GameCard({ tile, best, done }: { tile: Tile; best: number; done: boolea
           src={tile.image}
           alt=""
           loading="lazy"
-          width={768}
+          width={1024}
           height={768}
-          className="h-36 w-36 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105"
         />
         {done && (
           <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white" style={{ background: "#5b9e3d" }}>
