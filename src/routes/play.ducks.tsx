@@ -35,15 +35,19 @@ interface Round {
 }
 
 const MAX_LIVES = 3;
-const TOTAL_ROUNDS = 5;
 
 function buildRound(idx: number): Round {
-  // Friendlier curve: simple → simple+1 → trait → pattern → trait
+  // Endless: ramps difficulty, cycles round types after round 5
   if (idx === 0) return { base: genSimple(3), showMs: 3200 };
   if (idx === 1) return { base: genSimple(4), showMs: 3600 };
   if (idx === 2) return { base: genTrait(4), showMs: 4200 };
   if (idx === 3) return { base: genPattern(5), showMs: 0 };
-  return { base: genTrait(5), showMs: 4800 };
+  if (idx === 4) return { base: genTrait(5), showMs: 4800 };
+  // After round 5: rotate between trait and pattern at top difficulty
+  const cycle = (idx - 5) % 3;
+  if (cycle === 0) return { base: genPattern(6), showMs: 0 };
+  if (cycle === 1) return { base: genTrait(6), showMs: 5200 };
+  return { base: genSimple(6), showMs: 5400 };
 }
 
 interface Scatter { id: number; x: number; y: number; rot: number; }
