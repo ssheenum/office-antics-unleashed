@@ -50,30 +50,24 @@ function LoginPage() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* hero grass scene */}
-      <div className="absolute inset-x-0 top-0 h-[55vh]">
-        <img
-          src={loginScene}
-          alt=""
-          className="h-full w-full object-cover"
-          width={1536}
-          height={768}
-        />
-        <div className="absolute inset-x-0 bottom-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #fdf6e3)" }} />
-      </div>
-
+    <div className="relative min-h-screen overflow-hidden" style={{ background: "linear-gradient(180deg, #fbeed8 0%, #fdf6e3 60%)" }}>
       <main className="relative mx-auto max-w-2xl px-5 pb-12 pt-8 md:pt-10">
-        <div className="text-center">
+        {/* Garden hero illustration (same as home) */}
+        <div className="relative overflow-hidden rounded-[2rem] border-[2.5px]" style={{
+          borderColor: "color-mix(in oklab, #1f2933 12%, transparent)",
+          boxShadow: "0 6px 0 color-mix(in oklab, #3a7026 22%, transparent)",
+        }}>
           <img
-            src={mascotTurtle}
-            alt="Touch grass mascot"
-            width={140}
-            height={140}
-            className="mx-auto drop-shadow-lg"
-            style={{ width: 140, height: 140 }}
+            src={gardenHero}
+            alt=""
+            width={1792}
+            height={768}
+            className="block h-44 w-full object-cover md:h-56"
           />
-          <div className="mt-2 inline-flex items-center gap-2 rounded-full border-[2px] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ borderColor: "color-mix(in oklab, #1f2933 14%, transparent)" }}>
+        </div>
+
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border-[2px] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ borderColor: "color-mix(in oklab, #1f2933 14%, transparent)" }}>
             <span className="h-2 w-2 rounded-full" style={{ background: "#5b9e3d" }} />
             5 minute brain break · then go outside
           </div>
@@ -90,6 +84,7 @@ function LoginPage() {
             Pick a name. Your scores stick to it.
           </p>
         </div>
+
 
         {returning.length > 0 && (
           <div className="mt-7 rounded-3xl border-[2px] bg-white/85 p-5 backdrop-blur" style={{ borderColor: "color-mix(in oklab, #1f2933 12%, transparent)", boxShadow: "0 4px 0 color-mix(in oklab, #1f2933 10%, transparent)" }}>
