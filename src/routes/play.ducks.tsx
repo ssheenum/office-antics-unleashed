@@ -232,7 +232,7 @@ function DucksGame() {
       skill="Memory"
       rightSlot={
         <div className="flex items-center gap-3">
-          <span className="chip-gold">R{roundIdx + 1}/{TOTAL_ROUNDS}</span>
+          <span className="chip-gold">Round {roundIdx + 1}</span>
           <span className="font-display tabular-nums" style={{ color: "var(--gold-deep)" }}>{score}</span>
           <Hearts n={lives} />
         </div>
