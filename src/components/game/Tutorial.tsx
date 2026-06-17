@@ -17,8 +17,9 @@ export function resetTutorialDismissals() {
 export interface TutorialStep {
   title: string;
   body: ReactNode;
-  icon?: string; // emoji
+  icon?: ReactNode;
 }
+
 
 export function Tutorial({
   gameKey,
@@ -72,15 +73,16 @@ export function Tutorial({
             onClick={() => close(true)}
             className="text-xs font-semibold text-muted-foreground hover:text-foreground"
           >
-            Skip ✕
+            Skip
           </button>
         </div>
 
         <div className="grid place-items-center">
-          {step.icon && <div className="mb-3 text-5xl leading-none">{step.icon}</div>}
+          {step.icon && <div className="mb-3 grid h-14 w-14 place-items-center">{step.icon}</div>}
           <h3 className="text-center font-display text-2xl leading-tight tracking-tight">{step.title}</h3>
           <div className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{step.body}</div>
         </div>
+
 
         {/* dots */}
         <div className="mt-5 flex justify-center gap-1.5">

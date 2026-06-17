@@ -94,7 +94,7 @@ function LoginPage() {
 
         {returning.length > 0 && (
           <div className="mt-7 rounded-3xl border-[2px] bg-white/85 p-5 backdrop-blur" style={{ borderColor: "color-mix(in oklab, #1f2933 12%, transparent)", boxShadow: "0 4px 0 color-mix(in oklab, #1f2933 10%, transparent)" }}>
-            <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">👋 Welcome back</div>
+            <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Welcome back</div>
             <div className="flex flex-wrap gap-2">
               {returning.map((u) => (
                 <button key={u} onClick={() => go(u)} className="rounded-full border-[2px] bg-white px-3.5 py-1.5 text-sm font-semibold transition-transform hover:-translate-y-0.5" style={{ borderColor: "color-mix(in oklab, #1f2933 14%, transparent)", boxShadow: "0 2px 0 color-mix(in oklab, #1f2933 12%, transparent)" }}>

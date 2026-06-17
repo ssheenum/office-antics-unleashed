@@ -28,7 +28,7 @@ function About() {
         </div>
 
         <div className="glass grain p-6">
-          <div className="font-display text-xl" style={{ color: "var(--gold-deep)" }}>🦆 Ducks in a Row</div>
+          <div className="font-display text-xl" style={{ color: "var(--gold-deep)" }}>Ducks in a Row</div>
           <p className="mt-2 text-muted-foreground">
             Memorise a short row of ducks, then rebuild it from a pile. Each round adds a twist — colour patterns,
             trait rules, or a hidden ordering you have to figure out.
@@ -36,7 +36,7 @@ function About() {
         </div>
 
         <div className="glass grain p-6">
-          <div className="font-display text-xl" style={{ color: "var(--sky-deep)" }}>🗺️ Deep Dive</div>
+          <div className="font-display text-xl" style={{ color: "var(--sky-deep)" }}>Deep Dive</div>
           <p className="mt-2 text-muted-foreground">
             Read the clues, narrow down the grid, and tap the tile hiding the treasure. Shift-click to mark a tile
             as "no". Three wrong taps and the round ends.
@@ -44,7 +44,8 @@ function About() {
         </div>
 
         <div className="glass grain p-6">
-          <div className="font-display text-xl" style={{ color: "color-mix(in oklab, #1ba884 80%, #1f2933)" }}>🍎 Low-Hanging Fruit</div>
+          <div className="font-display text-xl" style={{ color: "color-mix(in oklab, #1ba884 80%, #1f2933)" }}>Low-Hanging Fruit</div>
+
           <p className="mt-2 text-muted-foreground">
             Slide a basket left and right (or with arrow keys). Fruit falls from above — catch the ones that match
             the current rule, dodge rocks, and watch your three hearts. The rule changes every so often.
