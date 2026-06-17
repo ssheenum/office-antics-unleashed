@@ -309,7 +309,7 @@ function FruitGame() {
       />
 
       <GameBanner
-        Mark={BranchMark}
+        image={tileFruit}
         eyebrow="Slide · catch · dodge"
         tagline="Move the basket with your mouse or arrow keys. Catch fruit that fits the rule. Avoid the rocks."
       />
