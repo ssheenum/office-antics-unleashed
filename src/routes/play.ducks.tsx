@@ -223,7 +223,7 @@ function DucksGame() {
   }
 
   const finalDetails = useMemo(() => {
-    return `Cleared ${roundIdx + (phase === "done" && lives > 0 ? 1 : 0)}/${TOTAL_ROUNDS} rounds · best combo ×${combo} · ${perfectStreak} perfect.`;
+    return `Cleared ${roundIdx + (phase === "done" && lives > 0 ? 1 : 0)} round${roundIdx === 0 ? "" : "s"} · best combo ×${combo} · ${perfectStreak} perfect.`;
   }, [roundIdx, lives, combo, perfectStreak, phase]);
 
   return (
