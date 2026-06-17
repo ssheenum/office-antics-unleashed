@@ -130,12 +130,12 @@ function Hub() {
           <img
             src={gardenHero}
             alt=""
-            width={1792}
-            height={768}
-            className="block h-56 w-full object-cover md:h-72"
+            width={1920}
+            height={1080}
+            className="block h-80 w-full object-cover md:h-[420px]"
           />
           <div className="pointer-events-none absolute inset-0" style={{
-            background: "linear-gradient(180deg, transparent 40%, color-mix(in oklab, #fdf6e3 70%, transparent) 100%)",
+            background: "linear-gradient(180deg, transparent 35%, color-mix(in oklab, #fdf6e3 88%, transparent) 100%)",
           }} />
           <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "#3a7026" }}>Hey there,</div>
@@ -147,6 +147,7 @@ function Hub() {
             </p>
           </div>
         </section>
+
 
 
         {/* progress strip */}
