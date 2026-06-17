@@ -4,11 +4,11 @@ import { GameShell } from "@/components/game/GameShell";
 import { GameBanner } from "@/components/game/GameBanner";
 import { Timer } from "@/components/game/Timer";
 import { ResultCard } from "@/components/game/ResultCard";
-import { BranchMark } from "@/components/art/Marks";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
 import { BasketIcon, AppleIcon, RockIcon, HeartIcon } from "@/components/art/MinimalIcons";
+import tileFruit from "@/assets/tile-fruit.png";
 
 
 export const Route = createFileRoute("/play/fruit")({
@@ -309,7 +309,7 @@ function FruitGame() {
       />
 
       <GameBanner
-        Mark={BranchMark}
+        image={tileFruit}
         eyebrow="Slide · catch · dodge"
         tagline="Move the basket with your mouse or arrow keys. Catch fruit that fits the rule. Avoid the rocks."
       />

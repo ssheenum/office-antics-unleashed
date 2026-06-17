@@ -3,12 +3,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
 import { GameBanner } from "@/components/game/GameBanner";
 import { ResultCard } from "@/components/game/ResultCard";
-import { DuckMark } from "@/components/art/Marks";
 import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
 import { EyeIcon, DucksIcon, TargetIcon, SparkleIcon } from "@/components/art/MinimalIcons";
+import tileDucks from "@/assets/tile-ducks.png";
 
 import {
   genSimple, genTrait, genPattern,
@@ -35,15 +35,19 @@ interface Round {
 }
 
 const MAX_LIVES = 3;
-const TOTAL_ROUNDS = 5;
 
 function buildRound(idx: number): Round {
-  // Friendlier curve: simple → simple+1 → trait → pattern → trait
+  // Endless: ramps difficulty, cycles round types after round 5
   if (idx === 0) return { base: genSimple(3), showMs: 3200 };
   if (idx === 1) return { base: genSimple(4), showMs: 3600 };
   if (idx === 2) return { base: genTrait(4), showMs: 4200 };
   if (idx === 3) return { base: genPattern(5), showMs: 0 };
-  return { base: genTrait(5), showMs: 4800 };
+  if (idx === 4) return { base: genTrait(5), showMs: 4800 };
+  // After round 5: rotate between trait and pattern at top difficulty
+  const cycle = (idx - 5) % 3;
+  if (cycle === 0) return { base: genPattern(6), showMs: 0 };
+  if (cycle === 1) return { base: genTrait(6), showMs: 5200 };
+  return { base: genSimple(6), showMs: 5400 };
 }
 
 interface Scatter { id: number; x: number; y: number; rot: number; }
@@ -194,13 +198,10 @@ function DucksGame() {
 
   function nextRound() {
     const next = roundIdx + 1;
-    if (next >= TOTAL_ROUNDS) {
-      finish();
-      return;
-    }
     setRoundIdx(next);
     setRound(buildRound(next));
   }
+
 
   function finish() {
     if (phase === "done") return;
@@ -222,7 +223,7 @@ function DucksGame() {
   }
 
   const finalDetails = useMemo(() => {
-    return `Cleared ${roundIdx + (phase === "done" && lives > 0 ? 1 : 0)}/${TOTAL_ROUNDS} rounds · best combo ×${combo} · ${perfectStreak} perfect.`;
+    return `Cleared ${roundIdx + (phase === "done" && lives > 0 ? 1 : 0)} round${roundIdx === 0 ? "" : "s"} · best combo ×${combo} · ${perfectStreak} perfect.`;
   }, [roundIdx, lives, combo, perfectStreak, phase]);
 
   return (
@@ -231,7 +232,7 @@ function DucksGame() {
       skill="Memory"
       rightSlot={
         <div className="flex items-center gap-3">
-          <span className="chip-gold">R{roundIdx + 1}/{TOTAL_ROUNDS}</span>
+          <span className="chip-gold">Round {roundIdx + 1}</span>
           <span className="font-display tabular-nums" style={{ color: "var(--gold-deep)" }}>{score}</span>
           <Hearts n={lives} />
         </div>
@@ -253,7 +254,7 @@ function DucksGame() {
       {phase !== "done" && (
         <>
           <GameBanner
-            Mark={DuckMark}
+            image={tileDucks}
             eyebrow={
               round.base.kind === "simple" ? "Memory row" :
               round.base.kind === "trait" ? "Trait memory" :
