@@ -55,10 +55,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Come Touch Grass — three tiny brain games" },
-      { name: "description", content: "Three quick, fun brain games: line up rubber ducks, find buried treasure, and catch fruit in a basket. A five-minute brain break, then go outside." },
+      { title: "Come Touch Grass" },
+      { name: "description", content: "Fun arcade games for the nine-to-fiver. Come line up your ducks in a row, take a deep dive and try to grab the low hanging fruits!" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "Come Touch Grass" },
+      { name: "twitter:title", content: "Come Touch Grass" },
+      { property: "og:description", content: "Fun arcade games for the nine-to-fiver. Come line up your ducks in a row, take a deep dive and try to grab the low hanging fruits!" },
+      { name: "twitter:description", content: "Fun arcade games for the nine-to-fiver. Come line up your ducks in a row, take a deep dive and try to grab the low hanging fruits!" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4kaqH2i0vmRqry35YNAFJt3Gu5q2/social-images/social-1781707220035-Come_Touch_Grass.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4kaqH2i0vmRqry35YNAFJt3Gu5q2/social-images/social-1781707220035-Come_Touch_Grass.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
