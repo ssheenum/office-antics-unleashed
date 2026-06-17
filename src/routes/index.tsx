@@ -6,6 +6,8 @@ import { GrassIcon, FlameIcon, TrophyIcon } from "@/components/art/MinimalIcons"
 import tileDucks from "@/assets/tile-ducks.png";
 import tileTreasure from "@/assets/tile-treasure.png";
 import tileFruit from "@/assets/tile-fruit.png";
+import gardenHero from "@/assets/garden-hero.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -95,15 +97,7 @@ function Hub() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* horizon / grass band */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40vh]" style={{
-        background: "linear-gradient(to top, #87c95f 0%, #b7df8a 55%, transparent 100%)",
-      }} />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2 opacity-40" style={{
-        background: "repeating-linear-gradient(90deg, #3a7026 0 3px, transparent 3px 10px)",
-      }} />
-
+    <div className="relative min-h-screen overflow-hidden" style={{ background: "linear-gradient(180deg, #eaf6ff 0%, #fdf6e3 60%)" }}>
       {/* sticky top bar */}
       <header className="sticky top-0 z-20 border-b-[1.5px] backdrop-blur" style={{
         background: "color-mix(in oklab, #fdf6e3 92%, white)",
@@ -127,17 +121,33 @@ function Hub() {
         </div>
       </header>
 
-      <main className="relative mx-auto max-w-4xl px-5 pb-24 pt-10">
-        {/* greeting */}
-        <section className="text-center">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Hey there,</div>
-          <h1 className="mt-2 font-display text-5xl leading-[1.02] tracking-tight md:text-6xl">
-            <span style={{ color: "#3a7026" }}>{user}</span>
-          </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Three short games. Five minutes. Then back outside.
-          </p>
+      <main className="relative mx-auto max-w-4xl px-5 pb-24 pt-6">
+        {/* Hero garden illustration */}
+        <section className="relative overflow-hidden rounded-[2rem] border-[2.5px]" style={{
+          borderColor: "color-mix(in oklab, #1f2933 12%, transparent)",
+          boxShadow: "0 6px 0 color-mix(in oklab, #3a7026 25%, transparent)",
+        }}>
+          <img
+            src={gardenHero}
+            alt=""
+            width={1792}
+            height={768}
+            className="block h-56 w-full object-cover md:h-72"
+          />
+          <div className="pointer-events-none absolute inset-0" style={{
+            background: "linear-gradient(180deg, transparent 40%, color-mix(in oklab, #fdf6e3 70%, transparent) 100%)",
+          }} />
+          <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: "#3a7026" }}>Hey there,</div>
+            <h1 className="mt-1 font-display text-4xl leading-[1.02] tracking-tight md:text-5xl" style={{ color: "#1f2933" }}>
+              <span style={{ color: "#3a7026" }}>{user}</span>
+            </h1>
+            <p className="mt-1.5 max-w-md text-sm leading-relaxed" style={{ color: "color-mix(in oklab, #1f2933 75%, transparent)" }}>
+              Three short games. Five minutes. Then back outside.
+            </p>
+          </div>
         </section>
+
 
         {/* progress strip */}
         <section className="mt-8">
