@@ -26,7 +26,7 @@ export function GameShell({
           <div className="flex items-center gap-4">
             <Link to="/" className="pill-btn text-xs">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              Meadow
+              Home
             </Link>
             <div>
               <h1 className="font-display text-xl leading-none">{title}</h1>

@@ -2,15 +2,18 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { loadState, todayKey, GAME_KEYS, type GameState, type GameKey } from "@/lib/storage";
 import { getCurrentUser, clearCurrentUser } from "@/lib/session";
-import { DucksIcon, DiveIcon, FruitIcon, GrassIcon, FlameIcon, TrophyIcon } from "@/components/art/MinimalIcons";
+import { GrassIcon, FlameIcon, TrophyIcon } from "@/components/art/MinimalIcons";
+import tileDucks from "@/assets/tile-ducks.png";
+import tileTreasure from "@/assets/tile-treasure.png";
+import tileFruit from "@/assets/tile-fruit.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Touch Grass — three tiny brain games" },
-      { name: "description", content: "Three quick brain games. Pick a quirky name, build a streak, touch grass." },
-      { property: "og:title", content: "Touch Grass" },
-      { property: "og:description", content: "Three quick brain games. Pick a quirky name and play daily." },
+      { title: "Come Touch Grass — three tiny brain games" },
+      { name: "description", content: "Three quick brain games. Pick a fun name, build a streak, then go outside and touch grass." },
+      { property: "og:title", content: "Come Touch Grass" },
+      { property: "og:description", content: "Three quick brain games. Five minute brain break, then go outside." },
     ],
   }),
   component: Hub,
@@ -22,7 +25,7 @@ type Tile = {
   title: string;
   skill: string;
   blurb: string;
-  Icon: typeof DucksIcon;
+  image: string;
   color: string;       // primary
   colorDeep: string;   // shadow / border
   tint: string;        // background tint
@@ -35,7 +38,7 @@ const TILES: Tile[] = [
     title: "Ducks in a Row",
     skill: "Memory",
     blurb: "Memorize the lineup, then rebuild it.",
-    Icon: DucksIcon,
+    image: tileDucks,
     color: "#f5b740",
     colorDeep: "#b07a13",
     tint: "#fff5dc",
@@ -45,8 +48,8 @@ const TILES: Tile[] = [
     to: "/play/deepdive",
     title: "Deep Dive",
     skill: "Logic",
-    blurb: "Read the clues. Narrow the tiles. Tap the one.",
-    Icon: DiveIcon,
+    blurb: "Read the clues. Narrow the tiles. Find the treasure.",
+    image: tileTreasure,
     color: "#3aa9d8",
     colorDeep: "#1d6b8e",
     tint: "#e2f3fb",
@@ -57,7 +60,7 @@ const TILES: Tile[] = [
     title: "Low-Hanging Fruit",
     skill: "Reflex",
     blurb: "Slide the basket. Catch what the rule allows.",
-    Icon: FruitIcon,
+    image: tileFruit,
     color: "#e85b6b",
     colorDeep: "#9a2e3b",
     tint: "#ffe7eb",
@@ -199,7 +202,6 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
 }
 
 function GameCard({ tile, best, done }: { tile: Tile; best: number; done: boolean }) {
-  const { Icon } = tile;
   return (
     <Link
       to={tile.to}
@@ -209,15 +211,20 @@ function GameCard({ tile, best, done }: { tile: Tile; best: number; done: boolea
         boxShadow: `0 5px 0 ${tile.colorDeep}`,
       }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div
-          className="grid h-16 w-16 flex-shrink-0 place-items-center rounded-2xl"
-          style={{ background: tile.tint, color: tile.colorDeep }}
-        >
-          <Icon width={42} height={42} />
-        </div>
+      <div
+        className="relative grid h-40 place-items-center overflow-hidden rounded-2xl"
+        style={{ background: tile.tint }}
+      >
+        <img
+          src={tile.image}
+          alt=""
+          loading="lazy"
+          width={768}
+          height={768}
+          className="h-36 w-36 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+        />
         {done && (
-          <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white" style={{ background: "#5b9e3d" }}>
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white" style={{ background: "#5b9e3d" }}>
             ✓ Done
           </span>
         )}

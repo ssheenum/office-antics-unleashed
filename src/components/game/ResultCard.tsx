@@ -21,7 +21,7 @@ export function ResultCard({
         <span className={won ? "chip-leaf" : "chip-muted"}>{won ? "✓ Nice round" : "Round over"}</span>
       </div>
       <h2 className="font-display text-4xl tracking-tight">
-        {won ? "Great splash!" : "That's a wrap."}
+        {won ? "Nicely done!" : "That's a wrap."}
       </h2>
       {details && <p className="mt-3 text-sm text-muted-foreground">{details}</p>}
       <div className="gold-rule mx-auto my-6 max-w-[60%]" />
@@ -32,7 +32,7 @@ export function ResultCard({
       </div>
       <div className="mt-7 flex justify-center gap-2">
         <button onClick={onPlayAgain} className="pill-btn pill-btn-gold">Play again</button>
-        <Link to="/" className="pill-btn">Meadow</Link>
+        <Link to="/" className="pill-btn">Home</Link>
       </div>
     </div>
   );
