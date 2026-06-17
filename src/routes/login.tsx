@@ -50,20 +50,21 @@ function LoginPage() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: "linear-gradient(180deg, #fbeed8 0%, #fdf6e3 60%)" }}>
-      {/* Full-bleed garden hero */}
-      <section className="relative w-full overflow-hidden" style={{ height: "min(60vh, 460px)" }}>
-        <img
-          src={gardenHero}
-          alt=""
-          width={1920}
-          height={1080}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="pointer-events-none absolute inset-0" style={{
-          background: "linear-gradient(180deg, transparent 45%, color-mix(in oklab, #fbeed8 92%, transparent) 100%)",
-        }} />
-        <div className="absolute inset-x-0 bottom-0 px-5 pb-8 text-center">
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Full-screen garden painting backdrop */}
+      <img
+        src={gardenHero}
+        alt=""
+        width={1920}
+        height={1080}
+        className="pointer-events-none fixed inset-0 h-full w-full object-cover"
+      />
+      <div className="pointer-events-none fixed inset-0" style={{
+        background: "linear-gradient(180deg, color-mix(in oklab, #fbeed8 30%, transparent) 0%, color-mix(in oklab, #fbeed8 70%, transparent) 60%, color-mix(in oklab, #fbeed8 92%, transparent) 100%)",
+      }} />
+
+      <main className="relative mx-auto max-w-2xl px-5 pb-12 pt-10">
+        <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border-[2px] bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur" style={{ borderColor: "color-mix(in oklab, #1f2933 14%, transparent)" }}>
             <span className="h-2 w-2 rounded-full" style={{ background: "#5b9e3d" }} />
             5 minute brain break · then go outside
@@ -78,9 +79,7 @@ function LoginPage() {
             .
           </h1>
         </div>
-      </section>
 
-      <main className="relative mx-auto max-w-2xl px-5 pb-12 pt-2">
         <p className="mx-auto mt-2 mb-6 max-w-md text-center text-base leading-relaxed text-muted-foreground">
           Pick a name. Your scores stick to it.
         </p>
