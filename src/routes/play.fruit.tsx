@@ -7,8 +7,30 @@ import { ResultCard } from "@/components/game/ResultCard";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
-import { BasketIcon, AppleIcon, RockIcon, HeartIcon } from "@/components/art/MinimalIcons";
+import { HeartIcon } from "@/components/art/MinimalIcons";
 import tileFruit from "@/assets/tile-fruit.png";
+import frApple from "@/assets/fr-apple.png";
+import frOrange from "@/assets/fr-orange.png";
+import frLemon from "@/assets/fr-lemon.png";
+import frStrawberry from "@/assets/fr-strawberry.png";
+import frGrape from "@/assets/fr-grape.png";
+import frPear from "@/assets/fr-pear.png";
+import frBlueberry from "@/assets/fr-blueberry.png";
+import frGolden from "@/assets/fr-golden.png";
+import frRock from "@/assets/fr-rock.png";
+import frBasket from "@/assets/fr-basket.png";
+
+const FRUIT_SRC: Record<FruitKind, string> = {
+  apple: frApple,
+  orange: frOrange,
+  lemon: frLemon,
+  strawberry: frStrawberry,
+  grape: frGrape,
+  pear: frPear,
+  blueberry: frBlueberry,
+  golden: frGolden,
+  rock: frRock,
+};
 
 
 export const Route = createFileRoute("/play/fruit")({
@@ -302,9 +324,9 @@ function FruitGame() {
         accentDeep="#9a2e3b"
         onStart={() => {}}
         steps={[
-          { icon: <BasketIcon width={56} height={56} style={{ color: "#9a2e3b" }} />, title: "Move the basket", body: "Slide your mouse, drag on touch, or use ← → arrow keys to glide the basket left and right." },
-          { icon: <AppleIcon width={56} height={56} style={{ color: "#e85b6b" }} />, title: "Follow the rule", body: <>The chip up top tells you what to catch — like <b>only apples</b> or <b>only red fruit</b>. Catch the right ones, skip the rest.</> },
-          { icon: <RockIcon width={56} height={56} style={{ color: "#5a626d" }} />, title: "Dodge rocks, watch hearts", body: "Rocks and wrong fruit cost a heart. Three hearts and the round ends. The rule changes every so often — keep an eye on it!" },
+          { icon: <img src={frBasket} alt="" width={56} height={56} style={{ objectFit: "contain" }} />, title: "Move the basket", body: "Slide your mouse, drag on touch, or use ← → arrow keys to glide the basket left and right." },
+          { icon: <img src={frApple} alt="" width={56} height={56} style={{ objectFit: "contain" }} />, title: "Follow the rule", body: <>The chip up top tells you what to catch — like <b>only apples</b> or <b>only red fruit</b>. Catch the right ones, skip the rest.</> },
+          { icon: <img src={frRock} alt="" width={56} height={56} style={{ objectFit: "contain" }} />, title: "Dodge rocks, watch hearts", body: "Rocks and wrong fruit cost a heart. Three hearts and the round ends. The rule changes every so often — keep an eye on it!" },
         ]}
       />
 
@@ -512,185 +534,35 @@ function FallingChip({ item, field, highlight }: { item: FallingItem; field: { w
 }
 
 function Fruit({ kind, size = 50 }: { kind: FruitKind; size?: number }) {
-  const w = size;
-  const h = size;
-  switch (kind) {
-    case "apple":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="appleG" cx="35%" cy="35%">
-              <stop offset="0%" stopColor="#ff9090"/>
-              <stop offset="60%" stopColor="#ef3a3a"/>
-              <stop offset="100%" stopColor="#a81e1e"/>
-            </radialGradient>
-          </defs>
-          <path d="M25 10 C 12 10 6 22 8 32 C 10 44 20 46 25 42 C 30 46 40 44 42 32 C 44 22 38 10 25 10 Z" fill="url(#appleG)" stroke="#1f2933" strokeWidth="2.2" />
-          <path d="M25 12 q -1 -5 -6 -7" stroke="#5a3b1f" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-          <path d="M25 12 q 5 -4 12 -2 q -3 6 -10 6 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-          <ellipse cx="18" cy="22" rx="4" ry="3" fill="rgba(255,255,255,0.6)" />
-        </svg>
-      );
-    case "orange":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="orG" cx="35%" cy="35%">
-              <stop offset="0%" stopColor="#ffd09a"/>
-              <stop offset="60%" stopColor="#ff8c2e"/>
-              <stop offset="100%" stopColor="#c95a0d"/>
-            </radialGradient>
-          </defs>
-          <circle cx="25" cy="27" r="18" fill="url(#orG)" stroke="#1f2933" strokeWidth="2.2" />
-          <circle cx="18" cy="22" r="2.5" fill="#ffdfb0" opacity="0.7" />
-          <circle cx="30" cy="20" r="1.4" fill="#1f2933" opacity="0.25" />
-          <circle cx="22" cy="32" r="1.4" fill="#1f2933" opacity="0.25" />
-          <circle cx="33" cy="30" r="1.4" fill="#1f2933" opacity="0.25" />
-          <path d="M22 10 q 4 -5 9 -3 q -2 5 -7 6 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      );
-    case "lemon":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="lemG" cx="35%" cy="40%">
-              <stop offset="0%" stopColor="#fffacc"/>
-              <stop offset="60%" stopColor="#ffe24d"/>
-              <stop offset="100%" stopColor="#c9a012"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="25" cy="27" rx="18" ry="14" fill="url(#lemG)" stroke="#1f2933" strokeWidth="2.2" transform="rotate(-15 25 27)" />
-          <ellipse cx="18" cy="22" rx="4" ry="2.5" fill="rgba(255,255,255,0.7)" transform="rotate(-15 18 22)" />
-          <path d="M40 16 l 5 -4" stroke="#5a3b1f" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M42 14 q 6 -2 7 4 q -6 1 -8 -2 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      );
-    case "strawberry":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="strG" cx="35%" cy="35%">
-              <stop offset="0%" stopColor="#ff8d8d"/>
-              <stop offset="60%" stopColor="#e83e5c"/>
-              <stop offset="100%" stopColor="#931e36"/>
-            </radialGradient>
-          </defs>
-          <path d="M12 18 Q 25 14 38 18 Q 36 38 25 46 Q 14 38 12 18 Z" fill="url(#strG)" stroke="#1f2933" strokeWidth="2.2" strokeLinejoin="round" />
-          {[[20,24],[28,22],[24,30],[18,32],[30,32],[24,38]].map(([cx,cy], i) => (
-            <g key={i}><ellipse cx={cx} cy={cy} rx="1.2" ry="2" fill="#fff4c2" stroke="#1f2933" strokeWidth="0.8" /></g>
-          ))}
-          <path d="M14 18 q 4 -6 11 -5 q 7 -1 11 5 q -3 -3 -8 -2 q -3 -1 -3 4 q 0 -5 -3 -4 q -5 -1 -8 2 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      );
-    case "grape":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="grG" cx="30%" cy="30%">
-              <stop offset="0%" stopColor="#c9a4ff"/>
-              <stop offset="100%" stopColor="#6b3fbf"/>
-            </radialGradient>
-          </defs>
-          <path d="M22 10 q 4 -4 8 -2" stroke="#5a3b1f" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-          <path d="M28 10 q 6 -4 10 0 q -4 4 -10 2 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-          {[[19,18],[28,18],[15,25],[24,25],[33,25],[19,32],[28,32],[24,39]].map(([cx,cy], i) => (
-            <circle key={i} cx={cx} cy={cy} r="5" fill="url(#grG)" stroke="#1f2933" strokeWidth="1.8" />
-          ))}
-        </svg>
-      );
-    case "pear":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="peG" cx="35%" cy="50%">
-              <stop offset="0%" stopColor="#e8f8a8"/>
-              <stop offset="60%" stopColor="#9ed14a"/>
-              <stop offset="100%" stopColor="#5b8a1f"/>
-            </radialGradient>
-          </defs>
-          <path d="M25 14 C 18 14 16 22 18 28 C 12 32 12 44 25 46 C 38 44 38 32 32 28 C 34 22 32 14 25 14 Z" fill="url(#peG)" stroke="#1f2933" strokeWidth="2.2" strokeLinejoin="round" />
-          <path d="M25 14 q 0 -4 -3 -6" stroke="#5a3b1f" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-          <path d="M25 14 q 5 -3 10 0 q -4 4 -10 2 z" fill="#2dd4a8" stroke="#1f2933" strokeWidth="2" strokeLinejoin="round" />
-          <ellipse cx="20" cy="26" rx="3" ry="2" fill="rgba(255,255,255,0.6)" />
-        </svg>
-      );
-    case "blueberry":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="blG" cx="30%" cy="30%">
-              <stop offset="0%" stopColor="#86b6ff"/>
-              <stop offset="100%" stopColor="#2e4ea8"/>
-            </radialGradient>
-          </defs>
-          <circle cx="18" cy="28" r="10" fill="url(#blG)" stroke="#1f2933" strokeWidth="2" />
-          <circle cx="32" cy="30" r="11" fill="url(#blG)" stroke="#1f2933" strokeWidth="2" />
-          <circle cx="25" cy="22" r="9" fill="url(#blG)" stroke="#1f2933" strokeWidth="2" />
-          <path d="M25 13 q 0 -2 2 -3 m -2 3 q -2 -1 -2 -3 m 2 3 q 2 -2 0 -4" stroke="#1f2933" strokeWidth="1.5" fill="none" />
-          <circle cx="22" cy="20" r="2" fill="rgba(255,255,255,0.6)" />
-        </svg>
-      );
-    case "golden":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <radialGradient id="gldG" cx="35%" cy="35%">
-              <stop offset="0%" stopColor="#fff6c2"/>
-              <stop offset="60%" stopColor="#ffd166"/>
-              <stop offset="100%" stopColor="#b87f10"/>
-            </radialGradient>
-          </defs>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <line key={i} x1="25" y1="25" x2="25" y2="3" stroke="#ffd166" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 45} 25 25)`} />
-          ))}
-          <circle cx="25" cy="26" r="16" fill="url(#gldG)" stroke="#1f2933" strokeWidth="2.5" />
-          <text x="25" y="32" textAnchor="middle" fontFamily="Sora, sans-serif" fontWeight="800" fontSize="18" fill="#1f2933">★</text>
-        </svg>
-      );
-    case "rock":
-      return (
-        <svg width={w} height={h} viewBox="0 0 50 50">
-          <defs>
-            <linearGradient id="rkG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#aab1bb"/>
-              <stop offset="100%" stopColor="#5a626d"/>
-            </linearGradient>
-          </defs>
-          <path d="M6 32 Q 10 12 24 10 Q 42 8 46 26 Q 46 42 26 42 Q 8 42 6 32 Z" fill="url(#rkG)" stroke="#1f2933" strokeWidth="2.5" />
-          <path d="M16 22 q 4 -4 10 -2 M28 30 q 6 -2 12 -1" stroke="#1f2933" strokeWidth="1.4" fill="none" opacity="0.6" />
-        </svg>
-      );
-  }
+  return (
+    <img
+      src={FRUIT_SRC[kind]}
+      alt=""
+      width={size}
+      height={size}
+      draggable={false}
+      style={{ width: size, height: size, objectFit: "contain", display: "block" }}
+    />
+  );
 }
 
 function Basket({ xPct, yPct }: { xPct: number; yPct: number }) {
   return (
     <div
       className="pointer-events-none absolute"
-      style={{ left: `${xPct}%`, top: `${yPct}%`, transform: "translate(-50%, 0)", filter: "drop-shadow(0 4px 4px rgba(0,0,0,0.25))" }}
+      style={{
+        left: `${xPct}%`,
+        top: `${yPct}%`,
+        transform: "translate(-50%, -10%)",
+        filter: "drop-shadow(0 6px 6px rgba(0,0,0,0.28))",
+      }}
     >
-      <svg width={BASKET_W} height={BASKET_H + 18} viewBox="0 0 120 82">
-        <defs>
-          <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e2a96c"/>
-            <stop offset="100%" stopColor="#a06a3a"/>
-          </linearGradient>
-          <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e8b478"/>
-            <stop offset="100%" stopColor="#a06a3a"/>
-          </linearGradient>
-        </defs>
-        {/* handle */}
-        <path d="M22 10 q 38 -24 76 0" stroke="#7a4d28" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-        <path d="M22 10 q 38 -24 76 0" stroke="#1f2933" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
-        {/* rim */}
-        <rect x="2" y="10" width="116" height="12" rx="6" fill="url(#rim)" stroke="#1f2933" strokeWidth="2.5" />
-        {/* body */}
-        <path d="M10 22 L 20 70 H 100 L 110 22 Z" fill="url(#body)" stroke="#1f2933" strokeWidth="2.5" strokeLinejoin="round" />
-        {/* weave */}
-        <path d="M20 32 H 100 M24 44 H 96 M28 56 H 92" stroke="#5a3b1f" strokeWidth="1.4" opacity="0.55" fill="none" />
-        <path d="M34 22 L 40 70 M58 22 L 60 70 M82 22 L 78 70 M104 22 L 98 70" stroke="#5a3b1f" strokeWidth="1.4" opacity="0.55" fill="none" />
-      </svg>
+      <img
+        src={frBasket}
+        alt=""
+        draggable={false}
+        style={{ width: BASKET_W + 10, height: "auto", objectFit: "contain", display: "block" }}
+      />
     </div>
   );
 }
