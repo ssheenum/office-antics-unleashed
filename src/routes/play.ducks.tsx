@@ -254,7 +254,7 @@ function DucksGame() {
       {phase !== "done" && (
         <>
           <GameBanner
-            Mark={DuckMark}
+            image={tileDucks}
             eyebrow={
               round.base.kind === "simple" ? "Memory row" :
               round.base.kind === "trait" ? "Trait memory" :
