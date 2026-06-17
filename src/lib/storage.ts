@@ -96,7 +96,7 @@ export function recordRound(game: GameKey, score: number, xpGain: number): GameS
 
   const earn = (id: string) => { if (!s.achievements.includes(id)) s.achievements.push(id); };
   if (s.bestScores.ducks >= 800) earn("All Aligned");
-  if (s.bestScores.deepdive >= 600) earn("Koi Whisperer");
+  if (s.bestScores.deepdive >= 600) earn("Treasure Hunter");
   if (s.bestScores.fruit >= 500) earn("Basket Wizard");
   if (s.streak.count >= 3) earn("Touched Grass");
 

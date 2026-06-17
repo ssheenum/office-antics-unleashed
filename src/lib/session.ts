@@ -1,7 +1,8 @@
 const CURRENT_KEY = "touch-grass:current-user";
 const USERS_KEY = "touch-grass:users";
 
-export const QUIRKY_USERNAMES = [
+// Big pool of office-jargon names. The login page picks a fresh random subset each visit.
+export const USERNAME_POOL = [
   "SynergySlayer",
   "OOO_Forever",
   "MidMeetingMute",
@@ -12,7 +13,37 @@ export const QUIRKY_USERNAMES = [
   "EOD_Goblin",
   "ScopeCreepKing",
   "OffsiteOracle",
+  "DeckPolisher",
+  "QuarterlyGremlin",
+  "StandUpSnoozer",
+  "ParkingLotIdea",
+  "LowBandwidthLarry",
+  "BlueSkyBaroness",
+  "CalendarTetrisChamp",
+  "MutePunchline",
+  "ActionItemAvenger",
+  "BrainstormBoss",
+  "VPN_Wizard",
+  "OutOfPocketPete",
+  "RoadmapRanger",
+  "TouchBaseTitan",
+  "AlignmentAlchemist",
+  "BoilTheOcean",
+  "DeepWorkDruid",
+  "TabHoarder",
+  "ZoomFatigueZen",
+  "PostMortemPoet",
 ];
+
+export function sampleUsernames(n = 8): string[] {
+  const arr = [...USERNAME_POOL];
+  // Fisher-Yates shuffle
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.slice(0, n);
+}
 
 export function getCurrentUser(): string | null {
   if (typeof window === "undefined") return null;
