@@ -3,12 +3,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
 import { GameBanner } from "@/components/game/GameBanner";
 import { ResultCard } from "@/components/game/ResultCard";
-import { DuckMark } from "@/components/art/Marks";
 import { Duckie } from "@/components/art/Duckie";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
 import { EyeIcon, DucksIcon, TargetIcon, SparkleIcon } from "@/components/art/MinimalIcons";
+import tileDucks from "@/assets/tile-ducks.png";
 
 import {
   genSimple, genTrait, genPattern,
