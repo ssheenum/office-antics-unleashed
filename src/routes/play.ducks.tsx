@@ -198,13 +198,10 @@ function DucksGame() {
 
   function nextRound() {
     const next = roundIdx + 1;
-    if (next >= TOTAL_ROUNDS) {
-      finish();
-      return;
-    }
     setRoundIdx(next);
     setRound(buildRound(next));
   }
+
 
   function finish() {
     if (phase === "done") return;
