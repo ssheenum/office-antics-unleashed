@@ -1,4 +1,4 @@
-// Pond & garden marks — friendly flat illustrations.
+// Friendly flat illustrations for game banners.
 // Colors come from inline fills so tiles look the same in any text context.
 import type { SVGProps } from "react";
 
@@ -17,7 +17,7 @@ export function Monogram(props: SVGProps<SVGSVGElement>) {
     <svg viewBox="0 0 96 96" fill="none" {...props}>
       {/* sun */}
       <circle cx="72" cy="22" r="10" fill={GOLD} stroke={INK} strokeWidth="2.5" />
-      {/* pond */}
+      {/* pool */}
       <ellipse cx="48" cy="64" rx="40" ry="22" fill={SKY} stroke={INK} strokeWidth="2.5" />
       <ellipse cx="48" cy="60" rx="40" ry="22" fill="none" stroke={SKY_DEEP} strokeWidth="1.5" opacity="0.6" />
       {/* lily pad */}
@@ -63,18 +63,18 @@ export function DuckMark(props: SVGProps<SVGSVGElement>) {
 export function DiverMark(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 80 96" fill="none" {...props}>
-      {/* pond water */}
+      {/* water */}
       <rect x="2" y="40" width="76" height="52" rx="10" fill={SKY} stroke={INK} strokeWidth="2.5" />
       {/* surface ripple */}
       <path d="M4 44 q 8 -3 16 0 t 16 0 t 16 0 t 16 0" stroke={SKY_DEEP} strokeWidth="1.8" strokeLinecap="round" fill="none" />
-      {/* koi 1 */}
+      {/* fish 1 */}
       <g transform="translate(18 56)">
         <ellipse cx="10" cy="6" rx="11" ry="5" fill={CORAL} stroke={INK} strokeWidth="2" />
         <path d="M20 6 L 26 1 L 26 11 Z" fill={CORAL} stroke={INK} strokeWidth="2" strokeLinejoin="round" />
         <circle cx="6" cy="5" r="1.2" fill={INK} />
         <circle cx="12" cy="3" r="1.4" fill={CREAM} stroke={INK} strokeWidth="0.8" />
       </g>
-      {/* koi 2 */}
+      {/* fish 2 */}
       <g transform="translate(40 76)">
         <ellipse cx="10" cy="6" rx="11" ry="5" fill={GOLD} stroke={INK} strokeWidth="2" />
         <path d="M20 6 L 26 1 L 26 11 Z" fill={GOLD} stroke={INK} strokeWidth="2" strokeLinejoin="round" />

@@ -43,7 +43,7 @@
 
 :root {
   --radius: 1.25rem;
-  /* Sunny Paper — pond & garden */
+  /* Sunny Paper — grass /* Sunny Paper — pond & garden */ garden */
   --paper: #fdf6e3;       /* warm cream page */
   --paper-2: #f7eecf;     /* a touch deeper cream */
   --ink: #1f2933;         /* deep navy ink — primary text */
@@ -58,7 +58,7 @@
   --gold-soft: #ffe39a;
   --gold-deep: #e9b13d;
 
-  --leaf: #2dd4a8;        /* pond green — success */
+  --leaf: #2dd4a8;        /* grass green — success */
   --leaf-soft: #aaf0d8;
   --coral: #ff7a59;       /* warm warn */
   --coral-soft: #ffb59f;
@@ -277,8 +277,8 @@
   border-radius: inherit;
 }
 
-/* === Pond ripples background === */
-@utility pond-bg {
+/* === Soft ripple background === */
+@utility ripple-bg {
   background:
     radial-gradient(ellipse at 20% 30%, color-mix(in oklab, var(--sky) 35%, white), transparent 55%),
     radial-gradient(ellipse at 75% 70%, color-mix(in oklab, var(--sky) 28%, white), transparent 60%),
