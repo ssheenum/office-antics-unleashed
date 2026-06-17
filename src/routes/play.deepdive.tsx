@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GameShell } from "@/components/game/GameShell";
 import { GameBanner } from "@/components/game/GameBanner";
 import { ResultCard } from "@/components/game/ResultCard";
-import { DiverMark } from "@/components/art/Marks";
 import { PropSprite, TreasureSprite } from "@/components/art/PondProps";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
 import { MapIcon, TapIcon, NoIcon } from "@/components/art/MinimalIcons";
+import tileTreasure from "@/assets/tile-treasure.png";
 
 import {
   generateDeepDive, clueDescribe, SIZE, type Puzzle,
