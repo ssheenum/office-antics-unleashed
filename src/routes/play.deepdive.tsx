@@ -142,6 +142,18 @@ function DeepDive() {
         </div>
       }
     >
+      <Tutorial
+        gameKey="deepdive"
+        title="Deep Dive"
+        accent="#3aa9d8"
+        accentDeep="#1d6b8e"
+        onStart={() => {}}
+        steps={[
+          { icon: "🗺️", title: "Read the clues", body: "Each round hides treasure on a small grid. The clues at the top narrow down where it could be." },
+          { icon: "👆", title: "Tap to dig", body: "Tap an empty tile to dig there. Find the treasure to score big — bonus points if you nail it first try." },
+          { icon: "🚫", title: "Mark and survive", body: <>Shift-click (or right-click) to mark a tile as <b>"no"</b> while you think. Three wrong taps and the round ends.</> },
+        ]}
+      />
       {!done && (
         <>
           <GameBanner
