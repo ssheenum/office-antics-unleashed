@@ -6,14 +6,14 @@ export type PropKind =
   | "anchor" | "seaweed" | "bubble" | "shell";
 
 export const PROP_LABEL: Record<PropKind, string> = {
-  redCoral: "red poppy",
-  blueCoral: "bellflower",
-  jellyfish: "butterfly",
-  turtle: "snail",
-  anchor: "watering can",
-  seaweed: "fern",
-  bubble: "pebble",
-  shell: "mushroom",
+  redCoral: "red coral",
+  blueCoral: "blue coral",
+  jellyfish: "jellyfish",
+  turtle: "sea turtle",
+  anchor: "anchor",
+  seaweed: "seaweed",
+  bubble: "bubble",
+  shell: "shell",
 };
 
 export interface Tile { x: number; y: number; prop: PropKind | null; }
@@ -67,8 +67,8 @@ function clueDescribe(c: ClueKind): string {
     case "between":  return `It sits between a ${PROP_LABEL[c.a]} and a ${PROP_LABEL[c.b]} (in a straight line).`;
     case "within1":  return `It is within one tile of a ${PROP_LABEL[c.prop]}.`;
     case "exactly2": return `It is exactly two tiles from a ${PROP_LABEL[c.prop]}.`;
-    case "nearBubbles": return `It is next to exactly ${c.n} pebble${c.n === 1 ? "" : "s"}.`;
-    case "notTouchingSeaweed": return `It is not touching a fern.`;
+    case "nearBubbles": return `It is next to exactly ${c.n} bubble${c.n === 1 ? "" : "s"}.`;
+    case "notTouchingSeaweed": return `It is not touching seaweed.`;
   }
 }
 export { clueDescribe };
