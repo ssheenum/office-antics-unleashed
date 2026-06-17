@@ -66,12 +66,14 @@ function DeepDive() {
   }, [round]);
 
   function tapTile(x: number, y: number, e?: React.MouseEvent) {
-    if (done || round.solved) return;
-    const tile = round.puzzle.grid[y * SIZE + x];
+    if (done || !round || round.solved) return;
+    const r0 = round;
+    const tile = r0.puzzle.grid[y * SIZE + x];
     if (tile.prop !== null) return;
     // shift / right-click → toggle a "no" mark, don't guess
     if (e && (e.shiftKey || e.metaKey)) {
       setRound((r) => {
+        if (!r) return r;
         const exists = r.markedTiles.some((m) => m.x === x && m.y === y);
         return {
           ...r,
@@ -83,21 +85,21 @@ function DeepDive() {
       return;
     }
     setDiver({ x, y });
-    const isWin = x === round.puzzle.treasure.x && y === round.puzzle.treasure.y;
+    const isWin = x === r0.puzzle.treasure.x && y === r0.puzzle.treasure.y;
     if (isWin) {
-      const elapsed = (performance.now() - round.startedAt) / 1000;
+      const elapsed = (performance.now() - r0.startedAt) / 1000;
       const speedBonus = Math.max(0, 30 - Math.floor(elapsed)) * 6;
-      const firstTry = round.guesses === 0;
-      const base = 120 + round.puzzle.difficulty * 40;
+      const firstTry = r0.guesses === 0;
+      const base = 120 + r0.puzzle.difficulty * 40;
       const gain = base + speedBonus + (firstTry ? 80 : 0);
       setScore((s) => s + gain);
-      setRound((r) => ({ ...r, solved: true, revealedTile: { x, y }, splashAt: { x, y } }));
+      setRound((r) => (r ? { ...r, solved: true, revealedTile: { x, y }, splashAt: { x, y } } : r));
       setFeedback({ ok: true, text: `Treasure! +${gain}${firstTry ? " (first try)" : ""}` });
       setTimeout(nextRound, 1700);
     } else {
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
-      setRound((r) => ({ ...r, guesses: r.guesses + 1, wrongTiles: [...r.wrongTiles, { x, y }] }));
+      setRound((r) => (r ? { ...r, guesses: r.guesses + 1, wrongTiles: [...r.wrongTiles, { x, y }] } : r));
       setFeedback({ ok: false, text: `Nothing here. -1 air bubble.` });
       setTimeout(() => setFeedback(null), 1200);
       if (newStrikes >= MAX_STRIKES) {
@@ -108,10 +110,9 @@ function DeepDive() {
 
   function nextRound() {
     const next = roundIdx + 1;
-    if (next >= TOTAL_ROUNDS) { finish(); return; }
     setRoundIdx(next);
-    // gentler level ramp: 1,1,2,2,3
-    setRound(freshRound(Math.min(3, Math.ceil((next + 1) / 2))));
+    // endless: ramps up gradually, capped at 5
+    setRound(freshRound(Math.min(5, 1 + Math.floor(next / 2))));
     setDiver(null);
     setFeedback(null);
   }
@@ -133,8 +134,8 @@ function DeepDive() {
   }
 
   const details = useMemo(() => {
-    return `Cleared ${roundIdx + (round.solved ? 1 : 0)}/${TOTAL_ROUNDS} rounds · ${strikes} wrong tap${strikes === 1 ? "" : "s"}.`;
-  }, [roundIdx, strikes, round.solved]);
+    return `Cleared ${roundIdx + (round?.solved ? 1 : 0)} round${roundIdx === 0 ? "" : "s"} · ${strikes} wrong tap${strikes === 1 ? "" : "s"}.`;
+  }, [roundIdx, strikes, round?.solved]);
 
   return (
     <GameShell
@@ -142,7 +143,7 @@ function DeepDive() {
       skill="Logic"
       rightSlot={
         <div className="flex items-center gap-3">
-          <span className="chip-sky">R{roundIdx + 1}/{TOTAL_ROUNDS}</span>
+          <span className="chip-sky">Round {roundIdx + 1}</span>
           <span className="font-display tabular-nums" style={{ color: "var(--gold-deep)" }}>{score}</span>
           <AirBubbles n={MAX_STRIKES - strikes} />
         </div>
@@ -155,16 +156,16 @@ function DeepDive() {
         accentDeep="#1d6b8e"
         onStart={() => {}}
         steps={[
-          { icon: <MapIcon width={56} height={56} style={{ color: "#1d6b8e" }} />, title: "Read the clues", body: "Each round hides treasure on a small grid. The clues at the top narrow down where it could be." },
+          { icon: <MapIcon width={56} height={56} style={{ color: "#1d6b8e" }} />, title: "Read the clues", body: "Each round hides treasure on a small garden grid. The clues at the top narrow down where it could be." },
           { icon: <TapIcon width={56} height={56} style={{ color: "#3aa9d8" }} />, title: "Tap to dig", body: "Tap an empty tile to dig there. Find the treasure to score big — bonus points if you nail it first try." },
-          { icon: <NoIcon width={56} height={56} style={{ color: "#c2492f" }} />, title: "Mark and survive", body: <>Shift-click (or right-click) to mark a tile as <b>"no"</b> while you think. Three wrong taps and the round ends.</> },
+          { icon: <NoIcon width={56} height={56} style={{ color: "#c2492f" }} />, title: "Mark and survive", body: <>Shift-click (or right-click) to mark a tile as <b>"no"</b> while you think. Three wrong taps and the game ends.</> },
         ]}
 
       />
-      {!done && (
+      {!done && round && (
         <>
           <GameBanner
-            Mark={DiverMark}
+            image={tileTreasure}
             eyebrow="Treasure detective"
             tagline="Read the clues, then tap the empty tile that matches them all. Shift-click to mark a tile as 'no'."
           />
@@ -192,18 +193,11 @@ function DeepDive() {
             style={{
               maxWidth: 520,
               background:
-                "linear-gradient(180deg, color-mix(in oklab, #06aed5 35%, white) 0%, color-mix(in oklab, #06aed5 70%, #0a3a5a) 100%)",
-              borderColor: "color-mix(in oklab, #06aed5 55%, transparent)",
+                "linear-gradient(180deg, color-mix(in oklab, #5b9e3d 25%, white) 0%, color-mix(in oklab, #5b9e3d 55%, #2b4d1c) 100%)",
+              borderColor: "color-mix(in oklab, #5b9e3d 55%, transparent)",
               boxShadow: "inset 0 2px 0 rgba(255,255,255,0.55)",
             }}
           >
-            {/* drifting bubbles bg */}
-            <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-50" preserveAspectRatio="none">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <circle key={i} cx={`${(i * 13 + 7) % 100}%`} cy={`${(i * 23 + 11) % 100}%`} r={2 + (i % 3)}
-                  fill="rgba(255,255,255,0.5)" />
-              ))}
-            </svg>
             <div className="relative grid gap-1.5" style={{ gridTemplateColumns: `repeat(${SIZE}, 1fr)` }}>
               {round.puzzle.grid.map((tile) => {
                 const isTreasure = round.revealedTile?.x === tile.x && round.revealedTile?.y === tile.y;
@@ -221,10 +215,10 @@ function DeepDive() {
                     className="relative aspect-square grid place-items-center rounded-xl border-[2px] transition-transform hover:scale-[1.04]"
                     style={{
                       background: hasProp
-                        ? "color-mix(in oklab, #fdf6e3 70%, transparent)"
+                        ? "color-mix(in oklab, #fbeed8 80%, transparent)"
                         : isMarked
                         ? "color-mix(in oklab, #ff7a59 25%, white)"
-                        : "color-mix(in oklab, #fdf6e3 30%, transparent)",
+                        : "color-mix(in oklab, #fbeed8 35%, transparent)",
                       borderColor: hasProp ? "#1f2933" : isMarked ? "#c2492f" : "rgba(255,255,255,0.7)",
                       cursor: hasProp ? "default" : "pointer",
                     }}
@@ -244,9 +238,8 @@ function DeepDive() {
                     {isMarked && !isWrong && !isTreasure && (
                       <span className="absolute inset-0 grid place-items-center opacity-60" style={{ color: "#c2492f" }}><NoIcon width={22} height={22} /></span>
                     )}
-
                     {isDiver && !isTreasure && !isWrong && (
-                      <span className="absolute inset-0 grid place-items-center"><DiverMark width={36} height={40} /></span>
+                      <span className="absolute inset-0 grid place-items-center"><TapIcon width={30} height={30} style={{ color: "#1f2933" }} /></span>
                     )}
                   </button>
                 );
@@ -288,6 +281,7 @@ function DeepDive() {
     </GameShell>
   );
 }
+
 
 function AirBubbles({ n }: { n: number }) {
   return (
