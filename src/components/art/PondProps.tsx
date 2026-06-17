@@ -21,18 +21,16 @@ const SOURCES: Record<PropKind, string> = {
   shell,
 };
 
-export function PropSprite({ kind, size = 56 }: { kind: PropKind; size?: number }) {
+export function PropSprite({ kind, size }: { kind: PropKind; size?: number }) {
   return (
     <img
       src={SOURCES[kind]}
       alt=""
-      width={size}
-      height={size}
       loading="lazy"
       draggable={false}
       style={{
-        width: size,
-        height: size,
+        width: size ?? "100%",
+        height: size ?? "100%",
         objectFit: "contain",
         filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.18))",
       }}
@@ -40,18 +38,16 @@ export function PropSprite({ kind, size = 56 }: { kind: PropKind; size?: number 
   );
 }
 
-export function TreasureSprite({ size = 56 }: { size?: number }) {
+export function TreasureSprite({ size }: { size?: number }) {
   return (
     <img
       src={treasure}
       alt=""
-      width={size}
-      height={size}
       loading="lazy"
       draggable={false}
       style={{
-        width: size,
-        height: size,
+        width: size ?? "100%",
+        height: size ?? "100%",
         objectFit: "contain",
         filter: "drop-shadow(0 3px 4px rgba(0,0,0,0.22))",
       }}
