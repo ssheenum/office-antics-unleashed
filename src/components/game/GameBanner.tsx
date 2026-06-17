@@ -21,7 +21,7 @@ export function GameBanner({
         }}
       >
         {image ? (
-          <img src={image} alt="" width={80} height={80} className="h-full w-full object-contain p-1" />
+          <img src={image} alt="" width={80} height={80} className="h-full w-full scale-125 object-cover" />
         ) : Mark ? (
           <Mark width={64} height={56} />
         ) : null}
