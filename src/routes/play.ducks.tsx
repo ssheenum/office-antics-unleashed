@@ -242,10 +242,11 @@ function DucksGame() {
         accentDeep="#b07a13"
         onStart={() => {}}
         steps={[
-          { icon: "👀", title: "Watch the lineup", body: "A row of ducks flashes for a few seconds. Memorise their order and details." },
-          { icon: "🦆", title: "Rebuild the row", body: "Tap a duck from the pile, then tap an empty pad — or just drag them across. Tap a placed duck to send it back." },
-          { icon: "🎯", title: "Check the row", body: "Hit Check row when you're happy. Get them all right for combo points. Three wrong rounds and you're done." },
+          { icon: <EyeIcon width={56} height={56} style={{ color: "#b07a13" }} />, title: "Watch the lineup", body: "A row of ducks flashes for a few seconds. Memorise their order and details." },
+          { icon: <DucksIcon width={56} height={56} style={{ color: "#f5b740" }} />, title: "Rebuild the row", body: "Tap a duck from the pile, then tap an empty pad — or just drag them across. Tap a placed duck to send it back." },
+          { icon: <TargetIcon width={56} height={56} style={{ color: "#1ba884" }} />, title: "Check the row", body: "Hit Check row when you're happy. Get them all right for combo points. Three wrong rounds and you're done." },
         ]}
+
       />
       {phase !== "done" && (
         <>
@@ -334,7 +335,7 @@ function DucksGame() {
             {phase === "show" && (
               <div className="absolute inset-0 grid place-items-center">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="chip-gold pop-in">👀 Memorise the order…</div>
+                  <div className="chip-gold pop-in">Memorise the order…</div>
                   <div className="h-2 w-48 overflow-hidden rounded-full border-[1.5px] bg-white/70" style={{ borderColor: "#e9b13d" }}>
                     <div
                       className="h-full"
@@ -391,19 +392,23 @@ function DucksGame() {
             )}
             {feedback?.ok && (
               <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                {["✨", "🎉", "⭐", "✨", "🌟", "💫"].map((s, i) => (
-                  <span
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <SparkleIcon
                     key={i}
-                    className="absolute text-3xl sparkle"
+                    width={26}
+                    height={26}
+                    className="absolute sparkle"
                     style={{
                       left: `${20 + i * 12}%`,
                       top: `${30 + (i % 2) * 30}%`,
                       animationDelay: `${i * 60}ms`,
+                      color: i % 2 ? "#ffd166" : "#ff7a59",
                     }}
-                  >{s}</span>
+                  />
                 ))}
               </div>
             )}
+
           </div>
 
           <div className="mt-5 flex items-center justify-between gap-3">

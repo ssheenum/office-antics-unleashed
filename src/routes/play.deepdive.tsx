@@ -149,10 +149,11 @@ function DeepDive() {
         accentDeep="#1d6b8e"
         onStart={() => {}}
         steps={[
-          { icon: "🗺️", title: "Read the clues", body: "Each round hides treasure on a small grid. The clues at the top narrow down where it could be." },
-          { icon: "👆", title: "Tap to dig", body: "Tap an empty tile to dig there. Find the treasure to score big — bonus points if you nail it first try." },
-          { icon: "🚫", title: "Mark and survive", body: <>Shift-click (or right-click) to mark a tile as <b>"no"</b> while you think. Three wrong taps and the round ends.</> },
+          { icon: <MapIcon width={56} height={56} style={{ color: "#1d6b8e" }} />, title: "Read the clues", body: "Each round hides treasure on a small grid. The clues at the top narrow down where it could be." },
+          { icon: <TapIcon width={56} height={56} style={{ color: "#3aa9d8" }} />, title: "Tap to dig", body: "Tap an empty tile to dig there. Find the treasure to score big — bonus points if you nail it first try." },
+          { icon: <NoIcon width={56} height={56} style={{ color: "#c2492f" }} />, title: "Mark and survive", body: <>Shift-click (or right-click) to mark a tile as <b>"no"</b> while you think. Three wrong taps and the round ends.</> },
         ]}
+
       />
       {!done && (
         <>
@@ -235,8 +236,9 @@ function DeepDive() {
                       <span className="absolute inset-0 grid place-items-center text-2xl shake-x" style={{ color: "#c2492f" }}>✕</span>
                     )}
                     {isMarked && !isWrong && !isTreasure && (
-                      <span className="absolute inset-0 grid place-items-center text-xl opacity-60">🚫</span>
+                      <span className="absolute inset-0 grid place-items-center opacity-60" style={{ color: "#c2492f" }}><NoIcon width={22} height={22} /></span>
                     )}
+
                     {isDiver && !isTreasure && !isWrong && (
                       <span className="absolute inset-0 grid place-items-center"><DiverMark width={36} height={40} /></span>
                     )}

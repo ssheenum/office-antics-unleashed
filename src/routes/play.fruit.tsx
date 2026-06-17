@@ -8,6 +8,8 @@ import { BranchMark } from "@/components/art/Marks";
 import { recordRound, loadState } from "@/lib/storage";
 import { xpFromScore } from "@/lib/scoring";
 import { Tutorial } from "@/components/game/Tutorial";
+import { BasketIcon, AppleIcon, RockIcon, HeartIcon } from "@/components/art/MinimalIcons";
+
 
 export const Route = createFileRoute("/play/fruit")({
   head: () => ({
@@ -208,7 +210,7 @@ function FruitGame() {
             comboReset = true;
           } else if (it.kind === "golden") {
             scoreDelta += 30;
-            popAt(it.x, basketTop, "+30 ✨", "gold");
+            popAt(it.x, basketTop, "+30", "gold");
           } else if (ruleMatches(ruleRef.current, it.kind)) {
             const bonus = Math.floor(comboRef.current / 3);
             const gain = 5 + bonus;
@@ -300,11 +302,12 @@ function FruitGame() {
         accentDeep="#9a2e3b"
         onStart={() => {}}
         steps={[
-          { icon: "🧺", title: "Move the basket", body: "Slide your mouse, drag on touch, or use ← → arrow keys to glide the basket left and right." },
-          { icon: "🍎", title: "Follow the rule", body: <>The chip up top tells you what to catch — like <b>only apples</b> or <b>only red fruit</b>. Catch the right ones, skip the rest.</> },
-          { icon: "🪨", title: "Dodge rocks, watch hearts", body: "Rocks and wrong fruit cost a heart. Three hearts and the round ends. The rule changes every so often — keep an eye on it!" },
+          { icon: <BasketIcon width={56} height={56} style={{ color: "#9a2e3b" }} />, title: "Move the basket", body: "Slide your mouse, drag on touch, or use ← → arrow keys to glide the basket left and right." },
+          { icon: <AppleIcon width={56} height={56} style={{ color: "#e85b6b" }} />, title: "Follow the rule", body: <>The chip up top tells you what to catch — like <b>only apples</b> or <b>only red fruit</b>. Catch the right ones, skip the rest.</> },
+          { icon: <RockIcon width={56} height={56} style={{ color: "#5a626d" }} />, title: "Dodge rocks, watch hearts", body: "Rocks and wrong fruit cost a heart. Three hearts and the round ends. The rule changes every so often — keep an eye on it!" },
         ]}
       />
+
       <GameBanner
         Mark={BranchMark}
         eyebrow="Slide · catch · dodge"
@@ -464,15 +467,19 @@ function FruitGame() {
 
 function Hearts({ count }: { count: number }) {
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-1">
       {[0, 1, 2].map((i) => (
-        <span key={i} className="text-xl leading-none" style={{ filter: i < count ? "none" : "grayscale(1) opacity(0.4)" }}>
-          ❤
-        </span>
+        <HeartIcon
+          key={i}
+          width={18}
+          height={18}
+          style={{ color: i < count ? "#e85b6b" : "#cbd1d8" }}
+        />
       ))}
     </div>
   );
 }
+
 
 function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
   return (
