@@ -49,7 +49,7 @@ function LoginPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* hero meadow scene */}
+      {/* hero grass scene */}
       <div className="absolute inset-x-0 top-0 h-[55vh]">
         <img
           src={loginScene}
