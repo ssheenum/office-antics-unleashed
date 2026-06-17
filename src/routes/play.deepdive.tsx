@@ -223,10 +223,14 @@ function DeepDive() {
                       cursor: hasProp ? "default" : "pointer",
                     }}
                   >
-                    {tile.prop && <PropSprite kind={tile.prop} size={44} />}
+                    {tile.prop && (
+                      <span className="absolute inset-[6%] grid place-items-center">
+                        <PropSprite kind={tile.prop} />
+                      </span>
+                    )}
                     {isTreasure && (
-                      <span className="absolute inset-0 grid place-items-center pop-in">
-                        <TreasureSprite size={48} />
+                      <span className="absolute inset-[4%] grid place-items-center pop-in">
+                        <TreasureSprite />
                       </span>
                     )}
                     {isSplash && (
