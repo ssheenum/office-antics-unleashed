@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { sampleUsernames, setCurrentUser, listUsers, sanitizeUsername } from "@/lib/session";
-import loginScene from "@/assets/login-scene.png";
-import mascotTurtle from "@/assets/mascot-turtle.png";
+import gardenHero from "@/assets/garden-hero.jpg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
