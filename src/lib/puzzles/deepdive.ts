@@ -6,14 +6,14 @@ export type PropKind =
   | "anchor" | "seaweed" | "bubble" | "shell";
 
 export const PROP_LABEL: Record<PropKind, string> = {
-  redCoral: "red coral",
-  blueCoral: "blue coral",
-  jellyfish: "jellyfish",
-  turtle: "turtle",
-  anchor: "anchor",
-  seaweed: "seaweed",
-  bubble: "bubble",
-  shell: "shell",
+  redCoral: "red poppy",
+  blueCoral: "bellflower",
+  jellyfish: "butterfly",
+  turtle: "snail",
+  anchor: "watering can",
+  seaweed: "fern",
+  bubble: "pebble",
+  shell: "mushroom",
 };
 
 export interface Tile { x: number; y: number; prop: PropKind | null; }
